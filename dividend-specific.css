@@ -1,0 +1,276 @@
+/* ==========================================================================
+   Dividend Calculator Specific Styles
+   Model-specific colors, layouts, and components
+   Requires: cfa-base.css
+   ========================================================================== */
+
+/* ==========================================================================
+   1. MODEL-SPECIFIC COLOR ASSIGNMENTS
+   ========================================================================== */
+:root {
+  /* Dividend Calculator Specific Colors */
+  --color-dividend-constant: var(--color-blue-interactive);     /* #3c6ae5 */
+  --color-dividend-growth: var(--color-green-data);             /* #15803d */
+  --color-dividend-changing: var(--color-purple-bold);          /* #7a46ff */
+  --color-dividend-d: var(--color-orange-deep);                 /* #b95b1d */
+  --color-dividend-r: var(--color-eggplant-medium);             /* #733599 */
+  --color-dividend-g: var(--color-green-data);                  /* #15803d */
+  
+  /* Model aliases */
+  --color-model-constant: var(--color-dividend-constant);
+  --color-model-growth: var(--color-dividend-growth);
+  --color-model-changing: var(--color-dividend-changing);
+}
+
+/* ==========================================================================
+   2. MODEL SELECTOR BUTTONS
+   ========================================================================== */
+.model-btn[data-model="constant"].active {
+  background-color: var(--color-model-constant);
+  border-color: var(--color-model-constant);
+  color: white;
+}
+
+.model-btn[data-model="growth"].active {
+  background-color: var(--color-model-growth);
+  border-color: var(--color-model-growth);
+  color: white;
+}
+
+.model-btn[data-model="changing"].active {
+  background-color: var(--color-model-changing);
+  border-color: var(--color-model-changing);
+  color: white;
+}
+
+.model-btn[data-model="all"].active {
+  background-color: var(--color-gray-700);
+  border-color: var(--color-gray-700);
+  color: white;
+}
+
+/* ==========================================================================
+   3. FORMULA BOXES â€“ Model-Specific Border Colors
+   ========================================================================== */
+.formula-box.constant {
+  border-left-color: var(--color-model-constant);
+}
+
+.formula-box.growth {
+  border-left-color: var(--color-model-growth);
+}
+
+.formula-box.changing {
+  border-left-color: var(--color-model-changing);
+}
+
+/* ==========================================================================
+   4. MODEL EQUATIONS GRID
+   ========================================================================== */
+.model-equations-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+@media (min-width: 768px) {
+  .model-equations-grid {
+    grid-template-columns: 1fr 1fr 2fr;  /* 25% - 25% - 50% */
+  }
+}
+
+@media (max-width: 767px) {
+  .model-equations-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .formula-box {
+    min-height: auto;
+  }
+}
+
+.formula-box {
+  min-height: 160px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.formula-box.changing {
+  min-height: 180px;
+  overflow: hidden;
+}
+
+/* ==========================================================================
+   5. RESULT BOXES â€“ Model-Specific Styling
+   ========================================================================== */
+.result-box.model-constant {
+  background: var(--color-bg-blue);
+  border-color: var(--color-model-constant);
+}
+
+.result-box.model-growth {
+  background: var(--color-bg-green);
+  border-color: var(--color-model-growth);
+}
+
+.result-box.model-changing {
+  background: var(--color-bg-purple);
+  border-color: var(--color-model-changing);
+}
+
+.result-title.model-constant {
+  color: #1e40af;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+  font-size: 0.8125rem;
+}
+
+.result-title.model-growth {
+  color: var(--color-green-data);
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+  font-size: 0.8125rem;
+}
+
+.result-title.model-changing {
+  color: #7e22ce;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+  font-size: 0.8125rem;
+}
+
+.result-value.model-constant {
+  color: var(--color-model-constant);
+}
+
+.result-value.model-growth {
+  color: var(--color-model-growth);
+}
+
+.result-value.model-changing {
+  color: var(--color-model-changing);
+}
+
+.result-formula {
+  font-size: 0.9rem;
+  font-family: 'Courier New', monospace;
+  color: var(--color-gray-800);
+  background: white;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  margin-top: 0.25rem;
+  border: 1px solid var(--color-gray-200);
+}
+
+/* ==========================================================================
+   6. INPUT LAYOUT â€“ 3-Column Grid
+   ========================================================================== */
+.input-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem 1rem;
+  margin-top: 1rem;
+  align-items: center;
+}
+
+.input-row {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.input-row label {
+  width: 9rem;
+  text-align: right;
+  font-weight: 500;
+  color: var(--color-gray-700);
+  flex-shrink: 0;
+  font-size: 0.9rem;
+}
+
+.input-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.input-prefix,
+.input-suffix {
+  font-weight: 500;
+  color: var(--color-gray-500);
+  white-space: nowrap;
+  font-size: 0.9rem;
+  min-width: 1.8ch;
+}
+
+.input-prefix {
+  padding-right: 0.3rem;
+}
+
+.input-suffix {
+  padding-left: 0.3rem;
+}
+
+.input-field-inline {
+  flex: 1;
+  min-width: 0;
+  width: 6rem;
+  padding: 0.45rem 0.55rem;
+  font-size: 0.9rem;
+  border: 1px solid var(--color-gray-300);
+  border-radius: 0.375rem;
+  background: white;
+  text-align: right;
+}
+
+.input-field-inline:focus {
+  outline: none;
+  border-color: var(--color-blue-interactive);
+  box-shadow: 0 0 0 3px rgba(60, 106, 229, 0.1);
+}
+
+.input-field-inline.error {
+  border-color: var(--color-red-700) !important;
+  box-shadow: 0 0 0 2px rgba(185, 28, 28, 0.2);
+}
+
+/* Mobile: 1 column */
+@media (max-width: 900px) {
+  .input-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .input-row label {
+    width: auto;
+    text-align: left;
+    margin-bottom: 0.25rem;
+  }
+  
+  .input-wrapper {
+    width: 100%;
+  }
+  
+  .input-field-inline {
+    width: 100%;
+  }
+}
+
+/* ==========================================================================
+   7. EQUATION NOTE
+   ========================================================================== */
+.equation-note {
+  font-size: 0.8125rem;
+  color: var(--color-gray-600);
+  font-style: italic;
+  text-align: center;
+  margin-top: 0.5rem;
+}
+
+/* ==========================================================================
+   8. CHART CUSTOMIZATION
+   ========================================================================== */
+/* Any dividend-specific chart styling can go here */
