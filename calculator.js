@@ -107,6 +107,32 @@ function setupInputs() {
 }
 
 /* ---------- CALCULATIONS ---------- */
+function announceCalculations(calculations) {
+  const announcer = $('#calculation-announcement');
+  if (!announcer || !calculations) return;
+  
+  const c = calculations.constant.price;
+  const g = calculations.growth.price;
+  const ch = calculations.changing.price;
+  
+  // Build announcement message
+  let message = 'Calculations updated. ';
+  
+  if (isFinite(c)) {
+    message += `Constant dividend model: ${c.toFixed(0)} dollars. `;
+  }
+  
+  if (isFinite(g)) {
+    message += `Constant growth model: ${g.toFixed(0)} dollars. `;
+  }
+  
+  if (isFinite(ch)) {
+    message += `Changing growth model: ${ch.toFixed(0)} dollars.`;
+  }
+  
+  announcer.textContent = message;
+}
+
 function updateCalculations() {
   const { inputs, errors } = state;
   if (hasErrors(errors)) {
@@ -124,6 +150,9 @@ function updateCalculations() {
       shortYears: inputs.shortYears,
     });
     setState({ calculations });
+    
+    // Announce calculation results to screen readers
+    announceCalculations(calculations);
   } catch (e) {
     console.error(e);
     setState({ calculations: null });

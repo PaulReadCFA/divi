@@ -199,7 +199,7 @@ canvas[tabindex]:focus {
     flex-direction: row;
   }
   .middle-row > section:first-child { flex: 1; }
-  .middle-row > section:last-child { flex: 2; }
+  .middle-row > section:last-child { flex: 3; }
 }
 
 /* Grid for Results + Visualization (Bond/Dividend style) */
@@ -257,8 +257,17 @@ canvas[tabindex]:focus {
   border-bottom: 1px solid var(--color-gray-200);
 }
 
+/* Fieldset-specific styling */
+.model-controls {
+  border: none;
+  border-bottom: 1px solid var(--color-gray-200);
+  padding: 0 0 1rem 0;
+  margin: 0 0 1.5rem 0;
+}
+
 .model-selector-label,
-.control-label {
+.control-label,
+.model-controls legend {
   font-weight: 600;
   font-size: 0.875rem;
   color: var(--color-gray-700);

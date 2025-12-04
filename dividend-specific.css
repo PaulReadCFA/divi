@@ -50,7 +50,7 @@
 }
 
 /* ==========================================================================
-   3. FORMULA BOXES â€“ Model-Specific Border Colors
+   3. FORMULA BOXES – Model-Specific Border Colors
    ========================================================================== */
 .formula-box.constant {
   border-left-color: var(--color-model-constant);
@@ -97,13 +97,37 @@
   overflow: hidden;
 }
 
+/* Changing Growth equation box - consolidated rules */
 .formula-box.changing {
-  min-height: 180px;
-  overflow: hidden;
+  min-height: auto !important;
+  overflow: visible !important;
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+}
+
+/* Let the equation container grow naturally – no scrollbars */
+.formula-box.changing .equation-container {
+  overflow: visible !important;
+  max-height: none !important;
+  scrollbar-width: none;           /* Firefox */
+  -ms-overflow-style: none;        /* IE/Edge */
+}
+
+.formula-box.changing .equation-container::-webkit-scrollbar {
+  display: none;                   /* Chrome/Safari/Opera */
+}
+
+/* Inner wrapper for changing equation */
+.changing-equation-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  width: 100%;
 }
 
 /* ==========================================================================
-   5. RESULT BOXES â€“ Model-Specific Styling
+   5. RESULT BOXES – Model-Specific Styling
    ========================================================================== */
 .result-box.model-constant {
   background: var(--color-bg-blue);
@@ -165,7 +189,43 @@
 }
 
 /* ==========================================================================
-   6. INPUT LAYOUT â€“ 3-Column Grid
+   5b. Equation result text (unified sizes)
+   ========================================================================== */
+.equation-result-main {
+  font-size: 1.1rem;
+  font-weight: 600;
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  text-align: center;
+}
+
+.equation-result-main.constant {
+  color: var(--color-model-constant);
+  background: rgba(60, 106, 229, 0.08);
+}
+
+.equation-result-main.growth {
+  color: var(--color-model-growth);
+  background: rgba(21, 128, 61, 0.08);
+}
+
+.equation-result-main.changing {
+  color: var(--color-model-changing);
+  background: rgba(122, 70, 255, 0.08);
+}
+
+/* Breakdown strip for changing model (pvHighGrowth + pvTerminal) */
+.equation-breakdown {
+  font-size: 0.9rem;
+  line-height: 1.2;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  text-align: center;
+  background: rgba(122, 70, 255, 0.08);
+}
+
+/* ==========================================================================
+   6. INPUT LAYOUT – 3-Column Grid
    ========================================================================== */
 .input-grid {
   display: grid;
@@ -271,6 +331,17 @@
 }
 
 /* ==========================================================================
-   8. CHART CUSTOMIZATION
+   8. CHART CUSTOMIZATION & CHANGING EQUATION SCROLL
    ========================================================================== */
-/* Any dividend-specific chart styling can go here */
+/* Scroll container for the Changing Growth equation (horizontal only) */
+.changing-equation-scroll {
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  max-width: 100%;
+}
+
+/* Optional: hide the horizontal scrollbar track entirely */
+.changing-equation-scroll::-webkit-scrollbar {
+  height: 0;
+}

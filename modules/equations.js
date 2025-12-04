@@ -29,14 +29,22 @@ export function renderEquations(inputs, calculations) {
 function renderConstantEquation(inputs, result) {
   const container = document.querySelector('.formula-box.constant .equation-container');
   if (!container) return;
-  
+
   const D0 = inputs.D0;
   const r = inputs.required;
   const P = result.price;
-  
+
+  // Update aria-label with actual values
+  container.setAttribute(
+    'aria-label',
+    `Constant Dividend Model equation: Price equals ${D0} dollars divided by ${r} percent, which equals ${P.toFixed(
+      2
+    )} dollars`
+  );
+
   const mathML = `
-    <div style="display: flex; flex-direction: column; gap: 0.75rem; align-items: center;">
-      <math xmlns="http://www.w3.org/1998/Math/MathML" display="block" style="font-size: 0.95em;">
+    <div style="display:flex;flex-direction:column;gap:0.75rem;align-items:center;">
+      <math xmlns="http://www.w3.org/1998/Math/MathML" display="block" style="font-size:0.95em;">
         <mrow>
           <mi mathcolor="${COLORS.P_constant}" mathvariant="bold">P</mi>
           <mo>=</mo>
@@ -46,12 +54,12 @@ function renderConstantEquation(inputs, result) {
           </mfrac>
         </mrow>
       </math>
-      <div style="font-size: 1.1rem; font-weight: 600; color: ${COLORS.P_constant}; padding: 0.5rem 1rem; background: rgba(60, 106, 229, 0.08); border-radius: 0.375rem;">
+      <div class="equation-result-main constant">
         = $${P.toFixed(2)}
       </div>
     </div>
   `;
-  
+
   container.innerHTML = mathML;
 }
 
@@ -61,16 +69,20 @@ function renderConstantEquation(inputs, result) {
 function renderGrowthEquation(inputs, result) {
   const container = document.querySelector('.formula-box.growth .equation-container');
   if (!container) return;
-  
+
   const D0 = inputs.D0;
   const r = inputs.required;
   const g = inputs.gConst;
   const D1 = D0 * (1 + g / 100);
   const P = result.price;
-  
+
   if (!isFinite(P)) {
+    container.setAttribute(
+      'aria-label',
+      `Constant Growth Model equation: Invalid result. Growth rate ${g} percent must be less than required return ${r} percent`
+    );
     container.innerHTML = `
-      <div style="display: flex; flex-direction: column; gap: 0.75rem; align-items: center;">
+      <div style="display:flex;flex-direction:column;gap:0.75rem;align-items:center;">
         <math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
           <mrow>
             <mi mathcolor="${COLORS.P_growth}" mathvariant="bold">P</mi>
@@ -85,17 +97,26 @@ function renderGrowthEquation(inputs, result) {
             </mfrac>
           </mrow>
         </math>
-        <div style="font-size: 0.875rem; color: #ef4444; font-weight: 600;">
+        <div style="font-size:0.875rem;color:#ef4444;font-weight:600;">
           Invalid (g must be &lt; r)
         </div>
       </div>
     `;
     return;
   }
-  
+
+  container.setAttribute(
+    'aria-label',
+    `Constant Growth Model equation: Price equals dividend one of ${D1.toFixed(
+      2
+    )} dollars divided by required return ${r.toFixed(1)} percent minus growth rate ${g.toFixed(
+      1
+    )} percent, which equals ${P.toFixed(2)} dollars`
+  );
+
   const mathML = `
-    <div style="display: flex; flex-direction: column; gap: 0.75rem; align-items: center;">
-      <math xmlns="http://www.w3.org/1998/Math/MathML" display="block" style="font-size: 0.95em;">
+    <div style="display:flex;flex-direction:column;gap:0.75rem;align-items:center;">
+      <math xmlns="http://www.w3.org/1998/Math/MathML" display="block" style="font-size:0.95em;">
         <mrow>
           <mi mathcolor="${COLORS.P_growth}" mathvariant="bold">P</mi>
           <mo>=</mo>
@@ -109,12 +130,12 @@ function renderGrowthEquation(inputs, result) {
           </mfrac>
         </mrow>
       </math>
-      <div style="font-size: 1.1rem; font-weight: 600; color: ${COLORS.P_growth}; padding: 0.5rem 1rem; background: rgba(21, 128, 61, 0.08); border-radius: 0.375rem;">
+      <div class="equation-result-main growth">
         = $${P.toFixed(2)}
       </div>
     </div>
   `;
-  
+
   container.innerHTML = mathML;
 }
 
@@ -125,17 +146,21 @@ function renderGrowthEquation(inputs, result) {
 function renderChangingEquation(inputs, result) {
   const container = document.querySelector('.formula-box.changing .equation-container');
   if (!container) return;
-  
+
   const D0 = inputs.D0;
   const r = inputs.required;
   const gShort = inputs.gShort;
   const gLong = inputs.gLong;
   const n = inputs.shortYears;
   const P = result.price;
-  
+
   if (!isFinite(P)) {
+    container.setAttribute(
+      'aria-label',
+      `Changing Growth Model equation: Invalid result. Long-term growth rate ${gLong} percent must be less than required return ${r} percent`
+    );
     container.innerHTML = `
-      <div style="display: flex; flex-direction: column; gap: 0.75rem; align-items: center;">
+      <div style="display:flex;flex-direction:column;gap:0.75rem;align-items:center;">
         <math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
           <mrow>
             <mi mathcolor="${COLORS.P_changing}" mathvariant="bold">P</mi>
@@ -143,30 +168,39 @@ function renderChangingEquation(inputs, result) {
             <mtext mathcolor="#ef4444" mathvariant="bold">Invalid</mtext>
           </mrow>
         </math>
-        <div style="font-size: 0.875rem; color: #ef4444; font-weight: 600;">
+        <div style="font-size:0.875rem;color:#ef4444;font-weight:600;">
           Invalid (gₗ must be &lt; r)
         </div>
       </div>
     `;
     return;
   }
-  
-  // Calculate the two components
+
+  // Calculate the two components (same as calculations.js)
   let pvHighGrowth = 0;
   for (let t = 1; t <= n; t++) {
     const div = D0 * Math.pow(1 + gShort / 100, t);
     pvHighGrowth += div / Math.pow(1 + r / 100, t);
   }
-  
+
   const terminalDiv = D0 * Math.pow(1 + gShort / 100, n) * (1 + gLong / 100);
   const terminal = terminalDiv / (r / 100 - gLong / 100);
   const pvTerminal = terminal / Math.pow(1 + r / 100, n);
-  
-  // Use wrapper div with overflow for horizontal scrolling on narrow screens
+
+  // Update aria-label with actual values
+  container.setAttribute(
+    'aria-label',
+    `Changing Growth Model equation: Present value equals ${pvHighGrowth.toFixed(
+      2
+    )} dollars from high growth period plus ${pvTerminal.toFixed(
+      2
+    )} dollars from terminal value, which equals ${P.toFixed(2)} dollars`
+  );
+
   const mathML = `
-    <div style="display: flex; flex-direction: column; gap: 0.75rem; align-items: center; width: 100%;">
-      <div style="overflow-x: auto; -webkit-overflow-scrolling: touch; max-width: 100%;">
-        <math xmlns="http://www.w3.org/1998/Math/MathML" display="block" style="font-size: 0.75em;">
+    <div class="changing-equation-wrapper">
+      <div class="changing-equation-scroll">
+        <math xmlns="http://www.w3.org/1998/Math/MathML" display="block" style="font-size:0.7em;">
           <mrow>
             <msub>
               <mi mathcolor="${COLORS.P_changing}" mathvariant="bold">PV</mi>
@@ -185,12 +219,16 @@ function renderChangingEquation(inputs, result) {
                   <mn mathcolor="${COLORS.D0}">0</mn>
                 </msub>
                 <msup>
-                  <mrow><mo>(</mo><mn>1</mn><mo>+</mo><mtext mathcolor="${COLORS.g}" mathsize="0.7em">${gShort.toFixed(1)}%</mtext><mo>)</mo></mrow>
+                  <mrow><mo>(</mo><mn>1</mn><mo>+</mo><mtext mathcolor="${COLORS.g}" mathsize="0.7em">${gShort.toFixed(
+                    1
+                  )}%</mtext><mo>)</mo></mrow>
                   <mi>t</mi>
                 </msup>
               </mrow>
               <msup>
-                <mrow><mo>(</mo><mn>1</mn><mo>+</mo><mtext mathcolor="${COLORS.r}" mathsize="0.7em">${r.toFixed(1)}%</mtext><mo>)</mo></mrow>
+                <mrow><mo>(</mo><mn>1</mn><mo>+</mo><mtext mathcolor="${COLORS.r}" mathsize="0.7em">${r.toFixed(
+                  1
+                )}%</mtext><mo>)</mo></mrow>
                 <mi>t</mi>
               </msup>
             </mfrac>
@@ -207,29 +245,33 @@ function renderChangingEquation(inputs, result) {
                   <mrow><mn mathcolor="${COLORS.n}">${n}</mn><mo>+</mo><mn>1</mn></mrow>
                 </msub>
                 <msup>
-                  <mrow><mo>(</mo><mn>1</mn><mo>+</mo><mtext mathcolor="${COLORS.g}" mathsize="0.7em">${gLong.toFixed(1)}%</mtext><mo>)</mo></mrow>
+                  <mrow><mo>(</mo><mn>1</mn><mo>+</mo><mtext mathcolor="${COLORS.g}" mathsize="0.7em">${gLong.toFixed(
+                    1
+                  )}%</mtext><mo>)</mo></mrow>
                   <mi>t</mi>
                 </msup>
               </mrow>
               <msup>
-                <mrow><mo>(</mo><mn>1</mn><mo>+</mo><mtext mathcolor="${COLORS.r}" mathsize="0.7em">${r.toFixed(1)}%</mtext><mo>)</mo></mrow>
+                <mrow><mo>(</mo><mn>1</mn><mo>+</mo><mtext mathcolor="${COLORS.r}" mathsize="0.7em">${r.toFixed(
+                  1
+                )}%</mtext><mo>)</mo></mrow>
                 <mi>t</mi>
               </msup>
             </mfrac>
           </mrow>
         </math>
       </div>
-      <div style="padding: 0.5rem 0.875rem; background: rgba(122, 70, 255, 0.08); border-radius: 0.375rem; text-align: center; font-size: 0.8rem; line-height: 1.3; width: 100%; max-width: 500px;">
-        <span style="color: ${COLORS.P_changing}; font-weight: 600;">$${pvHighGrowth.toFixed(2)}</span>
-        <span style="color: #6b7280;"> (high growth) + </span>
-        <span style="color: ${COLORS.P_changing}; font-weight: 600;">$${pvTerminal.toFixed(2)}</span>
-        <span style="color: #6b7280;"> (terminal)</span>
+      <div class="equation-breakdown">
+        <span style="color:${COLORS.P_changing};font-weight:600;">$${pvHighGrowth.toFixed(2)}</span>
+        <span style="color:#6b7280;"> (high growth) + </span>
+        <span style="color:${COLORS.P_changing};font-weight:600;">$${pvTerminal.toFixed(2)}</span>
+        <span style="color:#6b7280;"> (terminal)</span>
       </div>
-      <div style="font-size: 1rem; font-weight: 600; color: ${COLORS.P_changing}; padding: 0.4rem 0.875rem; background: rgba(122, 70, 255, 0.08); border-radius: 0.375rem;">
+      <div class="equation-result-main changing">
         = $${P.toFixed(2)}
       </div>
     </div>
   `;
-  
+
   container.innerHTML = mathML;
 }

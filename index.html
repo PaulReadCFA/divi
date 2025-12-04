@@ -145,18 +145,21 @@
         </section>
       </div>
 
+      <!-- Calculation announcement for screen readers -->
+      <div id="calculation-announcement" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+
       <!-- CARD 4 - Data Entry -->
 <section class="card" id="data-entry" tabindex="-1" role="region" aria-labelledby="inputs-title">
   <h3 class="card-title" id="inputs-title">Equity Cash Flow Calculator</h3>
 
   <!-- Model Selector -->
-  <div class="model-controls" role="group" aria-labelledby="model-selector-label">
-    <span id="model-selector-label" class="model-selector-label">Select model:</span>
+  <fieldset class="model-controls">
+    <legend class="model-selector-label">Select model:</legend>
     <button id="model-all-btn" class="model-btn active" data-model="all" aria-pressed="true">All Models</button>
     <button id="model-constant-btn" class="model-btn" data-model="constant" aria-pressed="false">Constant Dividend</button>
     <button id="model-growth-btn" class="model-btn" data-model="growth" aria-pressed="false">Constant Dividend Growth</button>
     <button id="model-changing-btn" class="model-btn" data-model="changing" aria-pressed="false">Changing Dividend Growth</button>
-  </div>
+  </fieldset>
 
   <!-- Input Grid -->
   <div class="input-grid">

@@ -25,7 +25,7 @@ export function renderChart(calculations, selectedModel) {
   canvas.setAttribute('aria-roledescription', 'interactive chart');
   canvas.setAttribute(
     'aria-label',
-    'Interactive chart. Press Enter to focus, then use arrow keys to explore data points.'
+    'Interactive bar chart showing equity cash flows over time. Press Tab to focus, then use Left and Right arrow keys to navigate between time periods. Press Home to go to first period, End to go to last period.'
   );
 
   const ctx = canvas.getContext('2d');
