@@ -122,8 +122,7 @@ export function renderChart(calculations, selectedModel) {
         },
         y: {
           title: {
-            display: true,
-            text: 'Cash Flow ($)'
+            display: false  // Disabled - we'll draw horizontal title at top
           },
           ticks: {
             callback: function(value) {
@@ -141,12 +140,66 @@ export function renderChart(calculations, selectedModel) {
         padding: {
           left: 20,
           right: 30,
-          top: 20,
+          top: 35,  // Increased for horizontal title
           bottom: 60
         }
       }
     },
     plugins: [
+      {
+        // Horizontal Y-axis title plugin (like mortgage chart)
+        id: 'horizontalYTitle',
+        afterDraw: (chart) => {
+          const ctx = chart.ctx;
+          const chartArea = chart.chartArea;
+          
+          ctx.save();
+          ctx.fillStyle = '#374151';
+          ctx.font = 'bold 12px sans-serif';
+          ctx.textAlign = 'left';
+          ctx.textBaseline = 'top';
+          ctx.fillText('Cash Flows ($)', chartArea.left - 60, chartArea.top - 25);
+          ctx.restore();
+        }
+      },
+      {
+        // Data labels plugin - only show for single model view
+        id: 'dataLabels',
+        afterDatasetsDraw: (chart) => {
+          // Only show labels if single model (not "all")
+          if (modelsToShow.length > 1) return;
+          
+          const ctx = chart.ctx;
+          
+          chart.data.datasets.forEach((dataset, datasetIndex) => {
+            const meta = chart.getDatasetMeta(datasetIndex);
+            
+            meta.data.forEach((bar, index) => {
+              const value = dataset.data[index];
+              
+              // Skip initial investment (negative value)
+              if (value < 0) return;
+              
+              // Format value with 2 decimal places
+              const label = new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD',
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+              }).format(Math.abs(value));
+              
+              // Position above bar
+              ctx.save();
+              ctx.fillStyle = '#374151';
+              ctx.font = '11px sans-serif';
+              ctx.textAlign = 'center';
+              ctx.textBaseline = 'bottom';
+              ctx.fillText(label, bar.x, bar.y - 5);
+              ctx.restore();
+            });
+          });
+        }
+      },
       {
         // Keyboard focus highlight plugin
         id: 'keyboardFocus',
