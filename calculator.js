@@ -1,5 +1,5 @@
 /**
- * calculator.js - Dividend Discount Model Calculator
+ * calculator.js Ã¢â‚¬â€œ Dividend Discount Model Calculator
  */
 import { state, setState, subscribe } from './modules/state.js';
 import { calculateAllModels } from './modules/calculations.js';
@@ -107,32 +107,6 @@ function setupInputs() {
 }
 
 /* ---------- CALCULATIONS ---------- */
-function announceCalculations(calculations) {
-  const announcer = $('#calculation-announcement');
-  if (!announcer || !calculations) return;
-  
-  const c = calculations.constant.price;
-  const g = calculations.growth.price;
-  const ch = calculations.changing.price;
-  
-  // Build announcement message
-  let message = 'Calculations updated. ';
-  
-  if (isFinite(c)) {
-    message += `Constant dividend model: ${c.toFixed(0)} dollars. `;
-  }
-  
-  if (isFinite(g)) {
-    message += `Constant growth model: ${g.toFixed(0)} dollars. `;
-  }
-  
-  if (isFinite(ch)) {
-    message += `Changing growth model: ${ch.toFixed(0)} dollars.`;
-  }
-  
-  announcer.textContent = message;
-}
-
 function updateCalculations() {
   const { inputs, errors } = state;
   if (hasErrors(errors)) {
@@ -150,9 +124,6 @@ function updateCalculations() {
       shortYears: inputs.shortYears,
     });
     setState({ calculations });
-    
-    // Announce calculation results to screen readers
-    announceCalculations(calculations);
   } catch (e) {
     console.error(e);
     setState({ calculations: null });
@@ -180,25 +151,23 @@ function selectModel(model) {
     btn.classList.toggle('active', btn.dataset.model === model);
     btn.setAttribute('aria-pressed', btn.dataset.model === model);
   });
-  setState({ selectedModel: model });
   
-  // Update field visibility
-  updateFieldVisibility(model);
-}
-
-function updateFieldVisibility(model) {
-  const allRows = document.querySelectorAll('.input-row[data-models]');
-  
-  allRows.forEach(row => {
-    const models = row.dataset.models.split(' ');
-    const shouldShow = models.includes(model);
-    
-    if (shouldShow) {
+  // Show/hide inputs based on selected model
+  document.querySelectorAll('.input-row').forEach(row => {
+    const models = row.getAttribute('data-models');
+    if (!models) {
       row.style.display = '';
-    } else {
-      row.style.display = 'none';
+      return;
     }
+    
+    const modelList = models.split(' ');
+    // If "all" is selected, show all inputs that have any model
+    // Otherwise, only show inputs that include the selected model
+    const shouldShow = model === 'all' ? modelList.length > 0 : modelList.includes(model);
+    row.style.display = shouldShow ? '' : 'none';
   });
+  
+  setState({ selectedModel: model });
 }
 
 /* ---------- VIEW TOGGLE ---------- */
@@ -298,7 +267,9 @@ function detectNarrowScreen() {
 function updateAll(s) {
   if (!s.calculations) return;
 
+  // Render dynamic equations with current values
   renderEquations(s.inputs, s.calculations);
+  
   renderResults(s.calculations, s.selectedModel);
   
   const isForced = document.body.classList.contains('force-table');

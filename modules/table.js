@@ -1,9 +1,15 @@
 /**
- * table.js - Add data-label for mobile stacking
+ * table.js â€“ Add data-label for mobile stacking
  */
 import { $ } from './utils.js';
 
 export function renderTable(calculations, selectedModel) {
+  // Clear legend in table view
+  const legendContainer = $('#chart-legend');
+  if (legendContainer) {
+    legendContainer.innerHTML = '';
+  }
+  
   const table = $('#data-table');
   if (!table) return;
 
@@ -17,13 +23,13 @@ export function renderTable(calculations, selectedModel) {
   const cashFlows = firstModel.cashFlows;
 
   const modelNames = {
-    constant: 'Constant Dividend Model',
-    growth: 'Constant Growth Model',
-    changing: 'Changing Growth Model',
+    constant: 'Constant Dividend',
+    growth: 'Constant Growth',
+    changing: 'Changing Growth',   // <-- changed to "Changing Growth" per request
   };
 
   const modelColors = {
-    constant: '#2d59c4',  // Darker blue for WCAG AA+ compliance (6.29:1)
+    constant: '#3c6ae5',
     growth: '#15803d',
     changing: '#7a46ff',
   };
@@ -36,7 +42,13 @@ export function renderTable(calculations, selectedModel) {
   `;
 
   modelsToShow.forEach(m => {
-    html += `<th scope="col" class="text-right" style="color: ${modelColors[m]};">${modelNames[m]}</th>`;
+    // Add model notation with color
+    const notations = {
+      constant: '<span style="color: #3c6ae5;">P</span>',
+      growth: '<span style="color: #15803d;">PV<sub style="color: #15803d;">t</sub></span>',
+      changing: '<span style="color: #7a46ff;">PV<sub style="color: #7a46ff;">0</sub></span>'
+    };
+    html += `<th scope="col" class="text-right">${modelNames[m]} (${notations[m]})</th>`;
   });
 
   html += `</tr></thead><tbody>`;
@@ -50,28 +62,64 @@ export function renderTable(calculations, selectedModel) {
       const flow = calculations[m].cashFlows.find(c => c.year === cf.year);
       const val = flow ? flow.dividend : 0;
       const formatted = formatCurrency(val, true);
-      html += `<td class="text-right" data-label="${modelNames[m]}" style="color: ${modelColors[m]};"><strong>${formatted}</strong></td>`;
+      // Colour the numeric cell text using the model's color
+      const color = modelColors[m] || '#000';
+      html += `<td class="text-right" data-label="${modelNames[m]}"><span style="color: ${color};">${formatted}</span></td>`;
     });
 
     html += `</tr>`;
   });
 
-  // Footer - totals + price
+  // Footer â€“ totals + price
   html += `</tbody><tfoot>
     <tr>
       <th scope="row" class="text-left">Total Received</th>`;
   modelsToShow.forEach(m => {
     const total = calculations[m].cashFlows
       .reduce((s, c) => s + (c.dividend > 0 ? c.dividend : 0), 0);
-    html += `<td class="text-right"><strong>${formatCurrency(total)}</strong></td>`;
+    const color = modelColors[m] || '#000';
+    html += `<td class="text-right" data-label="${modelNames[m]}"><strong style="color: ${color};">${formatCurrency(total)}</strong></td>`;
   });
   html += `</tr>
-    <tr>
-      <th scope="row" class="text-left">Stock Price (PV)</th>`;
+    <tr>`;
+  
+  // Label changes based on which models are shown - curriculum accurate with color coding
+  let priceLabel = 'Stock Price';
+  if (modelsToShow.length === 1) {
+    const m = modelsToShow[0];
+    const color = modelColors[m];
+    if (m === 'constant') {
+      priceLabel = `Stock Price (<span style="color: ${color};">P</span>)`;
+    } else if (m === 'growth') {
+      priceLabel = `Stock Price (<span style="color: ${color};">PV</span><sub style="color: ${color};">t</sub>)`;
+    } else if (m === 'changing') {
+      priceLabel = `Stock Price (<span style="color: ${color};">PV</span><sub style="color: ${color};">0</sub>)`;
+    }
+  } else {
+    // Multiple models - show all notations with colors
+    const notations = [];
+    if (modelsToShow.includes('constant')) {
+      const color = modelColors.constant;
+      notations.push(`<span style="color: ${color};">P</span>`);
+    }
+    if (modelsToShow.includes('growth')) {
+      const color = modelColors.growth;
+      notations.push(`<span style="color: ${color};">PV</span><sub style="color: ${color};">t</sub>`);
+    }
+    if (modelsToShow.includes('changing')) {
+      const color = modelColors.changing;
+      notations.push(`<span style="color: ${color};">PV</span><sub style="color: ${color};">0</sub>`);
+    }
+    priceLabel = `Stock Price (${notations.join(' / ')})`;
+  }
+  
+  html += `
+      <th scope="row" class="text-left">${priceLabel}</th>`;
   modelsToShow.forEach(m => {
     const price = calculations[m].price;
     const txt = isFinite(price) ? formatCurrency(price) : 'Invalid';
-    html += `<td class="text-right"><strong>${txt}</strong></td>`;
+    const color = modelColors[m];
+    html += `<td class="text-right" data-label="${modelNames[m]}"><strong style="color: ${color};">${txt}</strong></td>`;
   });
   html += `</tr></tfoot>`;
 

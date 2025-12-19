@@ -95,13 +95,13 @@ export function getModelMetadata(modelKey) {
       name: 'Constant Dividend Model',
       color: '#3c6ae5',
       description: 'Assumes dividends remain constant forever',
-      formula: 'P = Dâ‚€ Ã· r'
+      formula: 'P = D₀ ÷ r'
     },
     growth: {
       name: 'Constant Growth Model',
       color: '#15803d',
       description: 'Assumes constant dividend growth rate forever',
-      formula: 'P = Dâ‚ Ã· (r âˆ’ g)'
+      formula: 'P = D₁ ÷ (r − g)'
     },
     changing: {
       name: 'Changing Growth Model',

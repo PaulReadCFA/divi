@@ -12,8 +12,7 @@
 
   <!-- SKIP LINKS -->
   <nav aria-label="Skip links" class="skip-links-nav">
-    <a href="#data-entry" class="skip-link">Skip to data entry</a>
-    <a href="#results-card" class="skip-link">Skip to results</a>
+    <a href="#data-entry" class="skip-link">Skip to calculator</a>
     <a href="#visualization-card" class="skip-link">Skip to visualization</a>
     <a href="#view-table-btn" class="skip-link" id="skip-to-table">Skip to data table</a>
   </nav>
@@ -36,7 +35,7 @@
         <div class="model-equations-grid">
           <!-- Constant Dividend Model -->
           <div class="formula-box constant">
-            <div class="formula-box-title">Constant Dividend Model</div>
+            <div class="formula-box-title">Constant Dividend</div>
             <div class="equation-container" tabindex="0" role="math"
                  aria-label="Price equals D zero divided by r">
               <div class="mathml-equation">
@@ -53,7 +52,7 @@
               </div>
               <div class="html-equation" hidden>
                 <strong style="color:#3c6ae5;">P</strong> = 
-                <span style="color:#b95b1d;">D<sub>0</sub></span> ÷ 
+                <span style="color:#b95b1d;">D<sub>0</sub></span> Ã· 
                 <span style="color:#733599;">r</span>
               </div>
             </div>
@@ -61,19 +60,22 @@
 
           <!-- Constant Growth Model -->
           <div class="formula-box growth">
-            <div class="formula-box-title">Constant Growth Model</div>
+            <div class="formula-box-title">Constant Growth</div>
             <div class="equation-container" tabindex="0" role="math"
-                 aria-label="Price equals D one divided by r minus g">
+                 aria-label="Present value at time t equals D one divided by r minus g">
               <div class="mathml-equation">
                 <math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
                   <mrow>
-                    <mi mathcolor="#15803d" mathvariant="bold">P</mi>
+                    <msub>
+                      <mi mathcolor="#15803d" mathvariant="bold">PV</mi>
+                      <mi mathcolor="#15803d" mathvariant="italic">t</mi>
+                    </msub>
                     <mo>=</mo>
                     <mfrac>
                       <msub><mi mathcolor="#b95b1d">D</mi><mn>1</mn></msub>
                       <mrow>
                         <mi mathcolor="#733599">r</mi>
-                        <mo>−</mo>
+                        <mo>∑</mo>
                         <mi mathcolor="#15803d">g</mi>
                       </mrow>
                     </mfrac>
@@ -81,89 +83,104 @@
                 </math>
               </div>
               <div class="html-equation" hidden>
-                <strong style="color:#15803d;">P</strong> = 
-                <span style="color:#b95b1d;">D<sub>1</sub></span> ÷ 
-                (<span style="color:#733599;">r</span> − <span style="color:#15803d;">g</span>)
+                <strong style="color:#15803d;">PV<sub style="font-style:italic;">t</sub></strong> = 
+                <span style="color:#b95b1d;">D<sub>1</sub></span> Ã· 
+                (<span style="color:#733599;">r</span> ∑ <span style="color:#15803d;">g</span>)
               </div>
             </div>
           </div>
 
           <!-- Changing Growth Model -->
           <div class="formula-box changing">
-            <div class="formula-box-title">Changing Growth Model</div>
+            <div class="formula-box-title">Changing Growth</div>
             <div class="equation-container" tabindex="0" role="math"
-                 aria-label="Price equals present value of high growth dividends plus present value of terminal value">
+                 aria-label="Two-stage model: sum of present values from high growth period plus terminal value">
               <div class="mathml-equation">
-                <math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
-                  <mrow>
-                    <mi mathcolor="#7a46ff" mathvariant="bold">P</mi>
-                    <mo>=</mo>
-                    <mtext style="font-size:0.9em;">PV(high) + PV(term)</mtext>
-                  </mrow>
-                </math>
+                <div class="changing-equation-wrapper">
+                  <div class="changing-equation-scroll" tabindex="0" role="region" aria-label="Scrollable changing growth equation">
+                    <math xmlns="http://www.w3.org/1998/Math/MathML" display="block" style="font-size:1.15em;">
+                      <mrow>
+                        <msub>
+                          <mi mathcolor="#7a46ff" mathvariant="bold">PV</mi>
+                          <mn mathcolor="#7a46ff">0</mn>
+                        </msub>
+                        <mo>=</mo>
+                        <munderover>
+                          <mo>∑</mo>
+                          <mrow><mi mathcolor="#0079a6">t</mi><mo>=</mo><mn>1</mn></mrow>
+                          <mi mathcolor="#0079a6">n</mi>
+                        </munderover>
+                        <mfrac linethickness="1px">
+                          <mrow>
+                            <msub>
+                              <mi mathcolor="#b95b1d">D</mi>
+                              <mn mathcolor="#b95b1d">0</mn>
+                            </msub>
+                            <msup>
+                              <mrow><mo>(</mo><mn>1</mn><mo>+</mo><msub><mi mathcolor="#15803d">g</mi><mi mathcolor="#15803d">s</mi></msub><mo>)</mo></mrow>
+                              <mi mathcolor="#0079a6">t</mi>
+                            </msup>
+                          </mrow>
+                          <msup>
+                            <mrow><mo>(</mo><mn>1</mn><mo>+</mo><mi mathcolor="#733599">r</mi><mo>)</mo></mrow>
+                            <mi mathcolor="#0079a6">t</mi>
+                          </msup>
+                        </mfrac>
+                        <mspace width="0.3em"/>
+                        <mo>+</mo>
+                        <mspace width="0.3em"/>
+                        <munderover>
+                          <mo>∑</mo>
+                          <mrow><mi mathcolor="#0079a6">t</mi><mo>=</mo><mi mathcolor="#0079a6">n</mi><mo>+</mo><mn>1</mn></mrow>
+                          <mo>∞</mo>
+                        </munderover>
+                        <mfrac linethickness="1px">
+                          <mrow>
+                            <msub>
+                              <mi mathcolor="#b95b1d">D</mi>
+                              <mrow><mi mathcolor="#0079a6">n</mi><mo>+</mo><mn>1</mn></mrow>
+                            </msub>
+                            <msup>
+                              <mrow><mo>(</mo><mn>1</mn><mo>+</mo><msub><mi mathcolor="#15803d">g</mi><mi mathcolor="#15803d">l</mi></msub><mo>)</mo></mrow>
+                              <mi mathcolor="#0079a6">t</mi>
+                            </msup>
+                          </mrow>
+                          <msup>
+                            <mrow><mo>(</mo><mn>1</mn><mo>+</mo><mi mathcolor="#733599">r</mi><mo>)</mo></mrow>
+                            <mi mathcolor="#0079a6">t</mi>
+                          </msup>
+                        </mfrac>
+                      </mrow>
+                    </math>
+                  </div>
+                </div>
               </div>
               <div class="html-equation" hidden>
-                <strong style="color:#7a46ff;">P</strong> = PV(high) + PV(term)
+                <strong style="color:#7a46ff;">PV<sub>0</sub></strong> = Î£[t=1 to n] + Î£[t=n+1 to ∞]
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- MIDDLE ROW -->
-      <div class="middle-row">
-        <!-- CARD 2 - Results -->
-        <section class="card" id="results-card" tabindex="-1" aria-labelledby="results-title">
-          <h4 class="card-title" id="results-title">Valuation Results</h4>
-          
-          <div id="results-content" aria-live="polite"></div>
-          <div id="result-announcement" class="sr-only" aria-live="polite" aria-atomic="true"></div>
-        </section>
+      <!-- CARD 2 - Data Entry (Calculator) - Made Sticky -->
+      <section class="card sticky-card" id="data-entry" tabindex="-1" role="region" aria-labelledby="inputs-title">
+        <h4 class="card-title" id="inputs-title">Equity Cash Flow Calculator</h4>
 
-        <!-- CARD 3 - Visualization -->
-        <section class="card" id="visualization-card" tabindex="-1" aria-labelledby="visualization-title">
-          <h4 class="card-title" id="visualization-title">Equity Cash Flows</h4>
-          
-          <!-- View Toggle -->
-          <div class="view-controls" role="group" aria-label="Select view type">
-            <button id="view-chart-btn" class="toggle-btn active" aria-pressed="true">Chart</button>
-            <button id="view-table-btn" class="toggle-btn" aria-pressed="false">Table</button>
-          </div>
-
-          <div id="chart-container" class="chart-wrapper">
-            <canvas id="chart" tabindex="0" role="img" aria-label="Bar chart showing dividend cash flows"></canvas>
-            <div id="chart-announcement" class="sr-only" aria-live="polite" aria-atomic="true"></div>
-          </div>
-
-          <div id="table-container" class="table-scroll-wrapper" style="display:none;">
-            <table id="data-table" class="data-table" tabindex="0" role="region" aria-label="Dividend cash flow data table">
-              <!-- Table content populated by table.js -->
-            </table>
-          </div>
-        </section>
-      </div>
-
-      <!-- Calculation announcement for screen readers -->
-      <div id="calculation-announcement" class="sr-only" aria-live="polite" aria-atomic="true"></div>
-
-      <!-- CARD 4 - Data Entry -->
-<section class="card" id="data-entry" tabindex="-1" role="region" aria-labelledby="inputs-title">
-  <h4 class="card-title" id="inputs-title">Equity Cash Flow Calculator</h4>
-
-  <!-- Model Selector -->
-  <fieldset class="model-controls">
-    <legend class="model-selector-label">Select model:</legend>
-    <button id="model-all-btn" class="model-btn active" data-model="all" aria-pressed="true">All Models</button>
-    <button id="model-constant-btn" class="model-btn" data-model="constant" aria-pressed="false">Constant Dividend</button>
-    <button id="model-growth-btn" class="model-btn" data-model="growth" aria-pressed="false">Constant Dividend Growth</button>
-    <button id="model-changing-btn" class="model-btn" data-model="changing" aria-pressed="false">Changing Dividend Growth</button>
-  </fieldset>
+        <!-- Model Selector -->
+        <fieldset class="model-controls">
+          <legend class="model-selector-label">Select model:</legend>
+          <button id="model-all-btn" class="model-btn active" data-model="all" aria-pressed="true">All Models</button>
+          <button id="model-constant-btn" class="model-btn" data-model="constant" aria-pressed="false">Constant Dividend</button>
+          <button id="model-growth-btn" class="model-btn" data-model="growth" aria-pressed="false">Constant Growth</button>
+          <button id="model-changing-btn" class="model-btn" data-model="changing" aria-pressed="false">Changing Growth</button>
+        </fieldset>
 
   <!-- Input Grid -->
   <div class="input-grid">
     <!-- Current Dividend -->
-     <div class="input-row" data-models="all constant growth changing">
-  <label for="D0">Current Dividend (<span style="color: #b95b1d;">D<sub>0</sub></span>):</label>
+     <div class="input-row" data-models="constant growth changing">
+  <label for="D0">Current Dividend (<span style="color: #b95b1d; font-style: italic;">D<sub>0</sub></span>):</label>
   <div class="input-wrapper">
     <span class="input-prefix">$</span>
     <input type="number" id="D0" class="input-field-inline" min="0.01" max="1000" step="0.01" value="5"
@@ -174,8 +191,8 @@
 
 
     <!-- Required Return -->
-    <div class="input-row" data-models="all constant growth changing">
-      <label for="required">Required Return (<span style="color: #733599;">r</span>):</label>
+    <div class="input-row" data-models="constant growth changing">
+      <label for="required">Required Return (<span style="color: #733599; font-style: italic;">r</span>):</label>
       <div class="input-wrapper suffix">
         <input
           type="number"
@@ -194,8 +211,8 @@
     </div>
 
     <!-- Constant Growth -->
-    <div class="input-row" data-models="all growth">
-      <label for="gConst">Constant Growth (<span style="color: #15803d;">g</span>):</label>
+    <div class="input-row" data-models="growth">
+      <label for="gConst">Constant Growth (<span style="color: #15803d; font-style: italic;">g</span>):</label>
       <div class="input-wrapper suffix">
         <input
           type="number"
@@ -213,9 +230,9 @@
       </div>
     </div>
 
-    <!-- Short-term Growth -->
-    <div class="input-row" data-models="all changing">
-      <label for="gShort">Short-term Growth (<span style="color: #15803d;">g<sub>s</sub></span>):</label>
+    <!-- Short-Term Growth -->
+    <div class="input-row" data-models="changing">
+      <label for="gShort">Short-Term Growth (<span style="color: #15803d; font-style: italic;">g<sub>s</sub></span>):</label>
       <div class="input-wrapper suffix">
         <input
           type="number"
@@ -233,9 +250,9 @@
       </div>
     </div>
 
-    <!-- Long-term Growth -->
-    <div class="input-row" data-models="all changing">
-      <label for="gLong">Long-term Growth (<span style="color: #15803d;">g<sub>l</sub></span>):</label>
+    <!-- Long-Term Growth -->
+    <div class="input-row" data-models="changing">
+      <label for="gLong">Long-Term Growth (<span style="color: #15803d; font-style: italic;">g<sub>l</sub></span>):</label>
       <div class="input-wrapper suffix">
         <input
           type="number"
@@ -253,9 +270,9 @@
       </div>
     </div>
 
-    <!-- High Growth Period -->
-    <div class="input-row" data-models="all changing">
-      <label for="shortYears">High Growth Period (<span style="color: #0079a6;">n</span>):</label>
+    <!-- High-Growth Period -->
+    <div class="input-row" data-models="changing">
+      <label for="shortYears">High-Growth Period (<span style="color: #0079a6; font-style: italic;">n</span>):</label>
       <div class="input-wrapper suffix">
         <input
           type="number"
@@ -280,6 +297,37 @@
     <ul id="validation-list"></ul>
   </div>
 </section>
+
+      <!-- Calculation announcement for screen readers -->
+      <div id="calculation-announcement" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+
+      <!-- CARD 3 - Visualization (Chart/Table) -->
+      <section class="card" id="visualization-card" tabindex="-1" aria-labelledby="visualization-title">
+        <h4 class="card-title" id="visualization-title">Equity Cash Flows</h4>
+        
+        <!-- View Toggle -->
+        <div class="view-controls">
+          <div class="legend" id="chart-legend" role="list" aria-label="Chart legend">
+            <!-- Legend populated by JavaScript -->
+          </div>
+          
+          <div class="button-group" role="group" aria-label="View mode - switch between chart and table">
+            <button id="view-chart-btn" class="toggle-btn active" aria-pressed="true">Chart</button>
+            <button id="view-table-btn" class="toggle-btn" aria-pressed="false">Table</button>
+          </div>
+        </div>
+
+        <div id="chart-container" class="chart-wrapper">
+          <canvas id="chart" tabindex="0" role="img" aria-label="Bar chart showing dividend cash flows"></canvas>
+          <div id="chart-announcement" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+        </div>
+
+        <div id="table-container" class="table-scroll-wrapper table-card-layout" style="display:none;">
+          <table id="data-table" class="data-table" tabindex="0" role="region" aria-label="Dividend cash flow data table">
+            <!-- Table content populated by table.js -->
+          </table>
+        </div>
+      </section>
 
     </main>
   </div>

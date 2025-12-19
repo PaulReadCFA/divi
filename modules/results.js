@@ -5,19 +5,19 @@ import { $ } from './utils.js';
 
 const MODEL_META = {
   constant: {
-    name: 'Constant Dividend Model',
+    name: 'Constant Dividend',
     color: '#3c6ae5',
     description: 'No growth assumed',
-    formula: 'P = Dâ‚€ Ã· r'
+    formula: 'P = D₀ ÷ r'
   },
   growth: {
-    name: 'Constant Growth Model',
+    name: 'Constant Growth',
     color: '#15803d',
     description: 'Constant growth rate',
-    formula: 'P = Dâ‚Â Ã· (r âˆ’ g)'
+    formula: 'P = D₁ ÷ (r − g)'
   },
   changing: {
-    name: 'Changing Growth Model',
+    name: 'Two-Stage Growth',
     color: '#7a46ff',
     description: 'High then sustainable growth',
     formula: 'P = PV(high) + PV(term)'
@@ -78,6 +78,12 @@ export function renderResults(calculations, selectedModel) {
       description.className = 'result-description';
       description.textContent = metadata.description;
       box.appendChild(description);
+      
+      // Formula
+      const formula = document.createElement('div');
+      formula.className = 'result-formula';
+      formula.textContent = metadata.formula;
+      box.appendChild(formula);
     }
     
     container.appendChild(box);

@@ -35,6 +35,32 @@ export function renderChart(calculations, selectedModel) {
     ? ['constant', 'growth', 'changing']
     : [selectedModel];
   
+  // Render legend only when showing all models
+  const legendContainer = $('#chart-legend');
+  if (legendContainer) {
+    if (selectedModel === 'all') {
+      const modelNames = {
+        constant: 'Constant Dividend',
+        growth: 'Constant Growth',
+        changing: 'Changing Growth'
+      };
+      
+      let legendHTML = '';
+      modelsToShow.forEach(modelKey => {
+        legendHTML += `
+          <div class="legend-item" role="listitem">
+            <span class="legend-color" style="background-color: ${MODEL_COLORS[modelKey]};"></span>
+            <span>${modelNames[modelKey]}</span>
+          </div>
+        `;
+      });
+      legendContainer.innerHTML = legendHTML;
+    } else {
+      // Clear legend for single model view
+      legendContainer.innerHTML = '';
+    }
+  }
+  
   // Get data from first model (they all have same years)
   const firstModel = calculations[modelsToShow[0]];
   if (!firstModel || !firstModel.cashFlows || firstModel.cashFlows.length === 0) {
@@ -48,9 +74,9 @@ export function renderChart(calculations, selectedModel) {
   const datasets = modelsToShow.map(modelKey => {
     const modelData = calculations[modelKey];
     const modelName = {
-      constant: 'Constant Dividend Model',
-      growth: 'Constant Growth Model',
-      changing: 'Changing Growth Model'
+      constant: 'Constant Dividend',
+      growth: 'Constant Growth',
+      changing: 'Changing Growth'
     }[modelKey];
     
     return {
@@ -94,8 +120,7 @@ export function renderChart(calculations, selectedModel) {
       },
       plugins: {
         legend: {
-          display: modelsToShow.length > 1,
-          position: 'top'
+          display: false  // Disabled - using custom HTML legend outside chart
         },
         tooltip: {
           callbacks: {
@@ -114,7 +139,19 @@ export function renderChart(calculations, selectedModel) {
         x: {
           title: {
             display: true,
-            text: 'Time Period'
+            text: 'Time Period',
+            font: {
+              weight: 'bold',
+              size: 12
+            },
+            color: '#000'
+          },
+          ticks: {
+            color: '#000',
+            font: {
+              weight: 'bold',
+              size: 11
+            }
           },
           grid: {
             display: false
@@ -122,16 +159,30 @@ export function renderChart(calculations, selectedModel) {
         },
         y: {
           title: {
-            display: false  // Disabled - we'll draw horizontal title at top
+            display: true,
+            text: 'Cash Flows',
+            font: {
+              weight: 'bold',
+              size: 12
+            },
+            color: '#000'
           },
           ticks: {
+            color: '#000',
+            font: {
+              weight: 'bold',
+              size: 11
+            },
             callback: function(value) {
-              return new Intl.NumberFormat('en-US', {
+              const absValue = Math.abs(value);
+              const formatted = new Intl.NumberFormat('en-US', {
                 style: 'currency',
                 currency: 'USD',
                 minimumFractionDigits: 0,
                 maximumFractionDigits: 0
-              }).format(value);
+              }).format(absValue);
+              // Use parentheses for negative values
+              return value < 0 ? `(${formatted})` : formatted;
             }
           }
         }
@@ -140,28 +191,13 @@ export function renderChart(calculations, selectedModel) {
         padding: {
           left: 20,
           right: 30,
-          top: 35,  // Increased for horizontal title
+          top: 20,
           bottom: 60
         }
       }
     },
     plugins: [
-      {
-        // Horizontal Y-axis title plugin (like mortgage chart)
-        id: 'horizontalYTitle',
-        afterDraw: (chart) => {
-          const ctx = chart.ctx;
-          const chartArea = chart.chartArea;
-          
-          ctx.save();
-          ctx.fillStyle = '#374151';
-          ctx.font = 'bold 12px sans-serif';
-          ctx.textAlign = 'left';
-          ctx.textBaseline = 'top';
-          ctx.fillText('Cash Flows ($)', chartArea.left - 60, chartArea.top - 25);
-          ctx.restore();
-        }
-      },
+
       {
         // Data labels plugin - only show for single model view
         id: 'dataLabels',
@@ -169,16 +205,31 @@ export function renderChart(calculations, selectedModel) {
           // Only show labels if single model (not "all")
           if (modelsToShow.length > 1) return;
           
+          // Hide labels at ultra-narrow widths to prevent overlap
+          // Use canvas clientWidth for accurate measurement
+          const canvasWidth = chart.canvas.clientWidth;
+          if (canvasWidth < 500) return;  // Conservative threshold
+          
           const ctx = chart.ctx;
+          const chartArea = chart.chartArea;
+          
+          // Find the highest point (lowest Y value) across all bars to align labels
+          let topY = chartArea.bottom; // Start with bottom
+          chart.data.datasets.forEach((dataset, datasetIndex) => {
+            const meta = chart.getDatasetMeta(datasetIndex);
+            meta.data.forEach(bar => {
+              if (bar.y < topY) topY = bar.y;
+            });
+          });
+          
+          // Position all labels at consistent height above the highest bar
+          const labelY = topY - 5;
           
           chart.data.datasets.forEach((dataset, datasetIndex) => {
             const meta = chart.getDatasetMeta(datasetIndex);
             
             meta.data.forEach((bar, index) => {
               const value = dataset.data[index];
-              
-              // Skip initial investment (negative value)
-              if (value < 0) return;
               
               // Format value with 2 decimal places
               const label = new Intl.NumberFormat('en-US', {
@@ -188,13 +239,18 @@ export function renderChart(calculations, selectedModel) {
                 maximumFractionDigits: 2
               }).format(Math.abs(value));
               
-              // Position above bar
+              // Add parentheses for negative values
+              const displayLabel = value < 0 ? `(${label})` : label;
+              
               ctx.save();
-              ctx.fillStyle = '#374151';
-              ctx.font = '11px sans-serif';
+              ctx.fillStyle = '#1f2937';  // Darker gray for better readability
+              ctx.font = 'bold 11px sans-serif';  // Bold for better visibility
               ctx.textAlign = 'center';
               ctx.textBaseline = 'bottom';
-              ctx.fillText(label, bar.x, bar.y - 5);
+              
+              // All labels at same height
+              ctx.fillText(displayLabel, bar.x, labelY);
+              
               ctx.restore();
             });
           });

@@ -25,6 +25,11 @@
 /* ==========================================================================
    2. MODEL SELECTOR BUTTONS
    ========================================================================== */
+.model-controls {
+  border: none !important;
+  padding: 0 0 1rem 0 !important;
+}
+
 .model-btn[data-model="constant"].active {
   background-color: var(--color-model-constant);
   border-color: var(--color-model-constant);
@@ -44,13 +49,13 @@
 }
 
 .model-btn[data-model="all"].active {
-  background-color: var(--color-gray-700);
-  border-color: var(--color-gray-700);
+  background-color: var(--color-blue-interactive);
+  border-color: var(--color-blue-interactive);
   color: white;
 }
 
 /* ==========================================================================
-   3. FORMULA BOXES – Model-Specific Border Colors
+   3. FORMULA BOXES Ã¢â‚¬â€œ Model-Specific Border Colors
    ========================================================================== */
 .formula-box.constant {
   border-left-color: var(--color-model-constant);
@@ -75,7 +80,7 @@
 
 @media (min-width: 768px) {
   .model-equations-grid {
-    grid-template-columns: 1fr 1fr 2fr;  /* 25% - 25% - 50% */
+    grid-template-columns: 1fr 1fr 2.5fr;  /* 20% - 20% - 60% - more space for complex equation */
   }
 }
 
@@ -89,14 +94,6 @@
   }
 }
 
-.formula-box {
-  min-height: 160px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  overflow: hidden;
-}
-
 /* Changing Growth equation box - consolidated rules */
 .formula-box.changing {
   min-height: auto !important;
@@ -105,7 +102,7 @@
   padding-bottom: 0.75rem;
 }
 
-/* Let the equation container grow naturally – no scrollbars */
+/* Let the equation container grow naturally Ã¢â‚¬â€œ no scrollbars */
 .formula-box.changing .equation-container {
   overflow: visible !important;
   max-height: none !important;
@@ -127,7 +124,7 @@
 }
 
 /* ==========================================================================
-   5. RESULT BOXES – Model-Specific Styling
+   5. RESULT BOXES Ã¢â‚¬â€œ Model-Specific Styling
    ========================================================================== */
 .result-box.model-constant {
   background: var(--color-bg-blue);
@@ -189,7 +186,7 @@
 }
 
 /* ==========================================================================
-   5b. Equation result text (unified sizes)
+   6. EQUATION RESULT TEXT (unified sizes)
    ========================================================================== */
 .equation-result-main {
   font-size: 1.1rem;
@@ -200,7 +197,7 @@
 }
 
 .equation-result-main.constant {
-  color: var(--color-model-constant);
+  color: #2d59c4;  /* Darker blue for better contrast (meets 4.5:1) */
   background: rgba(60, 106, 229, 0.08);
 }
 
@@ -225,7 +222,7 @@
 }
 
 /* ==========================================================================
-   6. INPUT LAYOUT – 3-Column Grid
+   7. INPUT LAYOUT Ã¢â‚¬â€œ 3-Column Grid
    ========================================================================== */
 .input-grid {
   display: grid;
@@ -320,7 +317,7 @@
 }
 
 /* ==========================================================================
-   7. EQUATION NOTE
+   8. EQUATION NOTE
    ========================================================================== */
 .equation-note {
   font-size: 0.8125rem;
@@ -331,7 +328,7 @@
 }
 
 /* ==========================================================================
-   8. CHART CUSTOMIZATION & CHANGING EQUATION SCROLL
+   9. CHANGING EQUATION SCROLL
    ========================================================================== */
 /* Scroll container for the Changing Growth equation (horizontal only) */
 .changing-equation-scroll {
@@ -341,7 +338,32 @@
   max-width: 100%;
 }
 
+/* Focus indicator for keyboard navigation */
+.changing-equation-scroll:focus {
+  outline: 2px solid #3c6ae5;
+  outline-offset: 2px;
+  border-radius: 0.25rem;
+}
+
 /* Optional: hide the horizontal scrollbar track entirely */
 .changing-equation-scroll::-webkit-scrollbar {
   height: 0;
+}
+
+/* ==========================================================================
+   10. STICKY CALCULATOR CARD
+   ========================================================================== */
+.sticky-card {
+  position: sticky;
+  top: 1rem;
+  z-index: 10;
+  background: white;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+@media (max-width: 768px) {
+  .sticky-card {
+    position: static;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
 }
