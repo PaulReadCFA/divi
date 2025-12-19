@@ -108,7 +108,7 @@ function renderGrowthEquation(inputs, result) {
               <mrow>
                 <mtext mathcolor="${COLORS.r}">${Number.isFinite(r) ? r.toFixed(1) + '%' : 'â€“'}</mtext>
                 <mspace width="0.3em"/>
-                <mo>∑</mo>
+                <mo>−</mo>
                 <mspace width="0.3em"/>
                 <mtext mathcolor="${COLORS.g}">${Number.isFinite(g) ? g.toFixed(1) + '%' : 'â€“'}</mtext>
               </mrow>
@@ -146,7 +146,7 @@ function renderGrowthEquation(inputs, result) {
             <mrow>
               <mtext mathcolor="${COLORS.r}">${Number.isFinite(r) ? r.toFixed(1) + '%' : 'â€“'}</mtext>
               <mspace width="0.3em"/>
-              <mo>∑</mo>
+              <mo>−</mo>
               <mspace width="0.3em"/>
               <mtext mathcolor="${COLORS.g}">${Number.isFinite(g) ? g.toFixed(1) + '%' : 'â€“'}</mtext>
             </mrow>
