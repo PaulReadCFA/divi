@@ -130,7 +130,8 @@ export function renderChart(calculations, selectedModel) {
             },
             label: (context) => {
               const value = context.parsed.y;
-              return `${context.dataset.label}: ${formatCurrency(Math.abs(value))}`;
+              const formatted = formatCurrency(Math.abs(value));
+              return `${context.dataset.label}: ${formatted}`;
             }
           }
         }
@@ -160,7 +161,7 @@ export function renderChart(calculations, selectedModel) {
         y: {
           title: {
             display: true,
-            text: 'Cash Flows',
+            text: 'Cash Flows (USD)',
             font: {
               weight: 'bold',
               size: 12
@@ -174,15 +175,12 @@ export function renderChart(calculations, selectedModel) {
               size: 11
             },
             callback: function(value) {
-              const absValue = Math.abs(value);
               const formatted = new Intl.NumberFormat('en-US', {
-                style: 'currency',
-                currency: 'USD',
                 minimumFractionDigits: 0,
                 maximumFractionDigits: 0
-              }).format(absValue);
-              // Use parentheses for negative values
-              return value < 0 ? `(${formatted})` : formatted;
+              }).format(Math.abs(value));
+              // Bare numbers only - no USD prefix
+              return value < 0 ? `−${formatted}` : formatted;
             }
           }
         }
@@ -231,16 +229,14 @@ export function renderChart(calculations, selectedModel) {
             meta.data.forEach((bar, index) => {
               const value = dataset.data[index];
               
-              // Format value with 2 decimal places
-              const label = new Intl.NumberFormat('en-US', {
-                style: 'currency',
-                currency: 'USD',
+              // Format value with 2 decimal places using USD prefix
+              const formatted = new Intl.NumberFormat('en-US', {
                 minimumFractionDigits: 2,
                 maximumFractionDigits: 2
               }).format(Math.abs(value));
               
-              // Add parentheses for negative values
-              const displayLabel = value < 0 ? `(${label})` : label;
+              // Add USD prefix and parentheses for negative values
+              const displayLabel = value < 0 ? `(USD ${formatted})` : `USD ${formatted}`;
               
               ctx.save();
               ctx.fillStyle = '#1f2937';  // Darker gray for better readability
@@ -444,14 +440,18 @@ function announceDataPoint(cashFlow, calculations, selectedModel, modelsToShow) 
 }
 
 function formatCurrency(amount) {
-  if (isNaN(amount)) return '$0.00';
+  if (isNaN(amount)) return 'USD 0.00';
   
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
+  const formatted = new Intl.NumberFormat('en-US', {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2
-  }).format(amount);
+  }).format(Math.abs(amount));
+  
+  if (amount < 0) {
+    return `−USD ${formatted}`;
+  }
+  
+  return `USD ${formatted}`;
 }
 
 export function destroyChart() {

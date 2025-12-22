@@ -8,13 +8,13 @@ const MODEL_META = {
     name: 'Constant Dividend',
     color: '#3c6ae5',
     description: 'No growth assumed',
-    formula: 'P = D₀ ÷ r'
+    formula: 'P = Dâ‚€ Ã· r'
   },
   growth: {
     name: 'Constant Growth',
     color: '#15803d',
     description: 'Constant growth rate',
-    formula: 'P = D₁ ÷ (r − g)'
+    formula: 'P = Dâ‚ Ã· (r âˆ’ g)'
   },
   changing: {
     name: 'Two-Stage Growth',
@@ -91,12 +91,16 @@ export function renderResults(calculations, selectedModel) {
 }
 
 function formatCurrency(amount) {
-  if (isNaN(amount)) return '$0.00';
+  if (isNaN(amount)) return 'USD 0.00';
   
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
+  const formatted = new Intl.NumberFormat('en-US', {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2
-  }).format(amount);
+  }).format(Math.abs(amount));
+  
+  if (amount < 0) {
+    return `−USD ${formatted}`;
+  }
+  
+  return `USD ${formatted}`;
 }

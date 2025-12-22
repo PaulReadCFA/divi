@@ -11,12 +11,10 @@
  */
 export function formatCurrency(amount, showNegativeAsParens = false) {
   if (isNaN(amount)) {
-    return '$0.00';
+    return 'USD 0.00';
   }
   
   const formatter = new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
     minimumFractionDigits: 2,
     maximumFractionDigits: 2
   });
@@ -24,14 +22,14 @@ export function formatCurrency(amount, showNegativeAsParens = false) {
   const formattedAmount = formatter.format(Math.abs(amount));
   
   if (amount < 0 && showNegativeAsParens) {
-    return `(${formattedAmount})`;
+    return `(USD ${formattedAmount})`;
   }
   
   if (amount < 0) {
-    return `-${formattedAmount}`;
+    return `−USD ${formattedAmount}`;
   }
   
-  return formattedAmount;
+  return `USD ${formattedAmount}`;
 }
 
 /**

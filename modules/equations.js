@@ -59,13 +59,13 @@ function renderConstantEquation(inputs, result) {
           <mi mathcolor="${COLORS.P_constant}" mathvariant="bold">P</mi>
           <mo>=</mo>
           <mfrac linethickness="1.2px">
-            <mtext mathvariant="bold" mathcolor="${COLORS.D0}">$${Number.isFinite(D0) ? D0.toFixed(2) : 'â€“'}</mtext>
+            <mtext mathvariant="bold" mathcolor="${COLORS.D0}">USD ${Number.isFinite(D0) ? D0.toFixed(2) : 'â€“'}</mtext>
             <mtext mathcolor="${COLORS.r}">${Number.isFinite(r) ? r.toFixed(1) + '%' : 'â€“'}</mtext>
           </mfrac>
         </mrow>
       </math>
       <div class="equation-result-main constant">
-        = ${Number.isFinite(P) ? '$' + P.toFixed(2) : 'Invalid'}
+        = ${Number.isFinite(P) ? 'USD ' + P.toFixed(2) : 'Invalid'}
       </div>
     </div>
   `;
@@ -104,7 +104,7 @@ function renderGrowthEquation(inputs, result) {
             </msub>
             <mo>=</mo>
             <mfrac linethickness="1.2px">
-              <mtext mathvariant="bold" mathcolor="${COLORS.D0}">$${Number.isFinite(D1) ? D1.toFixed(2) : 'â€“'}</mtext>
+              <mtext mathvariant="bold" mathcolor="${COLORS.D0}">USD ${Number.isFinite(D1) ? D1.toFixed(2) : 'â€“'}</mtext>
               <mrow>
                 <mtext mathcolor="${COLORS.r}">${Number.isFinite(r) ? r.toFixed(1) + '%' : 'â€“'}</mtext>
                 <mspace width="0.3em"/>
@@ -142,7 +142,7 @@ function renderGrowthEquation(inputs, result) {
           </msub>
           <mo>=</mo>
           <mfrac linethickness="1.2px">
-            <mtext mathvariant="bold" mathcolor="${COLORS.D0}">$${Number.isFinite(D1) ? D1.toFixed(2) : 'â€“'}</mtext>
+            <mtext mathvariant="bold" mathcolor="${COLORS.D0}">USD ${Number.isFinite(D1) ? D1.toFixed(2) : 'â€“'}</mtext>
             <mrow>
               <mtext mathcolor="${COLORS.r}">${Number.isFinite(r) ? r.toFixed(1) + '%' : 'â€“'}</mtext>
               <mspace width="0.3em"/>
@@ -154,7 +154,7 @@ function renderGrowthEquation(inputs, result) {
         </mrow>
       </math>
       <div class="equation-result-main growth">
-        = $${P.toFixed(2)}
+        = USD ${P.toFixed(2)}
       </div>
     </div>
   `;
@@ -303,13 +303,13 @@ function renderChangingEquation(inputs, result) {
         </math>
       </div>
       <div class="equation-breakdown">
-        <span style="color:${COLORS.P_changing};font-weight:600;">$${pvHighGrowth.toFixed(2)}</span>
+        <span style="color:${COLORS.P_changing};font-weight:600;">USD ${pvHighGrowth.toFixed(2)}</span>
         <span style="color:#4b5563;"> (high growth) + </span>
-        <span style="color:${COLORS.P_changing};font-weight:600;">$${pvTerminal.toFixed(2)}</span>
+        <span style="color:${COLORS.P_changing};font-weight:600;">USD ${pvTerminal.toFixed(2)}</span>
         <span style="color:#4b5563;"> (terminal)</span>
       </div>
       <div class="equation-result-main changing">
-        = $${P.toFixed(2)}
+        = USD ${P.toFixed(2)}
       </div>
     </div>
   `;

@@ -127,14 +127,12 @@ export function renderTable(calculations, selectedModel) {
 }
 
 function formatCurrency(amount, showNegativeAsParens = false) {
-  if (isNaN(amount)) return '$0.00';
+  if (isNaN(amount)) return 'USD 0.00';
   const formatter = new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   });
   const formatted = formatter.format(Math.abs(amount));
-  if (amount < 0 && showNegativeAsParens) return `(${formatted})`;
-  return amount < 0 ? `-${formatted}` : formatted;
+  if (amount < 0 && showNegativeAsParens) return `(USD ${formatted})`;
+  return amount < 0 ? `−USD ${formatted}` : `USD ${formatted}`;
 }
