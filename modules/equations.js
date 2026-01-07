@@ -189,7 +189,7 @@ function renderChangingEquation(inputs, result) {
 
   container.setAttribute(
     'aria-label',
-    `Changing Growth Model equation: Present value at time t equals sum from i equals 1 to ${n} plus sum from j equals ${n} plus 1 to infinity, which equals ${pvHighGrowth.toFixed(
+    `Changing Growth Model equation: Present value at time zero equals sum from i equals 1 to ${n} plus sum from j equals ${n} plus 1 to infinity, which equals ${pvHighGrowth.toFixed(
       2
     )} dollars from high growth period plus ${pvTerminal.toFixed(
       2
@@ -203,7 +203,7 @@ function renderChangingEquation(inputs, result) {
           <mrow>
             <msub>
               <mi mathcolor="${COLORS.P_changing}" mathvariant="bold">PV</mi>
-              <mi>t</mi>
+              <mn>0</mn>
             </msub>
             <mo>=</mo>
 
@@ -220,7 +220,7 @@ function renderChangingEquation(inputs, result) {
               <mrow>
                 <msub>
                   <mi mathcolor="${COLORS.D0}">Div</mi>
-                  <mn mathcolor="${COLORS.n}">${n}</mn>
+                  <mi>t</mi>
                 </msub>
                 <msup>
                   <mrow><mo>(</mo><mn>1</mn><mo>+</mo><mtext mathcolor="${COLORS.g}" mathsize="0.7em">${gShort.toFixed(
@@ -250,7 +250,7 @@ function renderChangingEquation(inputs, result) {
               <mrow>
                 <msub>
                   <mi mathcolor="${COLORS.D0}">Div</mi>
-                  <mrow><mn mathcolor="${COLORS.n}">${n}</mn><mo>+</mo><mn>1</mn></mrow>
+                  <mrow><mi>t</mi><mo>+</mo><mi>n</mi></mrow>
                 </msub>
                 <msup>
                   <mrow><mo>(</mo><mn>1</mn><mo>+</mo><mtext mathcolor="${COLORS.g}" mathsize="0.7em">${gLong.toFixed(
