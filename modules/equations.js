@@ -16,10 +16,6 @@ const COLORS = {
 
 /**
  * Render all three equations with current input values
- *
- * NOTE: this file assumes percent-style inputs for rates (e.g. 8 for 8%).
- * The calculations object you pass in should be computed consistently
- * (i.e. any r/g conversion to decimals happens in the calculation step).
  */
 export function renderEquations(inputs, calculations) {
   renderConstantEquation(inputs, calculations.constant);
@@ -28,10 +24,7 @@ export function renderEquations(inputs, calculations) {
 }
 
 /**
- * Constant Dividend Model: P = Dâ‚€ / r
- *
- * NOTE: inputs.required is expected to be a percent number (e.g. 8 for 8%).
- * For clarity in the aria label we show both the percent and the decimal used.
+ * Constant Dividend Model
  */
 function renderConstantEquation(inputs, result) {
   const container = document.querySelector('.formula-box.constant .equation-container');
@@ -39,28 +32,27 @@ function renderConstantEquation(inputs, result) {
 
   const D0 = inputs.D0;
   const r = inputs.required; // percent, e.g. 8
-  const rDecimal = (Number.isFinite(r) ? r / 100 : NaN);
   const P = result.price;
 
-  // Update aria-label with actual values (show percent and decimal used)
   container.setAttribute(
     'aria-label',
-    `Constant Dividend Model equation: Price equals ${D0} dollars divided by ${r.toFixed(
+    `Constant Dividend Model equation: Present value equals ${D0} dollars divided by ${r.toFixed(
       1
-    )} percent (i.e. ${Number.isFinite(rDecimal) ? rDecimal.toFixed(4) : 'invalid'}) which equals ${Number.isFinite(P) ? P.toFixed(
-      2
-    ) : 'invalid'} dollars`
+    )} percent which equals ${Number.isFinite(P) ? P.toFixed(2) : 'invalid'} dollars`
   );
 
   const mathML = `
     <div style="display:flex;flex-direction:column;gap:0.75rem;align-items:center;">
       <math xmlns="http://www.w3.org/1998/Math/MathML" display="block" style="font-size:0.95em;">
         <mrow>
-          <mi mathcolor="${COLORS.P_constant}" mathvariant="bold">P</mi>
+          <msub>
+            <mi mathcolor="${COLORS.P_constant}" mathvariant="bold">PV</mi>
+            <mi>t</mi>
+          </msub>
           <mo>=</mo>
           <mfrac linethickness="1.2px">
-            <mtext mathvariant="bold" mathcolor="${COLORS.D0}">USD ${Number.isFinite(D0) ? D0.toFixed(2) : 'â€“'}</mtext>
-            <mtext mathcolor="${COLORS.r}">${Number.isFinite(r) ? r.toFixed(1) + '%' : 'â€“'}</mtext>
+            <mtext mathvariant="bold" mathcolor="${COLORS.D0}">USD ${Number.isFinite(D0) ? D0.toFixed(2) : '—'}</mtext>
+            <mtext mathcolor="${COLORS.r}">${Number.isFinite(r) ? r.toFixed(1) + '%' : '—'}</mtext>
           </mfrac>
         </mrow>
       </math>
@@ -74,10 +66,7 @@ function renderConstantEquation(inputs, result) {
 }
 
 /**
- * Constant Growth Model: PV_t = Dâ‚ / (r - g) = Dâ‚€(1+g) / (r - g)
- *
- * NOTE: inputs.gConst and inputs.required are percent numbers (e.g. 3, 8).
- * D1 is computed from D0 * (1 + g/100) for display.
+ * Constant Growth Model
  */
 function renderGrowthEquation(inputs, result) {
   const container = document.querySelector('.formula-box.growth .equation-container');
@@ -100,19 +89,10 @@ function renderGrowthEquation(inputs, result) {
           <mrow>
             <msub>
               <mi mathcolor="${COLORS.P_growth}" mathvariant="bold">PV</mi>
-              <mi mathcolor="${COLORS.P_growth}" mathvariant="italic">t</mi>
+              <mi>t</mi>
             </msub>
             <mo>=</mo>
-            <mfrac linethickness="1.2px">
-              <mtext mathvariant="bold" mathcolor="${COLORS.D0}">USD ${Number.isFinite(D1) ? D1.toFixed(2) : 'â€“'}</mtext>
-              <mrow>
-                <mtext mathcolor="${COLORS.r}">${Number.isFinite(r) ? r.toFixed(1) + '%' : 'â€“'}</mtext>
-                <mspace width="0.3em"/>
-                <mo>−</mo>
-                <mspace width="0.3em"/>
-                <mtext mathcolor="${COLORS.g}">${Number.isFinite(g) ? g.toFixed(1) + '%' : 'â€“'}</mtext>
-              </mrow>
-            </mfrac>
+            <mtext mathcolor="#ef4444" mathvariant="bold">Invalid</mtext>
           </mrow>
         </math>
         <div style="font-size:0.875rem;color:#ef4444;font-weight:600;">
@@ -125,11 +105,9 @@ function renderGrowthEquation(inputs, result) {
 
   container.setAttribute(
     'aria-label',
-    `Constant Growth Model equation: Present value at time t equals dividend one of ${D1.toFixed(
+    `Constant Growth Model equation: Present value equals ${D1.toFixed(
       2
-    )} dollars divided by required return ${r.toFixed(1)} percent minus growth rate ${g.toFixed(
-      1
-    )} percent, which equals ${P.toFixed(2)} dollars`
+    )} dollars divided by required return minus growth rate, which equals ${P.toFixed(2)} dollars`
   );
 
   const mathML = `
@@ -138,17 +116,17 @@ function renderGrowthEquation(inputs, result) {
         <mrow>
           <msub>
             <mi mathcolor="${COLORS.P_growth}" mathvariant="bold">PV</mi>
-            <mi mathcolor="${COLORS.P_growth}" mathvariant="italic">t</mi>
+            <mi>t</mi>
           </msub>
           <mo>=</mo>
           <mfrac linethickness="1.2px">
-            <mtext mathvariant="bold" mathcolor="${COLORS.D0}">USD ${Number.isFinite(D1) ? D1.toFixed(2) : 'â€“'}</mtext>
+            <mtext mathvariant="bold" mathcolor="${COLORS.D0}">USD ${Number.isFinite(D1) ? D1.toFixed(2) : '—'}</mtext>
             <mrow>
-              <mtext mathcolor="${COLORS.r}">${Number.isFinite(r) ? r.toFixed(1) + '%' : 'â€“'}</mtext>
+              <mtext mathcolor="${COLORS.r}">${Number.isFinite(r) ? r.toFixed(1) + '%' : '—'}</mtext>
               <mspace width="0.3em"/>
               <mo>−</mo>
               <mspace width="0.3em"/>
-              <mtext mathcolor="${COLORS.g}">${Number.isFinite(g) ? g.toFixed(1) + '%' : 'â€“'}</mtext>
+              <mtext mathcolor="${COLORS.g}">${Number.isFinite(g) ? g.toFixed(1) + '%' : '—'}</mtext>
             </mrow>
           </mfrac>
         </mrow>
@@ -163,14 +141,7 @@ function renderGrowthEquation(inputs, result) {
 }
 
 /**
- * Changing Growth Model: P = Î£ PV(high growth) + PV(terminal)
- * Full summation notation with actual values
- *
- * Fixes applied:
- * - The under/over operators use ∑ (sum) rather than a minus sign which was present before.
- * - We compute pvHighGrowth and pvTerminal for textual breakdown (these mirror your calculations).
- *
- * NOTE: inputs.gShort, gLong and required are percent numbers (e.g. 20, 4, 10).
+ * Changing Growth Model
  */
 function renderChangingEquation(inputs, result) {
   const container = document.querySelector('.formula-box.changing .equation-container');
@@ -216,14 +187,13 @@ function renderChangingEquation(inputs, result) {
   const terminal = terminalDiv / (r / 100 - gLong / 100);
   const pvTerminal = terminal / Math.pow(1 + r / 100, n);
 
-  // Update aria-label with actual values
   container.setAttribute(
     'aria-label',
-    `Changing Growth Model equation: Present value equals ${pvHighGrowth.toFixed(
+    `Changing Growth Model equation: Present value at time zero equals sum from i equals 1 to ${n} plus sum from j equals ${n} plus 1 to infinity, which equals ${pvHighGrowth.toFixed(
       2
     )} dollars from high growth period plus ${pvTerminal.toFixed(
       2
-    )} dollars from terminal value, which equals ${P.toFixed(2)} dollars`
+    )} dollars from terminal value, total ${P.toFixed(2)} dollars`
   );
 
   const mathML = `
@@ -233,15 +203,14 @@ function renderChangingEquation(inputs, result) {
           <mrow>
             <msub>
               <mi mathcolor="${COLORS.P_changing}" mathvariant="bold">PV</mi>
-              <mn mathcolor="${COLORS.P_changing}">0</mn>
+              <mn>0</mn>
             </msub>
             <mo>=</mo>
 
-            <!-- FIXED: use ∑ (summation) instead of a minus sign -->
             <munderover>
               <mo>∑</mo>
               <mrow>
-                <mi>t</mi>
+                <mi>i</mi>
                 <mo>=</mo>
                 <mn>1</mn>
               </mrow>
@@ -250,21 +219,21 @@ function renderChangingEquation(inputs, result) {
             <mfrac linethickness="1px">
               <mrow>
                 <msub>
-                  <mi mathcolor="${COLORS.D0}">D</mi>
-                  <mn mathcolor="${COLORS.D0}">0</mn>
+                  <mi mathcolor="${COLORS.D0}">Div</mi>
+                  <mn mathcolor="${COLORS.n}">${n}</mn>
                 </msub>
                 <msup>
                   <mrow><mo>(</mo><mn>1</mn><mo>+</mo><mtext mathcolor="${COLORS.g}" mathsize="0.7em">${gShort.toFixed(
                     1
                   )}%</mtext><mo>)</mo></mrow>
-                  <mi mathcolor="${COLORS.n}">t</mi>
+                  <mi>i</mi>
                 </msup>
               </mrow>
               <msup>
                 <mrow><mo>(</mo><mn>1</mn><mo>+</mo><mtext mathcolor="${COLORS.r}" mathsize="0.7em">${r.toFixed(
                   1
                 )}%</mtext><mo>)</mo></mrow>
-                <mi mathcolor="${COLORS.n}">t</mi>
+                <mi>i</mi>
               </msup>
             </mfrac>
 
@@ -272,31 +241,29 @@ function renderChangingEquation(inputs, result) {
             <mo>+</mo>
             <mspace width="0.3em"/>
 
-
-            <!-- FIXED: use ∑ (summation) instead of a minus sign -->
             <munderover>
               <mo>∑</mo>
-              <mrow><mi mathcolor="${COLORS.n}">t</mi><mo>=</mo><mrow><mi mathcolor="${COLORS.n}">${n}</mi><mo>+</mo><mn>1</mn></mrow></mrow>
+              <mrow><mi>j</mi><mo>=</mo><mrow><mn mathcolor="${COLORS.n}">${n}</mn><mo>+</mo><mn>1</mn></mrow></mrow>
               <mo>∞</mo>
             </munderover>
             <mfrac linethickness="1px">
               <mrow>
                 <msub>
-                  <mi mathcolor="${COLORS.D0}">D</mi>
+                  <mi mathcolor="${COLORS.D0}">Div</mi>
                   <mrow><mn mathcolor="${COLORS.n}">${n}</mn><mo>+</mo><mn>1</mn></mrow>
                 </msub>
                 <msup>
                   <mrow><mo>(</mo><mn>1</mn><mo>+</mo><mtext mathcolor="${COLORS.g}" mathsize="0.7em">${gLong.toFixed(
                     1
                   )}%</mtext><mo>)</mo></mrow>
-                  <mi mathcolor="${COLORS.n}">t</mi>
+                  <mi>j</mi>
                 </msup>
               </mrow>
               <msup>
                 <mrow><mo>(</mo><mn>1</mn><mo>+</mo><mtext mathcolor="${COLORS.r}" mathsize="0.7em">${r.toFixed(
                   1
                 )}%</mtext><mo>)</mo></mrow>
-                <mi mathcolor="${COLORS.n}">t</mi>
+                <mi>j</mi>
               </msup>
             </mfrac>
           </mrow>

@@ -37,42 +37,59 @@
           <div class="formula-box constant">
             <div class="formula-box-title">Constant Dividend</div>
             <div class="equation-container" tabindex="0" role="math"
-                 aria-label="Price equals D zero divided by r">
+                 aria-label="Present value at time t equals Div t plus 1 divided by r">
               <div class="mathml-equation">
                 <math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
                   <mrow>
-                    <mi mathcolor="#3c6ae5" mathvariant="bold">P</mi>
+                    <msub>
+                      <mi mathcolor="#3c6ae5" mathvariant="bold">PV</mi>
+                      <mi>t</mi>
+                    </msub>
                     <mo>=</mo>
                     <mfrac>
-                      <msub><mi mathcolor="#b95b1d">D</mi><mn>0</mn></msub>
+                      <msub>
+                        <mi mathcolor="#b95b1d">Div</mi>
+                        <mrow><mi>t</mi><mo>+</mo><mn>1</mn></mrow>
+                      </msub>
                       <mi mathcolor="#733599">r</mi>
                     </mfrac>
                   </mrow>
                 </math>
               </div>
               <div class="html-equation" hidden>
-                <strong style="color:#3c6ae5;">P</strong> = 
-                <span style="color:#b95b1d;">D<sub>0</sub></span> Ã· 
+                <strong style="color:#3c6ae5;">PV<sub>t</sub></strong> = 
+                <span style="color:#b95b1d;">Div<sub>t+1</sub></span> ÷ 
                 <span style="color:#733599;">r</span>
               </div>
             </div>
           </div>
 
-          <!-- Constant Growth Model -->
           <div class="formula-box growth">
             <div class="formula-box-title">Constant Growth</div>
             <div class="equation-container" tabindex="0" role="math"
-                 aria-label="Present value at time t equals D one divided by r minus g">
+                 aria-label="Present value at time t equals Div t times 1 plus g divided by r minus g">
               <div class="mathml-equation">
                 <math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
                   <mrow>
                     <msub>
                       <mi mathcolor="#15803d" mathvariant="bold">PV</mi>
-                      <mi mathcolor="#15803d" mathvariant="italic">t</mi>
+                      <mi>t</mi>
                     </msub>
                     <mo>=</mo>
                     <mfrac>
-                      <msub><mi mathcolor="#b95b1d">D</mi><mn>1</mn></msub>
+                      <mrow>
+                        <msub><mi mathcolor="#b95b1d">Div</mi><mi>t</mi></msub>
+                        <mo>(</mo><mn>1</mn><mo>+</mo><mi mathcolor="#15803d">g</mi><mo>)</mo>
+                      </mrow>
+                      <mrow>
+                        <mi mathcolor="#733599">r</mi>
+                        <mo>−</mo>
+                        <mi mathcolor="#15803d">g</mi>
+                      </mrow>
+                    </mfrac>
+                    <mo>=</mo>
+                    <mfrac>
+                      <msub><mi mathcolor="#b95b1d">Div</mi><mrow><mi>t</mi><mo>+</mo><mn>1</mn></mrow></msub>
                       <mrow>
                         <mi mathcolor="#733599">r</mi>
                         <mo>−</mo>
@@ -83,18 +100,19 @@
                 </math>
               </div>
               <div class="html-equation" hidden>
-                <strong style="color:#15803d;">PV<sub style="font-style:italic;">t</sub></strong> = 
-                <span style="color:#b95b1d;">D<sub>1</sub></span> Ã· 
+                <strong style="color:#15803d;">PV<sub>t</sub></strong> = 
+                <span style="color:#b95b1d;">Div<sub>t</sub>(1+g)</span> ÷ 
+                (<span style="color:#733599;">r</span> − <span style="color:#15803d;">g</span>) = 
+                <span style="color:#b95b1d;">Div<sub>t+1</sub></span> ÷ 
                 (<span style="color:#733599;">r</span> − <span style="color:#15803d;">g</span>)
               </div>
             </div>
           </div>
 
-          <!-- Changing Growth Model -->
           <div class="formula-box changing">
             <div class="formula-box-title">Changing Growth</div>
             <div class="equation-container" tabindex="0" role="math"
-                 aria-label="Two-stage model: sum of present values from high growth period plus terminal value">
+                 aria-label="Two-stage model with i and j summation variables">
               <div class="mathml-equation">
                 <div class="changing-equation-wrapper">
                   <div class="changing-equation-scroll" tabindex="0" role="region" aria-label="Scrollable changing growth equation">
@@ -102,52 +120,50 @@
                       <mrow>
                         <msub>
                           <mi mathcolor="#7a46ff" mathvariant="bold">PV</mi>
-                          <mn mathcolor="#7a46ff">0</mn>
+                          <mn>0</mn>
                         </msub>
                         <mo>=</mo>
                         <munderover>
                           <mo>∑</mo>
-                          <mrow><mi mathcolor="#0079a6">t</mi><mo>=</mo><mn>1</mn></mrow>
+                          <mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow>
                           <mi mathcolor="#0079a6">n</mi>
                         </munderover>
                         <mfrac linethickness="1px">
                           <mrow>
                             <msub>
-                              <mi mathcolor="#b95b1d">D</mi>
-                              <mn mathcolor="#b95b1d">0</mn>
+                              <mi mathcolor="#b95b1d">Div</mi>
+                              <mi>t</mi>
                             </msub>
                             <msup>
                               <mrow><mo>(</mo><mn>1</mn><mo>+</mo><msub><mi mathcolor="#15803d">g</mi><mi mathcolor="#15803d">s</mi></msub><mo>)</mo></mrow>
-                              <mi mathcolor="#0079a6">t</mi>
+                              <mi>i</mi>
                             </msup>
                           </mrow>
                           <msup>
                             <mrow><mo>(</mo><mn>1</mn><mo>+</mo><mi mathcolor="#733599">r</mi><mo>)</mo></mrow>
-                            <mi mathcolor="#0079a6">t</mi>
+                            <mi>i</mi>
                           </msup>
                         </mfrac>
-                        <mspace width="0.3em"/>
                         <mo>+</mo>
-                        <mspace width="0.3em"/>
                         <munderover>
                           <mo>∑</mo>
-                          <mrow><mi mathcolor="#0079a6">t</mi><mo>=</mo><mi mathcolor="#0079a6">n</mi><mo>+</mo><mn>1</mn></mrow>
+                          <mrow><mi>j</mi><mo>=</mo><mrow><mi mathcolor="#0079a6">n</mi><mo>+</mo><mn>1</mn></mrow></mrow>
                           <mo>∞</mo>
                         </munderover>
                         <mfrac linethickness="1px">
                           <mrow>
                             <msub>
-                              <mi mathcolor="#b95b1d">D</mi>
-                              <mrow><mi mathcolor="#0079a6">n</mi><mo>+</mo><mn>1</mn></mrow>
+                              <mi mathcolor="#b95b1d">Div</mi>
+                              <mrow><mi>t</mi><mo>+</mo><mi>n</mi></mrow>
                             </msub>
                             <msup>
                               <mrow><mo>(</mo><mn>1</mn><mo>+</mo><msub><mi mathcolor="#15803d">g</mi><mi mathcolor="#15803d">l</mi></msub><mo>)</mo></mrow>
-                              <mi mathcolor="#0079a6">t</mi>
+                              <mi>j</mi>
                             </msup>
                           </mrow>
                           <msup>
                             <mrow><mo>(</mo><mn>1</mn><mo>+</mo><mi mathcolor="#733599">r</mi><mo>)</mo></mrow>
-                            <mi mathcolor="#0079a6">t</mi>
+                            <mi>j</mi>
                           </msup>
                         </mfrac>
                       </mrow>
@@ -156,7 +172,7 @@
                 </div>
               </div>
               <div class="html-equation" hidden>
-                <strong style="color:#7a46ff;">PV<sub>0</sub></strong> = Î£[t=1 to n] + Î£[t=n+1 to ∞]
+                <strong style="color:#7a46ff;">PV<sub>0</sub></strong> = Σ[i=1 to n] Div<sub>t</sub>(1+g<sub>s</sub>)<sup>i</sup>÷(1+r)<sup>i</sup> + Σ[j=n+1 to ∞] Div<sub>t+n</sub>(1+g<sub>l</sub>)<sup>j</sup>÷(1+r)<sup>j</sup>
               </div>
             </div>
           </div>
@@ -180,7 +196,7 @@
   <div class="input-grid">
     <!-- Current Dividend -->
      <div class="input-row" data-models="constant growth changing">
-  <label for="D0">Current Dividend (<span style="color: #b95b1d; font-style: italic;">D<sub>0</sub></span>):</label>
+  <label for="D0">Current Dividend (<span style="color: #b95b1d; font-style: italic;">Div<sub style="color: #000000;">t</sub></span>):</label>
   <div class="input-wrapper">
     <span class="input-prefix">USD</span>
     <input type="number" id="D0" class="input-field-inline" min="0.01" max="1000" step="0.01" value="5"
