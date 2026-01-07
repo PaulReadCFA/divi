@@ -250,7 +250,7 @@ function renderChangingEquation(inputs, result) {
               <mrow>
                 <msub>
                   <mi mathcolor="${COLORS.D0}">Div</mi>
-                  <mrow><mi>t</mi><mo>+</mo><mi>n</mi></mrow>
+                  <mrow><mi>t</mi><mo>+</mo><mn mathcolor="${COLORS.n}">${n}</mn></mrow>
                 </msub>
                 <msup>
                   <mrow><mo>(</mo><mn>1</mn><mo>+</mo><mtext mathcolor="${COLORS.g}" mathsize="0.7em">${gLong.toFixed(
