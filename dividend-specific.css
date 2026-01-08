@@ -84,6 +84,17 @@
   }
 }
 
+/* Allow changing equation to take full width if it wraps */
+@media (min-width: 768px) and (max-width: 1100px) {
+  .model-equations-grid {
+    grid-template-columns: 1fr 1fr;  /* Two columns on medium screens */
+  }
+  
+  .formula-box.changing {
+    grid-column: 1 / -1;  /* Span full width when it wraps */
+  }
+}
+
 @media (max-width: 767px) {
   .model-equations-grid {
     grid-template-columns: 1fr;
@@ -100,6 +111,13 @@
   overflow: visible !important;
   padding-top: 0.75rem;
   padding-bottom: 0.75rem;
+}
+
+/* Ensure equation scroll container has proper width */
+.formula-box.changing .changing-equation-scroll {
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 /* Let the equation container grow naturally Ã¢â‚¬â€œ no scrollbars */

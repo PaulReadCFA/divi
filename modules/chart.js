@@ -206,7 +206,7 @@ export function renderChart(calculations, selectedModel) {
           // Hide labels at ultra-narrow widths to prevent overlap
           // Use canvas clientWidth for accurate measurement
           const canvasWidth = chart.canvas.clientWidth;
-          if (canvasWidth < 500) return;  // Conservative threshold
+          if (canvasWidth < 600) return;  // Conservative threshold - prevents label overlap
           
           const ctx = chart.ctx;
           const chartArea = chart.chartArea;

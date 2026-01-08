@@ -175,7 +175,40 @@ function setupViewToggle() {
   const chartBtn = $('#view-chart-btn');
   const tableBtn = $('#view-table-btn');
 
-  listen(chartBtn, 'click', () => switchView('chart'));
+  // Chart button - use addEventListener directly with capture phase
+  if (chartBtn) {
+    chartBtn.addEventListener('click', (e) => {
+      // FIRST: Check if narrow screen before anything else
+      const isForced = document.body.classList.contains('force-table');
+      
+      if (isForced || chartBtn.disabled) {
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+        
+        console.log('Chart button blocked - narrow screen detected');
+        
+        // Visual feedback: briefly highlight table button
+        if (tableBtn) {
+          tableBtn.style.transition = 'transform 0.2s ease';
+          tableBtn.style.transform = 'scale(1.05)';
+          setTimeout(() => {
+            tableBtn.style.transform = 'scale(1)';
+          }, 200);
+        }
+        
+        // Force table view
+        switchView('table');
+        updateButtonStates();
+        
+        return false;
+      }
+      
+      // Normal behavior - allow chart view
+      switchView('chart');
+    }, true); // Use capture phase
+  }
+  
   listen(tableBtn, 'click', () => switchView('table'));
 
   updateButtonStates();
@@ -189,6 +222,8 @@ function updateButtonStates() {
 
   if (!chartBtn || !tableBtn) return;
 
+  console.log(`updateButtonStates: isForced=${isForced}, chartBtn.disabled=${chartBtn.disabled}`);
+
   // Update active states
   chartBtn.classList.toggle('active', currentView === 'chart');
   tableBtn.classList.toggle('active', currentView === 'table');
@@ -199,6 +234,8 @@ function updateButtonStates() {
   
   // Disable chart button when forced to table
   chartBtn.disabled = isForced;
+  
+  console.log(`After update: chartBtn.disabled=${chartBtn.disabled}, has force-table class=${document.body.classList.contains('force-table')}`);
 }
 
 /* ---------- NARROW SCREEN ---------- */
@@ -211,6 +248,7 @@ function detectNarrowScreen() {
 
   if (isNarrow) {
     // Force table view
+    console.log('Narrow screen detected, forcing table view');
     body.classList.add('force-table');
     
     // Destroy chart immediately if it exists
