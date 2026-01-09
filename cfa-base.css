@@ -361,12 +361,15 @@ kbd {
     align-items: stretch;
   }
   
+  /* Keep button group right-aligned even when wrapped */
   .button-group {
-    width: 100%;
+    align-self: flex-end;
+    justify-content: flex-end;
   }
   
+  /* Buttons stay their natural size - don't expand */
   .button-group .toggle-btn {
-    flex: 1;
+    flex: 0 0 auto;
   }
 }
 
@@ -855,7 +858,7 @@ button[title]:hover::before {
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 600px) {
   .card {
     padding: 0.875rem;
   }
@@ -865,7 +868,7 @@ button[title]:hover::before {
   }
 }
 
-/* Force table view on very narrow screens */
+/* Force table view on narrow screens (600px) */
 
 /* Disabled button state */
 .toggle-btn:disabled,
@@ -894,23 +897,27 @@ button[title]:hover::before {
 }
 
 
-@media (max-width: 480px) {
+/* Force-table behavior - applies whenever class is present */
+.force-table #view-chart-btn,
+.force-table #view-chart-btn:hover,
+.force-table #view-chart-btn:focus,
+.force-table #view-chart-btn:active {
+  opacity: 0.4 !important;
+  pointer-events: none !important;
+  cursor: not-allowed !important;
+  box-shadow: none !important;
+  background-color: var(--color-gray-300) !important;
+  color: var(--color-gray-500) !important;
+  border-color: var(--color-gray-300) !important;
+}
+
+@media (max-width: 600px) {
   .force-table #chart-container {
     display: none !important;
   }
   
   .force-table #table-container {
     display: block !important;
-  }
-  
-  .force-table #view-chart-btn {
-    opacity: 0.4;
-    pointer-events: none;
-    cursor: not-allowed;
-    box-shadow: none !important;  /* Remove black outline when disabled */
-    background-color: var(--color-gray-300) !important;
-    color: var(--color-gray-500) !important;
-    border-color: var(--color-gray-300) !important;
   }
 }
 

@@ -18,7 +18,7 @@ import {
 /* ---------- INITIALIZATION ---------- */
 function init() {
   // Check narrow screen FIRST before setting up anything else
-  const initialNarrowCheck = window.innerWidth <= 480;
+  const initialNarrowCheck = window.innerWidth <= 600;
   if (initialNarrowCheck) {
     document.body.classList.add('force-table');
     setState({ view: 'table' });
@@ -175,6 +175,8 @@ function setupViewToggle() {
   const chartBtn = $('#view-chart-btn');
   const tableBtn = $('#view-table-btn');
 
+  updateButtonStates();
+
   // Chart button - use addEventListener directly with capture phase
   if (chartBtn) {
     chartBtn.addEventListener('click', (e) => {
@@ -198,20 +200,38 @@ function setupViewToggle() {
         }
         
         // Force table view
-        switchView('table');
+        setState({ view: 'table' });
         updateButtonStates();
         
         return false;
       }
       
       // Normal behavior - allow chart view
-      switchView('chart');
+      setState({ view: 'chart' });
+      updateButtonStates();
     }, true); // Use capture phase
   }
-  
-  listen(tableBtn, 'click', () => switchView('table'));
 
-  updateButtonStates();
+  listen(tableBtn, 'click', () => {
+    setState({ view: 'table' });
+    updateButtonStates();
+  });
+
+  // Keyboard navigation between toggle buttons
+  [chartBtn, tableBtn].forEach(btn => {
+    if (!btn) return;
+    btn.tabIndex = 0;
+    
+    btn.addEventListener('keydown', e => {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+        e.preventDefault();
+        const next = btn === chartBtn ? tableBtn : chartBtn;
+        next.focus();
+        setState({ view: next.id === 'view-chart-btn' ? 'chart' : 'table' });
+        updateButtonStates();
+      }
+    });
+  });
 }
 
 function updateButtonStates() {
@@ -240,65 +260,23 @@ function updateButtonStates() {
 
 /* ---------- NARROW SCREEN ---------- */
 function detectNarrowScreen() {
-  const isNarrow = window.innerWidth <= 480;
-  const body = document.body;
-  const chartContainer = $('#chart-container');
-  const tableContainer = $('#table-container');
-  const wasForced = body.classList.contains('force-table');
-
-  if (isNarrow) {
+  const narrow = window.innerWidth <= 600;
+  
+  console.log(`detectNarrowScreen: width=${window.innerWidth}, narrow=${narrow}`);
+  
+  if (narrow) {
     // Force table view
-    console.log('Narrow screen detected, forcing table view');
-    body.classList.add('force-table');
-    
-    // Destroy chart immediately if it exists
-    destroyChart();
-    
-    // Set state to table
-    setState({ view: 'table' });
-    
-    // Update DOM immediately - don't wait for state update
-    if (chartContainer) {
-      chartContainer.style.display = 'none';
+    document.body.classList.add('force-table');
+    if (state.view !== 'table') {
+      setState({ view: 'table' });
     }
-    if (tableContainer) {
-      tableContainer.style.display = 'block';
-    }
-    
-    // If we have calculations, render the table NOW
-    if (state.calculations) {
-      renderTable(state.calculations, state.selectedModel);
-    }
-    
-    // Update button states
-    updateButtonStates();
-    
-  } else if (wasForced) {
-    // Was narrow, now wide - remove force
-    body.classList.remove('force-table');
-    
-    // Restore to user's preferred view (or default to chart)
-    const preferredView = state.view === 'table' ? 'table' : 'chart';
-    setState({ view: preferredView });
-    
-    // Update DOM based on preferred view
-    if (preferredView === 'chart') {
-      if (chartContainer) chartContainer.style.display = 'block';
-      if (tableContainer) tableContainer.style.display = 'none';
-      if (state.calculations) {
-        renderChart(state.calculations, state.selectedModel);
-      }
-    } else {
-      if (chartContainer) chartContainer.style.display = 'none';
-      if (tableContainer) tableContainer.style.display = 'block';
-      if (state.calculations) {
-        renderTable(state.calculations, state.selectedModel);
-      }
-    }
-    
-    // Update button states
-    updateButtonStates();
+  } else {
+    // Not narrow - remove force
+    document.body.classList.remove('force-table');
+
   }
+  
+  updateButtonStates();
 }
 
 /* ---------- UPDATE ALL ---------- */
