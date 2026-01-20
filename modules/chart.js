@@ -21,7 +21,7 @@ export function renderChart(calculations, selectedModel) {
 
   // Make canvas focusable and add keyboard navigation
   canvas.setAttribute('tabindex', '0');
-  canvas.setAttribute('role', 'img');
+  canvas.setAttribute('role', 'application');
   canvas.setAttribute('aria-roledescription', 'interactive chart');
   canvas.setAttribute(
     'aria-label',
@@ -41,8 +41,8 @@ export function renderChart(calculations, selectedModel) {
     if (selectedModel === 'all') {
       const modelNames = {
         constant: 'Constant Dividend',
-        growth: 'Constant Growth',
-        changing: 'Changing Growth'
+        growth: 'Constant Dividend Growth',
+        changing: 'Changing Dividend Growth'
       };
       
       let legendHTML = '';
@@ -75,8 +75,8 @@ export function renderChart(calculations, selectedModel) {
     const modelData = calculations[modelKey];
     const modelName = {
       constant: 'Constant Dividend',
-      growth: 'Constant Growth',
-      changing: 'Changing Growth'
+      growth: 'Constant Dividend Growth',
+      changing: 'Changing Dividend Growth'
     }[modelKey];
     
     return {
@@ -206,7 +206,7 @@ export function renderChart(calculations, selectedModel) {
           // Hide labels at ultra-narrow widths to prevent overlap
           // Use canvas clientWidth for accurate measurement
           const canvasWidth = chart.canvas.clientWidth;
-          if (canvasWidth < 600) return;  // Conservative threshold - prevents label overlap
+          if (canvasWidth < 750) return;  // Conservative threshold - prevents label overlap
           
           const ctx = chart.ctx;
           const chartArea = chart.chartArea;
@@ -235,8 +235,8 @@ export function renderChart(calculations, selectedModel) {
                 maximumFractionDigits: 2
               }).format(Math.abs(value));
               
-              // Add USD prefix and parentheses for negative values
-              const displayLabel = value < 0 ? `(USD ${formatted})` : `USD ${formatted}`;
+              // Add USD prefix and unicode minus for negative values
+              const displayLabel = value < 0 ? `−USD ${formatted}` : `USD ${formatted}`;
               
               ctx.save();
               ctx.fillStyle = '#1f2937';  // Darker gray for better readability
@@ -426,9 +426,9 @@ function announceDataPoint(cashFlow, calculations, selectedModel, modelsToShow) 
       const modelData = calculations[modelKey];
       const dividend = modelData.cashFlows.find(cf => cf.year === cashFlow.year).dividend;
       const modelName = {
-        constant: 'Constant',
-        growth: 'Growth',
-        changing: 'Two-stage'
+        constant: 'Constant Dividend',
+        growth: 'Constant Dividend Growth',
+        changing: 'Changing Dividend Growth'
       }[modelKey];
       announcement += `${modelName}: ${formatCurrency(Math.abs(dividend))}. `;
     });

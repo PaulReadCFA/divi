@@ -1,5 +1,5 @@
 /**
- * calculator.js Ã¢â‚¬â€œ Dividend Discount Model Calculator
+ * calculator.js - Dividend Discount Model Calculator
  */
 import { state, setState, subscribe } from './modules/state.js';
 import { calculateAllModels } from './modules/calculations.js';
@@ -34,23 +34,8 @@ function init() {
   detectNarrowScreen();
   window.addEventListener('resize', debounce(detectNarrowScreen, 200));
 
-  // Skip to table
-  const skipToTableLink = document.getElementById('skip-to-table');
-  if (skipToTableLink) {
-    skipToTableLink.addEventListener('click', (e) => {
-      e.preventDefault();
-      // Switch to table view
-      switchView('table');
-      // Focus the table button so user knows they activated it
-      const tableBtn = $('#view-table-btn');
-      if (tableBtn) {
-        setTimeout(() => {
-          tableBtn.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          tableBtn.focus();
-        }, 100);
-      }
-    });
-  }
+  // Setup skip links
+  setupSkipLinks();
 }
 
 function switchView(view) {
@@ -63,6 +48,37 @@ function switchView(view) {
 
   // Update state
   setState({ view });
+}
+
+/* ---------- SKIP LINKS ---------- */
+function setupSkipLinks() {
+  // Get all skip links
+  const skipLinks = document.querySelectorAll('.skip-link');
+  
+  skipLinks.forEach(link => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      const targetId = link.getAttribute('href').substring(1); // Remove #
+      const target = document.getElementById(targetId);
+      
+      if (!target) return;
+      
+      // Special handling for data table skip link
+      if (targetId === 'data-table') {
+        // Switch to table view first
+        switchView('table');
+        // Wait for view to switch, then focus table
+        setTimeout(() => {
+          target.focus();
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 100);
+      } else {
+        // For data entry, just focus the section
+        target.focus();
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  });
 }
 
 /* ---------- INPUTS ---------- */

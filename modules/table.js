@@ -1,5 +1,5 @@
 /**
- * table.js â€“ Add data-label for mobile stacking
+ * table.js – Add data-label for mobile stacking
  */
 import { $ } from './utils.js';
 
@@ -18,8 +18,8 @@ export function renderTable(calculations, selectedModel) {
 
   const modelNames = {
     constant: 'Constant Dividend',
-    growth: 'Constant Growth',
-    changing: 'Changing Growth',   // <-- changed to "Changing Growth" per request
+    growth: 'Constant Dividend Growth',
+    changing: 'Changing Dividend Growth',
   };
 
   const modelColors = {
@@ -29,7 +29,7 @@ export function renderTable(calculations, selectedModel) {
   };
 
   let html = `
-    <caption class="sr-only">Dividend cash flow schedule</caption>
+    <caption id="table-caption" class="sr-only">Dividend cash flow schedule</caption>
     <thead>
       <tr>
         <th scope="col" class="text-left">Year</th>
@@ -59,6 +59,7 @@ export function renderTable(calculations, selectedModel) {
   });
 
   // Footer – Stock Price only
+  html += `<tfoot><tr>`;
   
   // Label changes based on which models are shown - curriculum accurate with color coding
   const priceLabel = 'Stock Price';
@@ -83,6 +84,6 @@ function formatCurrency(amount, showNegativeAsParens = false) {
     maximumFractionDigits: 2,
   });
   const formatted = formatter.format(Math.abs(amount));
-  if (amount < 0 && showNegativeAsParens) return `(USD ${formatted})`;
+  if (amount < 0 && showNegativeAsParens) return `−USD ${formatted}`;
   return amount < 0 ? `−USD ${formatted}` : `USD ${formatted}`;
 }

@@ -55,7 +55,7 @@
 }
 
 /* ==========================================================================
-   3. FORMULA BOXES Ã¢â‚¬â€œ Model-Specific Border Colors
+   3. FORMULA BOXES - Model-Specific Border Colors
    ========================================================================== */
 .formula-box.constant {
   border-left-color: var(--color-model-constant);
@@ -120,7 +120,7 @@
   -webkit-overflow-scrolling: touch;
 }
 
-/* Let the equation container grow naturally Ã¢â‚¬â€œ no scrollbars */
+/* Let the equation container grow naturally - no scrollbars */
 .formula-box.changing .equation-container {
   overflow: visible !important;
   max-height: none !important;
@@ -142,7 +142,7 @@
 }
 
 /* ==========================================================================
-   5. RESULT BOXES Ã¢â‚¬â€œ Model-Specific Styling
+   5. RESULT BOXES - Model-Specific Styling
    ========================================================================== */
 .result-box.model-constant {
   background: var(--color-bg-blue);
@@ -240,7 +240,7 @@
 }
 
 /* ==========================================================================
-   7. INPUT LAYOUT Ã¢â‚¬â€œ 3-Column Grid
+   7. INPUT LAYOUT - 3-Column Grid
    ========================================================================== */
 .input-grid {
   display: grid;

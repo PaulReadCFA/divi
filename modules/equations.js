@@ -21,6 +21,31 @@ export function renderEquations(inputs, calculations) {
   renderConstantEquation(inputs, calculations.constant);
   renderGrowthEquation(inputs, calculations.growth);
   renderChangingEquation(inputs, calculations.changing);
+  
+  // Trigger MathJax to process all updated equations
+  if (typeof MathJax !== 'undefined' && MathJax.Hub) {
+    MathJax.Hub.Queue(["Typeset", MathJax.Hub], function() {
+      // Aggressively remove tabindex from MathJax presentation elements
+      setTimeout(function() {
+        var mathJaxElements = document.querySelectorAll('.MathJax[tabindex]');
+        mathJaxElements.forEach(function(el) {
+          el.removeAttribute('tabindex');
+        });
+      }, 10);
+      setTimeout(function() {
+        var mathJaxElements = document.querySelectorAll('.MathJax[tabindex]');
+        mathJaxElements.forEach(function(el) {
+          el.removeAttribute('tabindex');
+        });
+      }, 100);
+      setTimeout(function() {
+        var mathJaxElements = document.querySelectorAll('.MathJax[tabindex]');
+        mathJaxElements.forEach(function(el) {
+          el.removeAttribute('tabindex');
+        });
+      }, 500);
+    });
+  }
 }
 
 /**
@@ -34,13 +59,6 @@ function renderConstantEquation(inputs, result) {
   const r = inputs.required; // percent, e.g. 8
   const P = result.price;
 
-  container.setAttribute(
-    'aria-label',
-    `Constant Dividend Model equation: Present value equals ${D0} dollars divided by ${r.toFixed(
-      1
-    )} percent which equals ${Number.isFinite(P) ? P.toFixed(2) : 'invalid'} dollars`
-  );
-
   const mathML = `
     <div style="display:flex;flex-direction:column;gap:0.75rem;align-items:center;">
       <math xmlns="http://www.w3.org/1998/Math/MathML" display="block" style="font-size:0.95em;">
@@ -51,8 +69,8 @@ function renderConstantEquation(inputs, result) {
           </msub>
           <mo>=</mo>
           <mfrac linethickness="1.2px">
-            <mtext mathvariant="bold" mathcolor="${COLORS.D0}">USD ${Number.isFinite(D0) ? D0.toFixed(2) : '—'}</mtext>
-            <mtext mathcolor="${COLORS.r}">${Number.isFinite(r) ? r.toFixed(1) + '%' : '—'}</mtext>
+            <mtext mathvariant="bold" mathcolor="${COLORS.D0}">USD ${Number.isFinite(D0) ? D0.toFixed(2) : 'â€”'}</mtext>
+            <mtext mathcolor="${COLORS.r}">${Number.isFinite(r) ? r.toFixed(1) + '%' : 'â€”'}</mtext>
           </mfrac>
         </mrow>
       </math>
@@ -79,10 +97,6 @@ function renderGrowthEquation(inputs, result) {
   const P = result.price;
 
   if (!isFinite(P)) {
-    container.setAttribute(
-      'aria-label',
-      `Constant Growth Model equation: Invalid result. Growth rate ${g} percent must be less than required return ${r} percent`
-    );
     container.innerHTML = `
       <div style="display:flex;flex-direction:column;gap:0.75rem;align-items:center;">
         <math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
@@ -103,13 +117,6 @@ function renderGrowthEquation(inputs, result) {
     return;
   }
 
-  container.setAttribute(
-    'aria-label',
-    `Constant Growth Model equation: Present value equals ${D1.toFixed(
-      2
-    )} dollars divided by required return minus growth rate, which equals ${P.toFixed(2)} dollars`
-  );
-
   const mathML = `
     <div style="display:flex;flex-direction:column;gap:0.75rem;align-items:center;">
       <math xmlns="http://www.w3.org/1998/Math/MathML" display="block" style="font-size:0.95em;">
@@ -120,13 +127,13 @@ function renderGrowthEquation(inputs, result) {
           </msub>
           <mo>=</mo>
           <mfrac linethickness="1.2px">
-            <mtext mathvariant="bold" mathcolor="${COLORS.D0}">USD ${Number.isFinite(D1) ? D1.toFixed(2) : '—'}</mtext>
+            <mtext mathvariant="bold" mathcolor="${COLORS.D0}">USD ${Number.isFinite(D1) ? D1.toFixed(2) : 'â€”'}</mtext>
             <mrow>
-              <mtext mathcolor="${COLORS.r}">${Number.isFinite(r) ? r.toFixed(1) + '%' : '—'}</mtext>
+              <mtext mathcolor="${COLORS.r}">${Number.isFinite(r) ? r.toFixed(1) + '%' : 'â€”'}</mtext>
               <mspace width="0.3em"/>
-              <mo>−</mo>
+              <mo>&#x2212;</mo>
               <mspace width="0.3em"/>
-              <mtext mathcolor="${COLORS.g}">${Number.isFinite(g) ? g.toFixed(1) + '%' : '—'}</mtext>
+              <mtext mathcolor="${COLORS.g}">${Number.isFinite(g) ? g.toFixed(1) + '%' : 'â€”'}</mtext>
             </mrow>
           </mfrac>
         </mrow>
@@ -157,7 +164,7 @@ function renderChangingEquation(inputs, result) {
   if (!isFinite(P)) {
     container.setAttribute(
       'aria-label',
-      `Changing Growth Model equation: Invalid result. Long-term growth rate ${gLong} percent must be less than required return ${r} percent`
+      `Changing Dividend Growth Model equation: Invalid result. Please check that long-term growth rate is less than required return and that input values produce valid dividend cash flows.`
     );
     container.innerHTML = `
       <div style="display:flex;flex-direction:column;gap:0.75rem;align-items:center;">
@@ -169,7 +176,7 @@ function renderChangingEquation(inputs, result) {
           </mrow>
         </math>
         <div style="font-size:0.875rem;color:#ef4444;font-weight:600;">
-          Invalid (g<sub>l</sub> must be &lt; r)
+          Invalid calculation - check inputs
         </div>
       </div>
     `;
@@ -198,7 +205,7 @@ function renderChangingEquation(inputs, result) {
 
   const mathML = `
     <div class="changing-equation-wrapper">
-      <div class="changing-equation-scroll">
+      <div class="changing-equation-scroll" tabindex="0" role="region" aria-label="Scrollable changing growth equation">
         <math xmlns="http://www.w3.org/1998/Math/MathML" display="block" style="font-size:1.05em;">
           <mrow>
             <msub>
@@ -208,7 +215,7 @@ function renderChangingEquation(inputs, result) {
             <mo>=</mo>
 
             <munderover>
-              <mo>∑</mo>
+              <mo>&#x2211;</mo>
               <mrow>
                 <mi>i</mi>
                 <mo>=</mo>
@@ -242,9 +249,9 @@ function renderChangingEquation(inputs, result) {
             <mspace width="0.3em"/>
 
             <munderover>
-              <mo>∑</mo>
+              <mo>&#x2211;</mo>
               <mrow><mi>j</mi><mo>=</mo><mrow><mn mathcolor="${COLORS.n}">${n}</mn><mo>+</mo><mn>1</mn></mrow></mrow>
-              <mo>∞</mo>
+              <mo>&#x221E;</mo>
             </munderover>
             <mfrac linethickness="1px">
               <mrow>

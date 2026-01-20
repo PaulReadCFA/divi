@@ -40,7 +40,7 @@ function calculateGrowthModel({ D0, required, gConst }) {
  * Two-Stage (Changing) Growth Model
  */
 function calculateChangingModel({ D0, required, gShort, gLong, shortYears }) {
-  if (gLong >= required || required <= 0 || gShort < 0 || gLong < 0) {
+  if (gLong >= required || required <= 0) {
     return { price: NaN, cashFlows: [] };
   }
 
@@ -95,16 +95,16 @@ export function getModelMetadata(modelKey) {
       name: 'Constant Dividend Model',
       color: '#3c6ae5',
       description: 'Assumes dividends remain constant forever',
-      formula: 'P = Dâ‚€ Ã· r'
+      formula: 'P = D₁ ÷ r'
     },
     growth: {
-      name: 'Constant Growth Model',
+      name: 'Constant Dividend Growth Model',
       color: '#15803d',
       description: 'Assumes constant dividend growth rate forever',
-      formula: 'P = Dâ‚ Ã· (r âˆ’ g)'
+      formula: 'P = D₁ ÷ (r − g)'
     },
     changing: {
-      name: 'Changing Growth Model',
+      name: 'Changing Dividend Growth Model',
       color: '#7a46ff',
       description: 'High growth initially, then sustainable growth forever',
       formula: 'P = PV(high growth) + PV(terminal)'

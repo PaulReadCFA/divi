@@ -7,14 +7,112 @@
   <link rel="stylesheet" href="cfa-base.css">
   <link rel="stylesheet" href="dividend-specific.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <!-- MathJax 2.7.7 for MathML rendering -->
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      MathML: {
+        extensions: ["content-mathml.js"]
+      },
+      "HTML-CSS": { 
+        scale: 95,
+        linebreaks: { automatic: true }
+      },
+      menuSettings: {
+        explorer: false  // Disable MathJax accessibility explorer (prevents tabindex)
+      },
+      MathEvents: {
+        removeElement: null  // Don't make equations focusable
+      },
+      skipStartupTypeset: false
+    });
+    
+    // Remove tabindex from MathJax output to prevent ARIA conflicts
+    MathJax.Hub.Register.StartupHook("End", function () {
+      MathJax.Hub.Queue(function () {
+        // Remove tabindex from all MathJax spans
+        var mathJaxElements = document.querySelectorAll('.MathJax[tabindex]');
+        mathJaxElements.forEach(function(el) {
+          el.removeAttribute('tabindex');
+        });
+      });
+    });
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=MML_HTMLorMML"></script>
+  
+  <!-- Aggressively remove tabindex from MathJax output using MutationObserver -->
+  <script>
+    (function() {
+      // Function to remove tabindex from MathJax elements
+      function removeMathJaxTabindex() {
+        var mathJaxElements = document.querySelectorAll('.MathJax[tabindex]');
+        mathJaxElements.forEach(function(el) {
+          el.removeAttribute('tabindex');
+        });
+      }
+      
+      // Run multiple times after page load
+      window.addEventListener('load', function() {
+        removeMathJaxTabindex();
+        setTimeout(removeMathJaxTabindex, 100);
+        setTimeout(removeMathJaxTabindex, 500);
+        setTimeout(removeMathJaxTabindex, 1000);
+        setTimeout(removeMathJaxTabindex, 2000);
+      });
+      
+      // Watch for MathJax adding elements and remove tabindex immediately
+      var observer = new MutationObserver(function(mutations) {
+        var needsRemoval = false;
+        mutations.forEach(function(mutation) {
+          if (mutation.type === 'childList') {
+            mutation.addedNodes.forEach(function(node) {
+              if (node.nodeType === 1 && node.classList && node.classList.contains('MathJax')) {
+                if (node.hasAttribute('tabindex')) {
+                  node.removeAttribute('tabindex');
+                  needsRemoval = true;
+                }
+              }
+            });
+          }
+          if (mutation.type === 'attributes' && mutation.attributeName === 'tabindex') {
+            var target = mutation.target;
+            if (target.classList && target.classList.contains('MathJax') && target.hasAttribute('tabindex')) {
+              target.removeAttribute('tabindex');
+            }
+          }
+        });
+        if (needsRemoval) {
+          // Double-check all MathJax elements
+          removeMathJaxTabindex();
+        }
+      });
+      
+      // Start observing when DOM is ready
+      if (document.body) {
+        observer.observe(document.body, {
+          childList: true,
+          subtree: true,
+          attributes: true,
+          attributeFilter: ['tabindex']
+        });
+      } else {
+        document.addEventListener('DOMContentLoaded', function() {
+          observer.observe(document.body, {
+            childList: true,
+            subtree: true,
+            attributes: true,
+            attributeFilter: ['tabindex']
+          });
+        });
+      }
+    })();
+  </script>
 </head>
 <body>
 
   <!-- SKIP LINKS -->
   <nav aria-label="Skip links" class="skip-links-nav">
-    <a href="#data-entry" class="skip-link">Skip to calculator</a>
-    <a href="#visualization-card" class="skip-link">Skip to visualization</a>
-    <a href="#view-table-btn" class="skip-link" id="skip-to-table">Skip to data table</a>
+    <a href="#data-entry" class="skip-link">Skip to data entry</a>
+    <a href="#data-table" class="skip-link">Skip to data table</a>
   </nav>
 
   <!-- NOSCRIPT FALLBACK -->
@@ -27,6 +125,214 @@
 
   <div class="container">
     <main class="content">
+      <!-- CARD 0 - Static Equations -->
+      <section class="card" id="static-equations">
+        <style>
+          .equation-grid {
+            display: grid;
+            grid-template-columns: minmax(200px, 1fr);
+            gap: 1.5rem;
+          }
+          
+          .equation-row {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 1.5rem;
+            align-items: center;
+          }
+          
+          .equation-label {
+            font-weight: 600;
+            font-size: 0.9375rem;
+          }
+          
+          .equation-display {
+            overflow-x: auto;
+            overflow-y: hidden;
+            -webkit-overflow-scrolling: touch;
+            max-width: 100%;
+          }
+          
+          /* Hide scrollbar but keep functionality */
+          .equation-display::-webkit-scrollbar {
+            height: 6px;
+          }
+          
+          .equation-display::-webkit-scrollbar-track {
+            background: transparent;
+          }
+          
+          .equation-display::-webkit-scrollbar-thumb {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 3px;
+          }
+          
+          .equation-display::-webkit-scrollbar-thumb:hover {
+            background: rgba(0, 0, 0, 0.3);
+          }
+          
+          .equation-display math {
+            font-size: 1.1rem;
+            display: inline-block;
+            min-width: max-content;
+          }
+          
+          /* Stack vertically at 400% zoom or narrow screens */
+          @media (max-width: 900px), (max-resolution: 192dpi) and (max-width: 1200px) {
+            .equation-row {
+              grid-template-columns: 1fr;
+              gap: 0.75rem;
+            }
+            
+            .equation-label {
+              font-size: 0.875rem;
+            }
+            
+            .equation-display math {
+              font-size: 1rem;
+            }
+          }
+          
+          @media (max-width: 640px) {
+            .equation-display math {
+              font-size: 0.9rem;
+            }
+          }
+          
+          @media (max-width: 480px) {
+            .equation-display math {
+              font-size: 0.8rem;
+            }
+          }
+        </style>
+
+        <div class="equation-grid">
+          <!-- Constant Dividend (Equation 10) -->
+          <div class="equation-row">
+            <div class="equation-label">Constant Dividend (Equation 10):</div>
+            <div class="equation-display">
+              <math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+                <mrow>
+                  <msub>
+                    <mi mathcolor="#3c6ae5">PV</mi>
+                    <mi>t</mi>
+                  </msub>
+                  <mo>=</mo>
+                  <mfrac>
+                    <msub>
+                      <mi mathcolor="#b95b1d">Div</mi>
+                      <mrow><mi>t</mi><mo>+</mo><mn>1</mn></mrow>
+                    </msub>
+                    <mi mathcolor="#733599">r</mi>
+                  </mfrac>
+                </mrow>
+              </math>
+            </div>
+          </div>
+
+          <!-- Constant Dividend Growth (Equation 14) -->
+          <div class="equation-row">
+            <div class="equation-label">Constant Dividend Growth (Equation 14):</div>
+            <div class="equation-display">
+              <math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+                <mrow>
+                  <msub>
+                    <mi mathcolor="#15803d">PV</mi>
+                    <mi>t</mi>
+                  </msub>
+                  <mo>=</mo>
+                  <mfrac>
+                    <mrow>
+                      <msub>
+                        <mi mathcolor="#b95b1d">Div</mi>
+                        <mi>t</mi>
+                      </msub>
+                      <mo>(</mo><mn>1</mn><mo>+</mo><mi mathcolor="#15803d">g</mi><mo>)</mo>
+                    </mrow>
+                    <mrow>
+                      <mi mathcolor="#733599">r</mi>
+                      <mo>&#x2212;</mo>
+                      <mi mathcolor="#15803d">g</mi>
+                    </mrow>
+                  </mfrac>
+                  <mo>=</mo>
+                  <mfrac>
+                    <msub>
+                      <mi mathcolor="#b95b1d">Div</mi>
+                      <mrow><mi>t</mi><mo>+</mo><mn>1</mn></mrow>
+                    </msub>
+                    <mrow>
+                      <mi mathcolor="#733599">r</mi>
+                      <mo>&#x2212;</mo>
+                      <mi mathcolor="#15803d">g</mi>
+                    </mrow>
+                  </mfrac>
+                </mrow>
+              </math>
+            </div>
+          </div>
+
+          <!-- Changing Dividend Growth (Equation 15) -->
+          <div class="equation-row">
+            <div class="equation-label">Changing Dividend Growth (Equation 15):</div>
+            <div class="equation-display">
+              <math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+                <mrow>
+                  <msub>
+                    <mi mathcolor="#7a46ff">PV</mi>
+                    <mn>0</mn>
+                  </msub>
+                  <mo>=</mo>
+                  <munderover>
+                    <mo>&#x2211;</mo>
+                    <mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow>
+                    <mi mathcolor="#3c6ae5">n</mi>
+                  </munderover>
+                  <mfrac>
+                    <mrow>
+                      <msub>
+                        <mi mathcolor="#b95b1d">Div</mi>
+                        <mi>t</mi>
+                      </msub>
+                      <msup>
+                        <mrow><mo>(</mo><mn>1</mn><mo>+</mo><msub><mi mathcolor="#15803d">g</mi><mi>s</mi></msub><mo>)</mo></mrow>
+                        <mi>i</mi>
+                      </msup>
+                    </mrow>
+                    <msup>
+                      <mrow><mo>(</mo><mn>1</mn><mo>+</mo><mi mathcolor="#733599">r</mi><mo>)</mo></mrow>
+                      <mi>i</mi>
+                    </msup>
+                  </mfrac>
+                  <mo>+</mo>
+                  <munderover>
+                    <mo>&#x2211;</mo>
+                    <mrow><mi>j</mi><mo>=</mo><mrow><mi mathcolor="#3c6ae5">n</mi><mo>+</mo><mn>1</mn></mrow></mrow>
+                    <mo>&#x221E;</mo>
+                  </munderover>
+                  <mfrac>
+                    <mrow>
+                      <msub>
+                        <mi mathcolor="#b95b1d">Div</mi>
+                        <mrow><mi>t</mi><mo>+</mo><mi>n</mi></mrow>
+                      </msub>
+                      <msup>
+                        <mrow><mo>(</mo><mn>1</mn><mo>+</mo><msub><mi mathcolor="#15803d">g</mi><mi>l</mi></msub><mo>)</mo></mrow>
+                        <mi>j</mi>
+                      </msup>
+                    </mrow>
+                    <msup>
+                      <mrow><mo>(</mo><mn>1</mn><mo>+</mo><mi mathcolor="#733599">r</mi><mo>)</mo></mrow>
+                      <mi>j</mi>
+                    </msup>
+                  </mfrac>
+                </mrow>
+              </math>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <!-- CARD 1 - Equation -->
       <section class="card" id="equation-card">
         <h4 class="card-title">Equity Cash Flow Equations</h4>
@@ -36,8 +342,7 @@
           <!-- Constant Dividend Model -->
           <div class="formula-box constant">
             <div class="formula-box-title">Constant Dividend</div>
-            <div class="equation-container" tabindex="0" role="math"
-                 aria-label="Present value at time t equals Div t plus 1 divided by r">
+            <div class="equation-container">
               <div class="mathml-equation">
                 <math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
                   <mrow>
@@ -58,16 +363,15 @@
               </div>
               <div class="html-equation" hidden>
                 <strong style="color:#3c6ae5;">PV<sub>t</sub></strong> = 
-                <span style="color:#b95b1d;">Div<sub>t+1</sub></span> ÷ 
+                <span style="color:#b95b1d;">Div<sub>t+1</sub></span> &#x00F7; 
                 <span style="color:#733599;">r</span>
               </div>
             </div>
           </div>
 
           <div class="formula-box growth">
-            <div class="formula-box-title">Constant Growth</div>
-            <div class="equation-container" tabindex="0" role="math"
-                 aria-label="Present value at time t equals Div t times 1 plus g divided by r minus g">
+            <div class="formula-box-title">Constant Dividend Growth</div>
+            <div class="equation-container">
               <div class="mathml-equation">
                 <math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
                   <mrow>
@@ -83,7 +387,7 @@
                       </mrow>
                       <mrow>
                         <mi mathcolor="#733599">r</mi>
-                        <mo>−</mo>
+                        <mo>&#x2212;</mo>
                         <mi mathcolor="#15803d">g</mi>
                       </mrow>
                     </mfrac>
@@ -92,7 +396,7 @@
                       <msub><mi mathcolor="#b95b1d">Div</mi><mrow><mi>t</mi><mo>+</mo><mn>1</mn></mrow></msub>
                       <mrow>
                         <mi mathcolor="#733599">r</mi>
-                        <mo>−</mo>
+                        <mo>&#x2212;</mo>
                         <mi mathcolor="#15803d">g</mi>
                       </mrow>
                     </mfrac>
@@ -101,17 +405,17 @@
               </div>
               <div class="html-equation" hidden>
                 <strong style="color:#15803d;">PV<sub>t</sub></strong> = 
-                <span style="color:#b95b1d;">Div<sub>t</sub>(1+g)</span> ÷ 
-                (<span style="color:#733599;">r</span> − <span style="color:#15803d;">g</span>) = 
-                <span style="color:#b95b1d;">Div<sub>t+1</sub></span> ÷ 
-                (<span style="color:#733599;">r</span> − <span style="color:#15803d;">g</span>)
+                <span style="color:#b95b1d;">Div<sub>t</sub>(1+g)</span> &#x00F7; 
+                (<span style="color:#733599;">r</span> &#x2212; <span style="color:#15803d;">g</span>) = 
+                <span style="color:#b95b1d;">Div<sub>t+1</sub></span> &#x00F7; 
+                (<span style="color:#733599;">r</span> &#x2212; <span style="color:#15803d;">g</span>)
               </div>
             </div>
           </div>
 
           <div class="formula-box changing">
-            <div class="formula-box-title">Changing Growth</div>
-            <div class="equation-container" tabindex="0" role="math"
+            <div class="formula-box-title">Changing Dividend Growth</div>
+            <div class="equation-container" role="group"
                  aria-label="Two-stage model with i and j summation variables">
               <div class="mathml-equation">
                 <div class="changing-equation-wrapper">
@@ -124,7 +428,7 @@
                         </msub>
                         <mo>=</mo>
                         <munderover>
-                          <mo>∑</mo>
+                          <mo>&#x2211;</mo>
                           <mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow>
                           <mi mathcolor="#0079a6">n</mi>
                         </munderover>
@@ -146,9 +450,9 @@
                         </mfrac>
                         <mo>+</mo>
                         <munderover>
-                          <mo>∑</mo>
+                          <mo>&#x2211;</mo>
                           <mrow><mi>j</mi><mo>=</mo><mrow><mi mathcolor="#0079a6">n</mi><mo>+</mo><mn>1</mn></mrow></mrow>
-                          <mo>∞</mo>
+                          <mo>&#x221E;</mo>
                         </munderover>
                         <mfrac linethickness="1px">
                           <mrow>
@@ -172,7 +476,7 @@
                 </div>
               </div>
               <div class="html-equation" hidden>
-                <strong style="color:#7a46ff;">PV<sub>0</sub></strong> = Σ[i=1 to n] Div<sub>t</sub>(1+g<sub>s</sub>)<sup>i</sup>÷(1+r)<sup>i</sup> + Σ[j=n+1 to ∞] Div<sub>t+n</sub>(1+g<sub>l</sub>)<sup>j</sup>÷(1+r)<sup>j</sup>
+                <strong style="color:#7a46ff;">PV<sub>0</sub></strong> = &#x03A3;[i=1 to n] Div<sub>t</sub>(1+g<sub>s</sub>)<sup>i</sup>&#x00F7;(1+r)<sup>i</sup> + &#x03A3;[j=n+1 to &#x221E;] Div<sub>t+n</sub>(1+g<sub>l</sub>)<sup>j</sup>&#x00F7;(1+r)<sup>j</sup>
               </div>
             </div>
           </div>
@@ -188,8 +492,8 @@
           <legend class="model-selector-label">Select model:</legend>
           <button id="model-all-btn" class="model-btn active" data-model="all" aria-pressed="true">All Models</button>
           <button id="model-constant-btn" class="model-btn" data-model="constant" aria-pressed="false">Constant Dividend</button>
-          <button id="model-growth-btn" class="model-btn" data-model="growth" aria-pressed="false">Constant Growth</button>
-          <button id="model-changing-btn" class="model-btn" data-model="changing" aria-pressed="false">Changing Growth</button>
+          <button id="model-growth-btn" class="model-btn" data-model="growth" aria-pressed="false">Constant Dividend Growth</button>
+          <button id="model-changing-btn" class="model-btn" data-model="changing" aria-pressed="false">Changing Dividend Growth</button>
         </fieldset>
 
   <!-- Input Grid -->
@@ -328,18 +632,19 @@
           </div>
           
           <div class="button-group" role="group" aria-label="View mode - switch between chart and table">
-            <button id="view-chart-btn" class="toggle-btn active" aria-pressed="true" title="If Chart is unavailable, zoom out in your browser window.">Chart</button>
+            <button id="view-chart-btn" class="toggle-btn active" aria-pressed="true">Chart</button>
             <button id="view-table-btn" class="toggle-btn" aria-pressed="false">Table</button>
           </div>
         </div>
 
         <div id="chart-container" class="chart-wrapper">
-          <canvas id="chart" tabindex="0" role="img" aria-label="Bar chart showing dividend cash flows"></canvas>
+          <canvas id="chart" tabindex="0" role="application" aria-label="Bar chart showing dividend cash flows"></canvas>
           <div id="chart-announcement" class="sr-only" aria-live="polite" aria-atomic="true"></div>
         </div>
 
         <div id="table-container" class="table-scroll-wrapper table-card-layout" style="display:none;">
-          <table id="data-table" class="data-table" tabindex="0" role="region" aria-label="Dividend cash flow data table">
+          <table id="data-table" class="data-table" role="table" aria-labelledby="table-caption" tabindex="-1">
+            <caption id="table-caption" style="caption-side: top; padding: 0.5rem; font-weight: 600; text-align: left; color: var(--color-gray-800);">Dividend Cash Flow Schedule</caption>
             <!-- Table content populated by table.js -->
           </table>
         </div>
@@ -351,11 +656,5 @@
   <script type="module" src="./calculator.js"></script>
   <script type="module" src="./modules/sticky-calculator.js"></script>
   <script type="module" src="./modules/iframe-resize.js"></script>
-  <script type="module">
-    if (!CSS.supports('math-style: normal')) {
-      document.querySelectorAll('.mathml-equation').forEach(el => el.hidden = true);
-      document.querySelectorAll('.html-equation').forEach(el => el.hidden = false);
-    }
-  </script>
 </body>
 </html>

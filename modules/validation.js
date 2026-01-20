@@ -1,5 +1,5 @@
 /**
- * validation.js â€“ Clean, cross-field aware validation
+ * validation.js – Clean, cross-field aware validation
  * Matches the pattern used in other calculators
  */
 import { $ } from './utils.js';
@@ -22,8 +22,8 @@ const RULES = {
     min: -10,
     max: 30,
     required: true,
-    label: 'Constant Growth',
-    custom: (v, all) => (v >= all.required ? 'Growth must be < required return' : null),
+    label: 'Constant Dividend Growth',
+    custom: (v, all) => (v >= all.required ? 'Constant dividend growth must be < required return' : null),
   },
   gShort: {
     min: -10,
@@ -130,11 +130,27 @@ export function updateValidationSummary(errors) {
     list.innerHTML = Object.entries(errors)
       .map(
         ([f, m]) =>
-          `<li><a href="#${f}" onclick="document.getElementById('${f}').focus();return false;">${m}</a></li>`
+          `<li><a href="#${f}" data-field="${f}" class="validation-error-link">${m}</a></li>`
       )
       .join('');
     sum.style.display = 'block';
     announceSummary(cnt);
+    
+    // Add click handlers to error links
+    const links = list.querySelectorAll('.validation-error-link');
+    links.forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const fieldId = link.getAttribute('data-field');
+        const field = document.getElementById(fieldId);
+        if (field) {
+          field.focus();
+          field.select();
+          // Scroll field into view
+          field.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      });
+    });
     
     // Scroll validation summary into view
     sum.scrollIntoView({ behavior: 'smooth', block: 'nearest' });

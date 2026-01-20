@@ -8,16 +8,16 @@ const MODEL_META = {
     name: 'Constant Dividend',
     color: '#3c6ae5',
     description: 'No growth assumed',
-    formula: 'P = Dâ‚€ Ã· r'
+    formula: 'P = D₁ ÷ r'
   },
   growth: {
-    name: 'Constant Growth',
+    name: 'Constant Dividend Growth',
     color: '#15803d',
     description: 'Constant growth rate',
-    formula: 'P = Dâ‚ Ã· (r âˆ’ g)'
+    formula: 'P = D₁ ÷ (r − g)'
   },
   changing: {
-    name: 'Two-Stage Growth',
+    name: 'Changing Dividend Growth',
     color: '#7a46ff',
     description: 'High then sustainable growth',
     formula: 'P = PV(high) + PV(term)'

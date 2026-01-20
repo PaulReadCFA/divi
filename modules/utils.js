@@ -22,7 +22,7 @@ export function formatCurrency(amount, showNegativeAsParens = false) {
   const formattedAmount = formatter.format(Math.abs(amount));
   
   if (amount < 0 && showNegativeAsParens) {
-    return `(USD ${formattedAmount})`;
+    return `−USD ${formattedAmount}`;
   }
   
   if (amount < 0) {
