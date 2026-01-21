@@ -404,6 +404,15 @@ kbd {
   text-align: left;
 }
 
+.calculator-instructions {
+  font-size: 0.875rem;
+  color: var(--color-gray-600);
+  margin-top: 1rem;
+  margin-bottom: 1.25rem;
+  line-height: 1.5;
+  text-align: left;
+}
+
 /* ==========================================================================
    8. RESULT BOXES (Common Structure)
    ========================================================================== */

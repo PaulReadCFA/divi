@@ -496,6 +496,11 @@
           <button id="model-changing-btn" class="model-btn" data-model="changing" aria-pressed="false">Changing Dividend Growth</button>
         </fieldset>
 
+        <!-- Instructions -->
+        <p class="calculator-instructions">
+          Select a dividend discount model above, then enter your stock valuation inputs below. The equations, calculations, and visualizations will update automatically as you change the values.
+        </p>
+
   <!-- Input Grid -->
   <div class="input-grid">
     <!-- Current Dividend -->
@@ -643,7 +648,7 @@
         </div>
 
         <div id="table-container" class="table-scroll-wrapper table-card-layout" style="display:none;">
-          <table id="data-table" class="data-table" role="table" aria-labelledby="table-caption" tabindex="-1">
+          <table id="data-table" class="data-table" aria-labelledby="table-caption" tabindex="-1">
             <caption id="table-caption" style="caption-side: top; padding: 0.5rem; font-weight: 600; text-align: left; color: var(--color-gray-800);">Dividend Cash Flow Schedule</caption>
             <!-- Table content populated by table.js -->
           </table>
