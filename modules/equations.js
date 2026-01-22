@@ -18,6 +18,21 @@ const COLORS = {
  * Render all three equations with current input values
  */
 export function renderEquations(inputs, calculations) {
+  // BEFORE rendering: Lock the entire formula-box heights to prevent jumping
+  const formulaBoxes = document.querySelectorAll('.formula-box.constant, .formula-box.growth, .formula-box.changing');
+  const heights = new Map();
+  
+  formulaBoxes.forEach(box => {
+    // Store the current computed height
+    const currentHeight = box.getBoundingClientRect().height;
+    heights.set(box, currentHeight);
+    // Lock the height temporarily
+    box.style.height = `${currentHeight}px`;
+    box.style.minHeight = `${currentHeight}px`;
+    box.style.maxHeight = `${currentHeight}px`;
+    box.style.overflow = 'hidden';
+  });
+  
   renderConstantEquation(inputs, calculations.constant);
   renderGrowthEquation(inputs, calculations.growth);
   renderChangingEquation(inputs, calculations.changing);
@@ -25,7 +40,7 @@ export function renderEquations(inputs, calculations) {
   // Trigger MathJax to process all updated equations
   if (typeof MathJax !== 'undefined' && MathJax.Hub) {
     MathJax.Hub.Queue(["Typeset", MathJax.Hub], function() {
-      // Aggressively remove tabindex from MathJax presentation elements
+      // Remove tabindex from MathJax elements
       setTimeout(function() {
         var mathJaxElements = document.querySelectorAll('.MathJax[tabindex]');
         mathJaxElements.forEach(function(el) {
@@ -44,6 +59,17 @@ export function renderEquations(inputs, calculations) {
           el.removeAttribute('tabindex');
         });
       }, 500);
+      
+      // AFTER rendering: Release height lock and let boxes resize naturally
+      // Wait longer to ensure MathJax is fully complete
+      setTimeout(function() {
+        formulaBoxes.forEach(box => {
+          box.style.height = '';
+          box.style.minHeight = '';
+          box.style.maxHeight = '';
+          box.style.overflow = '';
+        });
+      }, 200);
     });
   }
 }

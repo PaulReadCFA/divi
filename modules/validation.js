@@ -23,7 +23,7 @@ const RULES = {
     max: 30,
     required: true,
     label: 'Constant Dividend Growth',
-    custom: (v, all) => (v >= all.required ? 'Constant dividend growth must be < required return' : null),
+    custom: (v, all) => (v >= all.required ? 'Growth rate must be less than required return' : null),
   },
   gShort: {
     min: -10,
@@ -36,7 +36,7 @@ const RULES = {
     max: 30,
     required: true,
     label: 'Long-term Growth',
-    custom: (v, all) => (v >= all.required ? 'Long-term growth must be < required return' : null),
+    custom: (v, all) => (v >= all.required ? 'Long-term growth rate must be less than required return' : null),
   },
   shortYears: {
     min: 1,
@@ -45,6 +45,29 @@ const RULES = {
     label: 'High Growth Period',
   },
 };
+
+/* ---------- HELPER: MODEL-AWARE FIELD FILTERING ---------- */
+/**
+ * Returns which fields are relevant for a given model
+ * @param {string} selectedModel - 'constant' | 'growth' | 'changing' | 'all'
+ * @returns {Array<string>} - Array of relevant field names
+ */
+export function getRelevantFields(selectedModel) {
+  const common = ['D0', 'required'];
+  
+  switch(selectedModel) {
+    case 'constant':
+      return common;
+    case 'growth':
+      return [...common, 'gConst'];
+    case 'changing':
+      return [...common, 'gShort', 'gLong', 'shortYears'];
+    case 'all':
+      return ['D0', 'required', 'gConst', 'gShort', 'gLong', 'shortYears'];
+    default:
+      return common;
+  }
+}
 
 /* ---------- 2. SINGLE FIELD ---------- */
 export function validateField(field, value, allInputs = {}) {
@@ -126,6 +149,8 @@ export function updateValidationSummary(errors) {
   if (!sum || !list) return;
 
   const cnt = Object.keys(errors).length;
+  const wasHidden = sum.style.display === 'none';
+  
   if (cnt) {
     list.innerHTML = Object.entries(errors)
       .map(
@@ -152,8 +177,11 @@ export function updateValidationSummary(errors) {
       });
     });
     
-    // Scroll validation summary into view
-    sum.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    // Only scroll validation summary into view when FIRST displayed, not on every update
+    // This prevents annoying page jumping when user adjusts values with spinner arrows
+    if (wasHidden) {
+      sum.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
   } else {
     sum.style.display = 'none';
   }
