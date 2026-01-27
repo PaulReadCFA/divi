@@ -7,7 +7,7 @@ import { $ } from './utils.js';
 /* ---------- 1. RULES ---------- */
 const RULES = {
   D0: {
-    min: 0.01,
+    min: 0.1,
     max: 1000,
     required: true,
     label: 'Current Dividend',

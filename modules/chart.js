@@ -145,10 +145,10 @@ export function renderChart(calculations, selectedModel) {
               weight: 'bold',
               size: 12
             },
-            color: '#000'
+            color: '#1f2937'
           },
           ticks: {
-            color: '#000',
+            color: '#1f2937',
             font: {
               weight: 'bold',
               size: 11
@@ -166,10 +166,10 @@ export function renderChart(calculations, selectedModel) {
               weight: 'bold',
               size: 12
             },
-            color: '#000'
+            color: '#1f2937'
           },
           ticks: {
-            color: '#000',
+            color: '#1f2937',
             font: {
               weight: 'bold',
               size: 11
@@ -229,14 +229,14 @@ export function renderChart(calculations, selectedModel) {
             meta.data.forEach((bar, index) => {
               const value = dataset.data[index];
               
-              // Format value with 2 decimal places using USD prefix
+              // Format value with 2 decimal places - no USD prefix since y-axis shows it
               const formatted = new Intl.NumberFormat('en-US', {
                 minimumFractionDigits: 2,
                 maximumFractionDigits: 2
               }).format(Math.abs(value));
               
-              // Add USD prefix and unicode minus for negative values
-              const displayLabel = value < 0 ? `−USD ${formatted}` : `USD ${formatted}`;
+              // Use unicode minus for negative values
+              const displayLabel = value < 0 ? `−${formatted}` : formatted;
               
               ctx.save();
               ctx.fillStyle = '#1f2937';  // Darker gray for better readability
