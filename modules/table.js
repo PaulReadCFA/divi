@@ -35,8 +35,9 @@ export function renderTable(calculations, selectedModel) {
         <th scope="col" class="text-left">Year</th>
   `;
 
+  // Add (USD) to column headers
   modelsToShow.forEach(m => {
-    html += `<th scope="col" class="text-right">${modelNames[m]}</th>`;
+    html += `<th scope="col" class="text-right">${modelNames[m]} (USD)</th>`;
   });
 
   html += `</tr></thead><tbody>`;
@@ -52,7 +53,7 @@ export function renderTable(calculations, selectedModel) {
       const formatted = formatCurrency(val, true);
       // Colour the numeric cell text using the model's color
       const color = modelColors[m] || '#000';
-      html += `<td class="text-right" data-label="${modelNames[m]}"><span style="color: ${color};">${formatted}</span></td>`;
+      html += `<td class="text-right" data-label="${modelNames[m]} (USD)"><span style="color: ${color};">${formatted}</span></td>`;
     });
 
     html += `</tr>`;
@@ -62,7 +63,7 @@ export function renderTable(calculations, selectedModel) {
   html += `<tfoot><tr>`;
   
   // Label changes based on which models are shown - curriculum accurate with color coding
-  const priceLabel = 'Stock Price';
+  const priceLabel = 'Stock Price (USD)';
   
   html += `
       <th scope="row" class="text-left" style="border-top: 2px solid var(--color-gray-400); padding-top: 0.75rem;">${priceLabel}</th>`;
@@ -70,7 +71,7 @@ export function renderTable(calculations, selectedModel) {
     const price = calculations[m].price;
     const txt = isFinite(price) ? formatCurrency(price) : 'Invalid';
     const color = modelColors[m];
-    html += `<td class="text-right" data-label="${modelNames[m]}" style="border-top: 2px solid var(--color-gray-400); padding-top: 0.75rem;"><strong style="color: ${color};">${txt}</strong></td>`;
+    html += `<td class="text-right" data-label="${modelNames[m]} (USD)" style="border-top: 2px solid var(--color-gray-400); padding-top: 0.75rem;"><strong style="color: ${color};">${txt}</strong></td>`;
   });
   html += `</tr></tfoot>`;
 
@@ -78,12 +79,12 @@ export function renderTable(calculations, selectedModel) {
 }
 
 function formatCurrency(amount, showNegativeAsParens = false) {
-  if (isNaN(amount)) return 'USD 0.00';
+  if (isNaN(amount)) return '0.00';
   const formatter = new Intl.NumberFormat('en-US', {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   });
   const formatted = formatter.format(Math.abs(amount));
-  if (amount < 0 && showNegativeAsParens) return `−USD ${formatted}`;
-  return amount < 0 ? `−USD ${formatted}` : `USD ${formatted}`;
+  if (amount < 0 && showNegativeAsParens) return `−${formatted}`;
+  return amount < 0 ? `−${formatted}` : formatted;
 }

@@ -66,13 +66,24 @@ function setupSkipLinks() {
       if (!target) return;
       
       // Special handling for skip to data table link
-      if (targetId === 'data-table') {
+if (targetId === 'data-table') {
         // Switch to table view first
         switchView('table');
-        // Wait for view to switch, then focus and scroll to the table
+        
         setTimeout(() => {
-          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          target.focus();
+          // Scroll to table area
+          const tableContainer = document.getElementById('table-container');
+          if (tableContainer) {
+            tableContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+          
+          // Wait for scroll to complete, THEN focus button
+          setTimeout(() => {
+            const tableBtn = document.getElementById('view-table-btn');
+            if (tableBtn) {
+              tableBtn.focus();
+            }
+          }, 500);  // Wait for smooth scroll to finish
         }, 100);
       } else {
         // For other targets (D0 input field, etc.), just focus and scroll
