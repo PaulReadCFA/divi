@@ -48,7 +48,7 @@ export function renderChart(calculations, selectedModel) {
       let legendHTML = '';
       modelsToShow.forEach(modelKey => {
         legendHTML += `
-          <div class="legend-item" role="listitem">
+          <div class="legend-item">
             <span class="legend-color" style="background-color: ${MODEL_COLORS[modelKey]};"></span>
             <span>${modelNames[modelKey]}</span>
           </div>

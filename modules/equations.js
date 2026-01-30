@@ -40,11 +40,18 @@ export function renderEquations(inputs, calculations) {
   // Trigger MathJax to process all updated equations
   if (typeof MathJax !== 'undefined' && MathJax.Hub) {
     MathJax.Hub.Queue(["Typeset", MathJax.Hub], function() {
-      // Remove tabindex from MathJax elements
+      // Remove tabindex and empty nobr elements from MathJax output
       setTimeout(function() {
         var mathJaxElements = document.querySelectorAll('.MathJax[tabindex]');
         mathJaxElements.forEach(function(el) {
           el.removeAttribute('tabindex');
+        });
+        // Remove ONLY EMPTY nobr elements
+        var nobrElements = document.querySelectorAll('.formula-box nobr[aria-hidden="true"]');
+        nobrElements.forEach(function(el) {
+          if (!el.textContent.trim()) {
+            el.remove();
+          }
         });
       }, 10);
       setTimeout(function() {
@@ -52,11 +59,23 @@ export function renderEquations(inputs, calculations) {
         mathJaxElements.forEach(function(el) {
           el.removeAttribute('tabindex');
         });
+        var nobrElements = document.querySelectorAll('.formula-box nobr[aria-hidden="true"]');
+        nobrElements.forEach(function(el) {
+          if (!el.textContent.trim()) {
+            el.remove();
+          }
+        });
       }, 100);
       setTimeout(function() {
         var mathJaxElements = document.querySelectorAll('.MathJax[tabindex]');
         mathJaxElements.forEach(function(el) {
           el.removeAttribute('tabindex');
+        });
+        var nobrElements = document.querySelectorAll('.formula-box nobr[aria-hidden="true"]');
+        nobrElements.forEach(function(el) {
+          if (!el.textContent.trim()) {
+            el.remove();
+          }
         });
       }, 500);
       

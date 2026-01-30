@@ -10,9 +10,11 @@ import { renderEquations } from './modules/equations.js';
 import { $, listen, debounce } from './modules/utils.js';
 import {
   validateAll,
+  validateField,
   updateFieldError,
   updateValidationSummary,
   hasErrors,
+  getRelevantFields,
 } from './modules/validation.js';
 
 /* ---------- INITIALIZATION ---------- */
@@ -63,17 +65,17 @@ function setupSkipLinks() {
       
       if (!target) return;
       
-      // Special handling for data table skip link
+      // Special handling for skip to data table link
       if (targetId === 'data-table') {
         // Switch to table view first
         switchView('table');
-        // Wait for view to switch, then focus table
+        // Wait for view to switch, then focus and scroll to the table
         setTimeout(() => {
-          target.focus();
           target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          target.focus();
         }, 100);
       } else {
-        // For data entry, just focus the section
+        // For other targets (D0 input field, etc.), just focus and scroll
         target.focus();
         target.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
@@ -184,6 +186,32 @@ function selectModel(model) {
   });
   
   setState({ selectedModel: model });
+  
+  // Re-validate only fields relevant to the selected model
+  const relevantFields = getRelevantFields(model);
+  const newErrors = {};
+  
+  relevantFields.forEach(field => {
+    const error = validateField(field, state.inputs[field], state.inputs);
+    if (error) newErrors[field] = error;
+  });
+  
+  // Update state with new errors
+  setState({ errors: newErrors });
+  
+  // Update UI for all fields
+  const allFields = ['D0', 'required', 'gConst', 'gShort', 'gLong', 'shortYears'];
+  allFields.forEach(field => {
+    updateFieldError(field, newErrors[field] || null);
+  });
+  
+  // Update validation summary
+  updateValidationSummary(newErrors);
+  
+  // Re-run calculations if no errors
+  if (!hasErrors(newErrors)) {
+    updateCalculations();
+  }
 }
 
 /* ---------- VIEW TOGGLE ---------- */

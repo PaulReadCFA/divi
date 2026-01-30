@@ -26,13 +26,21 @@
       skipStartupTypeset: false
     });
     
-    // Remove tabindex from MathJax output to prevent ARIA conflicts
+    // Remove tabindex and nobr from MathJax output to prevent ARIA conflicts
     MathJax.Hub.Register.StartupHook("End", function () {
       MathJax.Hub.Queue(function () {
         // Remove tabindex from all MathJax spans
         var mathJaxElements = document.querySelectorAll('.MathJax[tabindex]');
         mathJaxElements.forEach(function(el) {
           el.removeAttribute('tabindex');
+        });
+        // Remove ONLY EMPTY nobr elements that MathJax adds
+        var nobrElements = document.querySelectorAll('.formula-box nobr[aria-hidden="true"]');
+        nobrElements.forEach(function(el) {
+          // Only remove if it's empty or whitespace-only
+          if (!el.textContent.trim()) {
+            el.remove();
+          }
         });
       });
     });
@@ -42,11 +50,19 @@
   <!-- Aggressively remove tabindex from MathJax output using MutationObserver -->
   <script>
     (function() {
-      // Function to remove tabindex from MathJax elements
+      // Function to remove tabindex and nobr from MathJax elements
       function removeMathJaxTabindex() {
         var mathJaxElements = document.querySelectorAll('.MathJax[tabindex]');
         mathJaxElements.forEach(function(el) {
           el.removeAttribute('tabindex');
+        });
+        // Remove ONLY EMPTY nobr elements that MathJax adds
+        var nobrElements = document.querySelectorAll('.formula-box nobr[aria-hidden="true"]');
+        nobrElements.forEach(function(el) {
+          // Only remove if it's empty or whitespace-only
+          if (!el.textContent.trim()) {
+            el.remove();
+          }
         });
       }
       
@@ -111,8 +127,8 @@
 
   <!-- SKIP LINKS -->
   <nav aria-label="Skip links" class="skip-links-nav">
-    <a href="#data-entry" class="skip-link">Skip to data entry</a>
-    <a href="#data-table" class="skip-link">Skip to data table</a>
+    <a href="#D0" class="skip-link">Skip to data entry</a>
+    <a href="#data-table" class="skip-link" id="skip-to-table">Skip to data table</a>
   </nav>
 
   <!-- NOSCRIPT FALLBACK -->
@@ -632,11 +648,11 @@
         
         <!-- View Toggle -->
         <div class="view-controls">
-          <div class="legend" id="chart-legend" role="list" aria-label="Chart legend">
+          <div class="legend" id="chart-legend" role="region" aria-label="Chart legend">
             <!-- Legend populated by JavaScript -->
           </div>
           
-          <div class="button-group" role="group" aria-label="View mode - switch between chart and table">
+          <div class="button-group">
             <button id="view-chart-btn" class="toggle-btn active" aria-pressed="true">Chart</button>
             <button id="view-table-btn" class="toggle-btn" aria-pressed="false">Table</button>
           </div>
@@ -659,7 +675,5 @@
   </div>
 
   <script type="module" src="./calculator.js"></script>
-  <script type="module" src="./modules/sticky-calculator.js"></script>
-  <script type="module" src="./modules/iframe-resize.js"></script>
 </body>
 </html>
