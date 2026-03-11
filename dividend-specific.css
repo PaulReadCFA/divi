@@ -8,15 +8,13 @@
    1. MODEL-SPECIFIC COLOR ASSIGNMENTS
    ========================================================================== */
 :root {
-  /* Dividend Calculator Specific Colors */
-  --color-dividend-constant: var(--color-blue-interactive);     /* #3c6ae5 */
-  --color-dividend-growth: var(--color-green-data);             /* #15803d */
-  --color-dividend-changing: var(--color-purple-bold);          /* #7a46ff */
-  --color-dividend-d: var(--color-orange-deep);                 /* #b95b1d */
-  --color-dividend-r: var(--color-eggplant-medium);             /* #733599 */
-  --color-dividend-g: var(--color-green-data);                  /* #15803d */
+  --color-dividend-constant: var(--color-blue-interactive);
+  --color-dividend-growth: var(--color-green-data);
+  --color-dividend-changing: var(--color-purple-bold);
+  --color-dividend-d: var(--color-orange-deep);
+  --color-dividend-r: var(--color-eggplant-medium);
+  --color-dividend-g: var(--color-green-data);
   
-  /* Model aliases */
   --color-model-constant: var(--color-dividend-constant);
   --color-model-growth: var(--color-dividend-growth);
   --color-model-changing: var(--color-dividend-changing);
@@ -80,18 +78,16 @@
 
 @media (min-width: 768px) {
   .model-equations-grid {
-    grid-template-columns: 1fr 1fr 2.5fr;  /* 20% - 20% - 60% - more space for complex equation */
+    grid-template-columns: 1fr 1fr 2.5fr;
   }
 }
 
-/* Allow changing equation to take full width if it wraps */
 @media (min-width: 768px) and (max-width: 1100px) {
   .model-equations-grid {
-    grid-template-columns: 1fr 1fr;  /* Two columns on medium screens */
+    grid-template-columns: 1fr 1fr;
   }
-  
   .formula-box.changing {
-    grid-column: 1 / -1;  /* Span full width when it wraps */
+    grid-column: 1 / -1;
   }
 }
 
@@ -99,13 +95,11 @@
   .model-equations-grid {
     grid-template-columns: 1fr;
   }
-  
   .formula-box {
     min-height: auto;
   }
 }
 
-/* Changing Growth equation box - consolidated rules */
 .formula-box.changing {
   min-height: auto !important;
   overflow: visible !important;
@@ -113,26 +107,23 @@
   padding-bottom: 0.75rem;
 }
 
-/* Ensure equation scroll container has proper width */
 .formula-box.changing .changing-equation-scroll {
   max-width: 100%;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
 }
 
-/* Let the equation container grow naturally - no scrollbars */
 .formula-box.changing .equation-container {
   overflow: visible !important;
   max-height: none !important;
-  scrollbar-width: none;           /* Firefox */
-  -ms-overflow-style: none;        /* IE/Edge */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
 .formula-box.changing .equation-container::-webkit-scrollbar {
-  display: none;                   /* Chrome/Safari/Opera */
+  display: none;
 }
 
-/* Inner wrapper for changing equation */
 .changing-equation-wrapper {
   display: flex;
   flex-direction: column;
@@ -204,7 +195,7 @@
 }
 
 /* ==========================================================================
-   6. EQUATION RESULT TEXT (unified sizes)
+   6. EQUATION RESULT TEXT
    ========================================================================== */
 .equation-result-main {
   font-size: 1.1rem;
@@ -215,7 +206,7 @@
 }
 
 .equation-result-main.constant {
-  color: #2d59c4;  /* Darker blue for better contrast (meets 4.5:1) */
+  color: #2d59c4;
   background: rgba(60, 106, 229, 0.08);
 }
 
@@ -229,7 +220,6 @@
   background: rgba(122, 70, 255, 0.08);
 }
 
-/* Breakdown strip for changing model (pvHighGrowth + pvTerminal) */
 .equation-breakdown {
   font-size: 0.9rem;
   line-height: 1.2;
@@ -240,78 +230,77 @@
 }
 
 /* ==========================================================================
-   7. INPUT LAYOUT - 3-Column Grid
+   7. INPUT LAYOUT
    ========================================================================== */
 .input-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 0.75rem 1rem;
   margin-top: 1rem;
-  align-items: center;
-  min-width: 0; /* Allow grid to shrink */
+  align-items: start;
+  min-width: 0;
 }
 
-/* Prevent calculator card from getting too narrow */
 #data-entry.card {
   min-width: 300px;
 }
 
+/* Each input row: label and input sit close together (helps screen magnification) */
 .input-row {
   display: flex;
-  align-items: center;
-  gap: 0.45rem;
+  flex-direction: column;
+  gap: 0.25rem;
 }
 
 .input-row label {
-  width: 9rem;
-  text-align: right;
-  font-weight: 500;
+  font-weight: 600;
   color: var(--color-gray-700);
-  flex-shrink: 0;
   font-size: 0.9rem;
+  line-height: 1.3;
 }
 
 .input-wrapper {
   display: flex;
   align-items: center;
   gap: 0.3rem;
-  flex: 1;
   min-width: 0;
 }
 
 .input-prefix,
 .input-suffix {
   font-weight: 500;
-  color: var(--color-gray-500);
+  color: var(--color-gray-600);
   white-space: nowrap;
   font-size: 0.9rem;
-  min-width: 3ch;
+  min-width: 2ch;
 }
 
 .input-prefix {
-  padding-right: 0.3rem;
+  padding-right: 0.2rem;
 }
 
 .input-suffix {
-  padding-left: 0.3rem;
+  padding-left: 0.2rem;
 }
 
+/* Darkened border meets WCAG AA 3:1 non-text contrast (#8b93a7 on white) */
 .input-field-inline {
   flex: 1;
   min-width: 0;
-  width: 6rem;
+  width: 100%;
   padding: 0.45rem 0.55rem;
   font-size: 0.9rem;
-  border: 1px solid var(--color-gray-300);
+  border: 1.5px solid var(--color-input-border); /* #8b93a7 */
   border-radius: 0.375rem;
   background: white;
   text-align: right;
+  font-family: 'Lato', sans-serif;
 }
 
 .input-field-inline:focus {
   outline: none;
   border-color: var(--color-blue-interactive);
-  box-shadow: 0 0 0 3px rgba(60, 106, 229, 0.1);
+  box-shadow: 0 0 0 3px rgba(60, 106, 229, 0.15);
 }
 
 .input-field-inline.error {
@@ -319,17 +308,10 @@
   box-shadow: 0 0 0 2px rgba(185, 28, 28, 0.2);
 }
 
-/* Responsive breakpoints for input grid */
-
 /* 2 columns for medium widths */
 @media (max-width: 1100px) {
   .input-grid {
     grid-template-columns: repeat(2, 1fr);
-  }
-  
-  .input-row label {
-    width: 8rem;
-    font-size: 0.85rem;
   }
 }
 
@@ -338,23 +320,7 @@
   .input-grid {
     grid-template-columns: 1fr;
   }
-  
-  .input-row {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.5rem;
-  }
-  
-  .input-row label {
-    width: auto;
-    text-align: left;
-    margin-bottom: 0;
-  }
-  
-  .input-wrapper {
-    width: 100%;
-  }
-  
+
   .input-field-inline {
     width: 100%;
   }
@@ -374,7 +340,6 @@
 /* ==========================================================================
    9. CHANGING EQUATION SCROLL
    ========================================================================== */
-/* Scroll container for the Changing Growth equation (horizontal only) */
 .changing-equation-scroll {
   overflow-x: auto;
   overflow-y: hidden;
@@ -382,27 +347,12 @@
   max-width: 100%;
 }
 
-/* Focus indicator for keyboard navigation */
 .changing-equation-scroll:focus {
   outline: 2px solid #3c6ae5;
   outline-offset: 2px;
   border-radius: 0.25rem;
 }
 
-/* Optional: hide the horizontal scrollbar track entirely */
 .changing-equation-scroll::-webkit-scrollbar {
   height: 0;
-}
-
-/* ==========================================================================
-   10. STICKY CALCULATOR CARD
-   ========================================================================== */
-
-  
-  /* Disable sticky on mobile - too intrusive */
-  ,
-   {
-    position: static;
-    animation: none;
-  }
 }

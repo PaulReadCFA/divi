@@ -30,7 +30,10 @@ function init() {
   setupModelSelector();
   setupViewToggle();
   subscribe(updateAll);
-  updateCalculations();
+
+  // Set initial model to 'constant' - applies button state, hides irrelevant inputs,
+  // validates and runs calculations
+  selectModel('constant');
   
   // Run narrow detection after initial setup
   detectNarrowScreen();
@@ -43,50 +46,42 @@ function init() {
 function switchView(view) {
   const isForced = document.body.classList.contains('force-table');
   
-  // If forced to table, ignore chart requests
   if (isForced && view === 'chart') {
     return;
   }
 
-  // Update state
   setState({ view });
 }
 
 /* ---------- SKIP LINKS ---------- */
 function setupSkipLinks() {
-  // Get all skip links
   const skipLinks = document.querySelectorAll('.skip-link');
   
   skipLinks.forEach(link => {
     link.addEventListener('click', (e) => {
       e.preventDefault();
-      const targetId = link.getAttribute('href').substring(1); // Remove #
+      const targetId = link.getAttribute('href').substring(1);
       const target = document.getElementById(targetId);
       
       if (!target) return;
       
-      // Special handling for skip to data table link
-if (targetId === 'data-table') {
-        // Switch to table view first
+      if (targetId === 'data-table') {
         switchView('table');
         
         setTimeout(() => {
-          // Scroll to table area
           const tableContainer = document.getElementById('table-container');
           if (tableContainer) {
             tableContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
           }
           
-          // Wait for scroll to complete, THEN focus button
           setTimeout(() => {
             const tableBtn = document.getElementById('view-table-btn');
             if (tableBtn) {
               tableBtn.focus();
             }
-          }, 500);  // Wait for smooth scroll to finish
+          }, 500);
         }, 100);
       } else {
-        // For other targets (D0 input field, etc.), just focus and scroll
         target.focus();
         target.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
@@ -106,24 +101,18 @@ function setupInputs() {
       const raw = el.value.trim();
       const val = raw === '' ? NaN : Number(raw);
 
-      // Always update inputs with current (possibly invalid) value
       const candidate = { ...state.inputs, [id]: val };
 
-      // Run full validation
       const errors = validateAll(candidate);
 
-      // Update error UI for ALL fields
       fields.forEach(f => {
         updateFieldError(f, errors[f]);
       });
 
-      // Update validation summary
       updateValidationSummary(errors);
 
-      // ALWAYS save inputs and errors
       setState({ inputs: candidate, errors });
 
-      // Only calculate if no errors
       if (!hasErrors(errors)) {
         updateCalculations();
       }
@@ -190,8 +179,6 @@ function selectModel(model) {
     }
     
     const modelList = models.split(' ');
-    // If "all" is selected, show all inputs that have any model
-    // Otherwise, only show inputs that include the selected model
     const shouldShow = model === 'all' ? modelList.length > 0 : modelList.includes(model);
     row.style.display = shouldShow ? '' : 'none';
   });
@@ -207,19 +194,15 @@ function selectModel(model) {
     if (error) newErrors[field] = error;
   });
   
-  // Update state with new errors
   setState({ errors: newErrors });
   
-  // Update UI for all fields
   const allFields = ['D0', 'required', 'gConst', 'gShort', 'gLong', 'shortYears'];
   allFields.forEach(field => {
     updateFieldError(field, newErrors[field] || null);
   });
   
-  // Update validation summary
   updateValidationSummary(newErrors);
   
-  // Re-run calculations if no errors
   if (!hasErrors(newErrors)) {
     updateCalculations();
   }
@@ -232,10 +215,8 @@ function setupViewToggle() {
 
   updateButtonStates();
 
-  // Chart button - use addEventListener directly with capture phase
   if (chartBtn) {
     chartBtn.addEventListener('click', (e) => {
-      // FIRST: Check if narrow screen before anything else
       const isForced = document.body.classList.contains('force-table');
       
       if (isForced || chartBtn.disabled) {
@@ -243,10 +224,9 @@ function setupViewToggle() {
         e.stopPropagation();
         e.stopImmediatePropagation();
         
-        console.log('Chart button blocked - narrow screen detected');
-        
-        // Visual feedback: briefly highlight table button
-        if (tableBtn) {
+        // Animate only if motion is acceptable
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (tableBtn && !prefersReducedMotion) {
           tableBtn.style.transition = 'transform 0.2s ease';
           tableBtn.style.transform = 'scale(1.05)';
           setTimeout(() => {
@@ -254,17 +234,15 @@ function setupViewToggle() {
           }, 200);
         }
         
-        // Force table view
         setState({ view: 'table' });
         updateButtonStates();
         
         return false;
       }
       
-      // Normal behavior - allow chart view
       setState({ view: 'chart' });
       updateButtonStates();
-    }, true); // Use capture phase
+    }, true);
   }
 
   listen(tableBtn, 'click', () => {
@@ -272,7 +250,6 @@ function setupViewToggle() {
     updateButtonStates();
   });
 
-  // Keyboard navigation between toggle buttons
   [chartBtn, tableBtn].forEach(btn => {
     if (!btn) return;
     btn.tabIndex = 0;
@@ -297,38 +274,26 @@ function updateButtonStates() {
 
   if (!chartBtn || !tableBtn) return;
 
-  console.log(`updateButtonStates: isForced=${isForced}, chartBtn.disabled=${chartBtn.disabled}`);
-
-  // Update active states
   chartBtn.classList.toggle('active', currentView === 'chart');
   tableBtn.classList.toggle('active', currentView === 'table');
   
-  // Update aria-pressed
   chartBtn.setAttribute('aria-pressed', currentView === 'chart');
   tableBtn.setAttribute('aria-pressed', currentView === 'table');
   
-  // Disable chart button when forced to table
   chartBtn.disabled = isForced;
-  
-  console.log(`After update: chartBtn.disabled=${chartBtn.disabled}, has force-table class=${document.body.classList.contains('force-table')}`);
 }
 
 /* ---------- NARROW SCREEN ---------- */
 function detectNarrowScreen() {
   const narrow = window.innerWidth <= 600;
   
-  console.log(`detectNarrowScreen: width=${window.innerWidth}, narrow=${narrow}`);
-  
   if (narrow) {
-    // Force table view
     document.body.classList.add('force-table');
     if (state.view !== 'table') {
       setState({ view: 'table' });
     }
   } else {
-    // Not narrow - remove force
     document.body.classList.remove('force-table');
-
   }
   
   updateButtonStates();
@@ -338,9 +303,7 @@ function detectNarrowScreen() {
 function updateAll(s) {
   if (!s.calculations) return;
 
-  // Render dynamic equations with current values
   renderEquations(s.inputs, s.calculations);
-  
   renderResults(s.calculations, s.selectedModel);
   
   const isForced = document.body.classList.contains('force-table');
@@ -351,22 +314,18 @@ function updateAll(s) {
   
   if (!chartContainer || !tableContainer) return;
 
-  // Always render table first (needed for forced and optional table view)
   renderTable(s.calculations, s.selectedModel);
   
-  // Show/hide containers based on actual view
   if (actualView === 'chart' && !isForced) {
     chartContainer.style.display = 'block';
     tableContainer.style.display = 'none';
     renderChart(s.calculations, s.selectedModel);
   } else {
-    // Table view or forced table
     chartContainer.style.display = 'none';
     tableContainer.style.display = 'block';
-    destroyChart(); // Ensure chart is destroyed
+    destroyChart();
   }
   
-  // Update button states
   updateButtonStates();
 }
 

@@ -13,8 +13,8 @@ export const state = {
     shortYears: 5             // Years of high growth
   },
   
-  // Model selection
-  selectedModel: 'all',       // 'constant' | 'growth' | 'changing' | 'all'
+  // Model selection - default to simplest model to avoid overwhelm
+  selectedModel: 'constant',  // 'constant' | 'growth' | 'changing' | 'all'
   
   // UI state
   view: 'chart',              // 'chart' | 'table'

@@ -1,6 +1,5 @@
 /**
  * chart.js - Dividend Cash Flow Chart with Keyboard Accessibility
- * Adapted from bond calculator pattern
  */
 import { $ } from './utils.js';
 
@@ -19,23 +18,25 @@ export function renderChart(calculations, selectedModel) {
   const canvas = $('#chart');
   if (!canvas) return;
 
-  // Make canvas focusable and add keyboard navigation
+  // Detect reduced motion preference
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
   canvas.setAttribute('tabindex', '0');
   canvas.setAttribute('role', 'application');
   canvas.setAttribute('aria-roledescription', 'interactive chart');
+  // Fixed: removed "Press Tab to focus" - element is already focused when this applies
   canvas.setAttribute(
     'aria-label',
-    'Interactive bar chart showing equity cash flows over time. Press Tab to focus, then use Left and Right arrow keys to navigate between time periods. Press Home to go to first period, End to go to last period.'
+    'Interactive bar chart showing equity cash flows. Use Left and Right arrow keys to navigate between time periods. Press Home for the first period, End for the last.'
   );
 
   const ctx = canvas.getContext('2d');
 
-  // Determine which models to display
   const modelsToShow = selectedModel === 'all' 
     ? ['constant', 'growth', 'changing']
     : [selectedModel];
   
-  // Render legend only when showing all models
+  // Update legend region
   const legendContainer = $('#chart-legend');
   if (legendContainer) {
     if (selectedModel === 'all') {
@@ -56,12 +57,10 @@ export function renderChart(calculations, selectedModel) {
       });
       legendContainer.innerHTML = legendHTML;
     } else {
-      // Clear legend for single model view
       legendContainer.innerHTML = '';
     }
   }
   
-  // Get data from first model (they all have same years)
   const firstModel = calculations[modelsToShow[0]];
   if (!firstModel || !firstModel.cashFlows || firstModel.cashFlows.length === 0) {
     return;
@@ -70,7 +69,6 @@ export function renderChart(calculations, selectedModel) {
   const cashFlows = firstModel.cashFlows;
   const labels = cashFlows.map(cf => cf.yearLabel === '0' ? 'Initial' : `Yr ${cf.yearLabel}`);
   
-  // Build datasets for selected models
   const datasets = modelsToShow.map(modelKey => {
     const modelData = calculations[modelKey];
     const modelName = {
@@ -86,15 +84,12 @@ export function renderChart(calculations, selectedModel) {
     };
   });
 
-  // Destroy existing chart instance
   if (chartInstance) {
     chartInstance.destroy();
   }
   
-  // Reset focus index
   currentFocusIndex = 0;
 
-  // Create chart
   chartInstance = new Chart(ctx, {
     type: 'bar',
     data: {
@@ -102,6 +97,8 @@ export function renderChart(calculations, selectedModel) {
       datasets: datasets
     },
     options: {
+      // Respect prefers-reduced-motion: disable animation entirely
+      animation: prefersReducedMotion ? false : { duration: 400 },
       responsive: true,
       maintainAspectRatio: false,
       interaction: {
@@ -109,10 +106,8 @@ export function renderChart(calculations, selectedModel) {
         intersect: false
       },
       onHover: (event, activeElements) => {
-        // Skip if keyboard focus already active
         if (isKeyboardMode && document.activeElement === canvas) return;
 
-        // Announce hovered data point
         if (activeElements.length > 0) {
           const index = activeElements[0].index;
           announceDataPoint(cashFlows[index], calculations, selectedModel, modelsToShow);
@@ -120,7 +115,7 @@ export function renderChart(calculations, selectedModel) {
       },
       plugins: {
         legend: {
-          display: false  // Disabled - using custom HTML legend outside chart
+          display: false
         },
         tooltip: {
           callbacks: {
@@ -141,78 +136,52 @@ export function renderChart(calculations, selectedModel) {
           title: {
             display: true,
             text: 'Time Period',
-            font: {
-              weight: 'bold',
-              size: 12
-            },
+            font: { weight: 'bold', size: 12 },
             color: '#1f2937'
           },
           ticks: {
             color: '#1f2937',
-            font: {
-              weight: 'bold',
-              size: 11
-            }
+            font: { weight: 'bold', size: 11 }
           },
-          grid: {
-            display: false
-          }
+          grid: { display: false }
         },
         y: {
           title: {
             display: true,
             text: 'Cash Flows (USD)',
-            font: {
-              weight: 'bold',
-              size: 12
-            },
+            font: { weight: 'bold', size: 12 },
             color: '#1f2937'
           },
           ticks: {
             color: '#1f2937',
-            font: {
-              weight: 'bold',
-              size: 11
-            },
+            font: { weight: 'bold', size: 11 },
             callback: function(value) {
               const formatted = new Intl.NumberFormat('en-US', {
                 minimumFractionDigits: 0,
                 maximumFractionDigits: 0
               }).format(Math.abs(value));
-              // Bare numbers only - no USD prefix
-              return value < 0 ? `−${formatted}` : formatted;
+              return value < 0 ? `\u2212${formatted}` : formatted;
             }
           }
         }
       },
       layout: {
-        padding: {
-          left: 20,
-          right: 30,
-          top: 20,
-          bottom: 60
-        }
+        padding: { left: 20, right: 30, top: 20, bottom: 60 }
       }
     },
     plugins: [
-
       {
-        // Data labels plugin - only show for single model view
         id: 'dataLabels',
         afterDatasetsDraw: (chart) => {
-          // Only show labels if single model (not "all")
           if (modelsToShow.length > 1) return;
           
-          // Hide labels at ultra-narrow widths to prevent overlap
-          // Use canvas clientWidth for accurate measurement
           const canvasWidth = chart.canvas.clientWidth;
-          if (canvasWidth < 750) return;  // Conservative threshold - prevents label overlap
+          if (canvasWidth < 750) return;
           
           const ctx = chart.ctx;
           const chartArea = chart.chartArea;
           
-          // Find the highest point (lowest Y value) across all bars to align labels
-          let topY = chartArea.bottom; // Start with bottom
+          let topY = chartArea.bottom;
           chart.data.datasets.forEach((dataset, datasetIndex) => {
             const meta = chart.getDatasetMeta(datasetIndex);
             meta.data.forEach(bar => {
@@ -220,7 +189,6 @@ export function renderChart(calculations, selectedModel) {
             });
           });
           
-          // Position all labels at consistent height above the highest bar
           const labelY = topY - 5;
           
           chart.data.datasets.forEach((dataset, datasetIndex) => {
@@ -229,52 +197,43 @@ export function renderChart(calculations, selectedModel) {
             meta.data.forEach((bar, index) => {
               const value = dataset.data[index];
               
-              // Format value with 2 decimal places - no USD prefix since y-axis shows it
               const formatted = new Intl.NumberFormat('en-US', {
                 minimumFractionDigits: 2,
                 maximumFractionDigits: 2
               }).format(Math.abs(value));
               
-              // Use unicode minus for negative values
-              const displayLabel = value < 0 ? `−${formatted}` : formatted;
+              const displayLabel = value < 0 ? `\u2212${formatted}` : formatted;
               
               ctx.save();
-              ctx.fillStyle = '#1f2937';  // Darker gray for better readability
-              ctx.font = 'bold 11px sans-serif';  // Bold for better visibility
+              ctx.fillStyle = '#1f2937';
+              ctx.font = 'bold 11px sans-serif';
               ctx.textAlign = 'center';
               ctx.textBaseline = 'bottom';
-              
-              // All labels at same height
               ctx.fillText(displayLabel, bar.x, labelY);
-              
               ctx.restore();
             });
           });
         }
       },
       {
-        // Keyboard focus highlight plugin
         id: 'keyboardFocus',
         afterDatasetsDraw: (chart) => {
           if (document.activeElement !== canvas) return;
           
           const ctx = chart.ctx;
           
-          // Get all bars at the focused index
-  const allBars = chart.data.datasets
-  .map((_, i) => chart.getDatasetMeta(i).data[currentFocusIndex])
-  .filter(Boolean);
+          const allBars = chart.data.datasets
+            .map((_, i) => chart.getDatasetMeta(i).data[currentFocusIndex])
+            .filter(Boolean);
           
           if (allBars.length === 0) return;
           
-          // Find bounding box of all bars at this index
           const allYValues = allBars.flatMap(bar => [bar.y, bar.base]);
           const topY = Math.min(...allYValues);
           const bottomY = Math.max(...allYValues);
           
           const firstBar = allBars[0];
           
-          // Draw focus indicator
           ctx.save();
           ctx.strokeStyle = MODEL_COLORS.darkText;
           ctx.lineWidth = 3;
@@ -287,7 +246,6 @@ export function renderChart(calculations, selectedModel) {
           
           ctx.strokeRect(x, y, width, height);
           
-          // Add filled background for better visibility
           ctx.globalAlpha = 0.1;
           ctx.fillStyle = MODEL_COLORS.darkText;
           ctx.fillRect(x, y, width, height);
@@ -298,26 +256,19 @@ export function renderChart(calculations, selectedModel) {
     ]
   });
   
-  // Add keyboard navigation
   setupKeyboardNavigation(canvas, cashFlows, calculations, selectedModel, modelsToShow);
 }
 
-/**
- * Setup keyboard navigation for the chart
- */
 function setupKeyboardNavigation(canvas, cashFlows, calculations, selectedModel, modelsToShow) {
-  // Remove existing listeners to avoid duplicates
   const oldListener = canvas._keydownListener;
   if (oldListener) {
     canvas.removeEventListener('keydown', oldListener);
   }
   
-  // Create new listener
   const keydownListener = (e) => {
     const maxIndex = cashFlows.length - 1;
     let newIndex = currentFocusIndex;
     
-    // Enable keyboard mode on any arrow key press
     isKeyboardMode = true;
     
     switch(e.key) {
@@ -351,11 +302,9 @@ function setupKeyboardNavigation(canvas, cashFlows, calculations, selectedModel,
     }
   };
   
-  // Store listener reference for cleanup
   canvas._keydownListener = keydownListener;
   canvas.addEventListener('keydown', keydownListener);
   
-  // Focus handler
   const focusListener = () => {
     isKeyboardMode = true;
     showTooltipAtIndex(currentFocusIndex);
@@ -372,7 +321,6 @@ function setupKeyboardNavigation(canvas, cashFlows, calculations, selectedModel,
   canvas.addEventListener('focus', focusListener);
   canvas.addEventListener('blur', blurListener);
   
-  // Disable keyboard mode when mouse moves over chart
   const mouseMoveListener = () => {
     isKeyboardMode = false;
   };
@@ -381,9 +329,6 @@ function setupKeyboardNavigation(canvas, cashFlows, calculations, selectedModel,
   canvas.addEventListener('mousemove', mouseMoveListener);
 }
 
-/**
- * Show tooltip at a specific data index
- */
 function showTooltipAtIndex(index) {
   if (!chartInstance) return;
   
@@ -403,9 +348,6 @@ function showTooltipAtIndex(index) {
   chartInstance.update('none');
 }
 
-/**
- * Announce data point for screen readers
- */
 function announceDataPoint(cashFlow, calculations, selectedModel, modelsToShow) {
   let liveRegion = document.getElementById('chart-live-region');
   if (!liveRegion) {
@@ -448,7 +390,7 @@ function formatCurrency(amount) {
   }).format(Math.abs(amount));
   
   if (amount < 0) {
-    return `−USD ${formatted}`;
+    return `\u2212USD ${formatted}`;
   }
   
   return `USD ${formatted}`;

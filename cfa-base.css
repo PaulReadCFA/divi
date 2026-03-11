@@ -2,38 +2,38 @@
    CFA Calculator Base Styles
    Shared foundation for all CFA Institute calculators
    WCAG AA compliant, responsive, accessible
-   Version: 2.0 (Refactored)
+   Version: 2.1
    ========================================================================== */
+
+/* Google Fonts - Lato */
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;500;600;700&display=swap');
 
 /* ==========================================================================
-   1. CSS VARIABLES - Complete WCAG AA Compliant Color Palette
+   1. CSS VARIABLES
    ========================================================================== */
 :root {
-  /* Primary Data Colors - All meet WCAG AA (4.5:1 minimum) */
-  --color-primary-dark-blue: #06005a;    /* 18.18:1 - CFA Brand */
-  --color-blue-interactive: #3c6ae5;     /* 4.79:1 - Adjusted brand blue */
-  --color-secondary-dark-blue: #38337b;  /* 10.89:1 - CFA Brand */
-  --color-purple-bold: #7a46ff;          /* 5.06:1 - CFA Brand */
-  --color-purple-200: #e9d5ff;           /* Light purple for borders */
-  --color-purple-300: #d8b4fe;           /* Medium light purple */
-  --color-eggplant-deep: #50037f;        /* 12.65:1 - CFA Brand */
-  --color-eggplant-medium: #733599;      /* 7.78:1 - CFA Brand */
-  --color-orange-deep: #b95b1d;          /* 4.59:1 - Adjusted brand orange */
-  --color-orange-accent: #b35b21;        /* 4.73:1 - Alternative orange */
-  --color-orange-darker: #a84f15;        /* 5.21:1 - For text on light orange bg */
-  --color-teal-data: #0079a6;            /* 4.90:1 - Adjusted brand cyan */
-  --color-green-data: #15803d;           /* 5.02:1 - Professional green */
-  --color-green-data-alt: #047857;       /* 5.48:1 - Alternative green */
-  --color-red-2: #b82937;                /* Red for charts/data */
+  --color-primary-dark-blue: #06005a;
+  --color-blue-interactive: #3c6ae5;
+  --color-secondary-dark-blue: #38337b;
+  --color-purple-bold: #7a46ff;
+  --color-purple-200: #e9d5ff;
+  --color-purple-300: #d8b4fe;
+  --color-eggplant-deep: #50037f;
+  --color-eggplant-medium: #733599;
+  --color-orange-deep: #b95b1d;
+  --color-orange-accent: #b35b21;
+  --color-orange-darker: #a84f15;
+  --color-teal-data: #0079a6;
+  --color-green-data: #15803d;
+  --color-green-data-alt: #047857;
+  --color-red-2: #b82937;
   
-  /* Background Colors - For result boxes (tested with dark text) */
-  --color-bg-blue: #eff6ff;              /* 13.49:1 with dark text */
-  --color-bg-purple: #faf5ff;            /* 13.68:1 with dark text */
-  --color-bg-orange: #fff7ed;            /* 13.83:1 with dark text */
-  --color-bg-green: #f0fdf4;             /* 14.02:1 with dark text */
-  --color-bg-teal: #f0fdfa;              /* 14.07:1 with dark text */
+  --color-bg-blue: #eff6ff;
+  --color-bg-purple: #faf5ff;
+  --color-bg-orange: #fff7ed;
+  --color-bg-green: #f0fdf4;
+  --color-bg-teal: #f0fdfa;
 
-  /* Gray Scale */
   --color-gray-50: #f9fafb;
   --color-gray-100: #f3f4f6;
   --color-gray-200: #e5e7eb;
@@ -45,7 +45,6 @@
   --color-gray-800: #1f2937;
   --color-gray-900: #111827;
 
-  /* Validation & Feedback */
   --color-red-50: #fef2f2;
   --color-red-200: #fecaca;
   --color-red-300: #fca5a5;
@@ -53,7 +52,6 @@
   --color-red-700: #b91c1c;
   --color-red-800: #991b1c;
   
-  /* Semantic Colors */
   --color-error: #b91c1c;
   --color-error-bg: #fef2f2;
   --color-success: #047857;
@@ -61,7 +59,7 @@
   --color-warning: #b95b1d;
   --color-warning-bg: #fff7ed;
   
-  /* Legacy aliases for compatibility - DEPRECATED, use specific colors above */
+  /* Legacy aliases */
   --color-primary: #3c6ae5;
   --color-dark: #06005a;
   --color-dark-alt: #38337b;
@@ -72,6 +70,9 @@
   --color-mint: #0079a6;
   --color-orange: #b95b1d;
   --color-orange-text: #b95b1d;
+
+  /* Input border - meets WCAG AA 3:1 non-text contrast */
+  --color-input-border: #8b93a7;
 }
 
 /* ==========================================================================
@@ -91,14 +92,13 @@ html {
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  font-family: 'Lato', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   background-color: var(--color-gray-50);
   color: var(--color-gray-800);
   line-height: 1.5;
   padding: 0 1.5rem 1.5rem;
   min-height: 100vh;
-  /* Smooth font scaling for zoom */
-  font-size: clamp(0.875rem, 1vw + 0.5rem, 1rem);
+  font-size: 1rem; /* 16px */
 }
 
 /* ==========================================================================
@@ -149,7 +149,6 @@ body {
   background: #2d59c4;
 }
 
-/* Stack skip links vertically with proper spacing */
 .skip-link:nth-child(2) { top: -150px; }
 .skip-link:nth-child(3) { top: -200px; }
 .skip-link:nth-child(4) { top: -250px; }
@@ -158,20 +157,17 @@ body {
 .skip-link:nth-child(3):focus { top: 7.25rem; }
 .skip-link:nth-child(4):focus { top: 10.5rem; }
 
-/* Mobile adjustments */
 @media (max-width: 640px) {
   .skip-link {
     font-size: 0.875rem;
     padding: 0.625rem 1rem;
     left: 0.5rem;
   }
-  
   .skip-link:nth-child(2):focus { top: 3.5rem; }
   .skip-link:nth-child(3):focus { top: 6.5rem; }
   .skip-link:nth-child(4):focus { top: 9.5rem; }
 }
 
-/* Focus rings for keyboard navigation */
 section[tabindex]:focus,
 table[tabindex]:focus,
 canvas[tabindex]:focus {
@@ -179,12 +175,10 @@ canvas[tabindex]:focus {
   outline-offset: 4px;
 }
 
-/* No JavaScript fallback */
 .noscript-hidden {
   display: none;
 }
 
-/* Keyboard key styling */
 kbd {
   display: inline-block;
   padding: 0.125rem 0.375rem;
@@ -213,7 +207,6 @@ kbd {
   gap: 1.5rem;
 }
 
-/* Middle Row - Side-by-side on desktop */
 .middle-row {
   display: flex;
   flex-direction: column;
@@ -228,7 +221,6 @@ kbd {
   .middle-row > section:last-child { flex: 2; }
 }
 
-/* Grid for Results + Visualization (Bond/Dividend style) */
 .grid-container {
   display: grid;
   grid-template-columns: 1fr;
@@ -255,24 +247,22 @@ kbd {
 }
 
 .card-title {
-  font-family: Georgia, 'Times New Roman', serif;
-  font-size: 1.25rem;
+  font-family: 'Lato', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 1.5rem; /* 24px */
   color: var(--color-gray-800);
   margin-bottom: 0.75rem;
-  font-weight: 500;
+  font-weight: 700;
   letter-spacing: 0.01em;
 }
 
 .card-content {
-  font-size: 0.875rem;
+  font-size: 1rem;
   color: rgba(0, 0, 0, 0.8);
 }
 
 /* ==========================================================================
    6. BUTTONS & CONTROLS
    ========================================================================== */
-
-/* Model Selector (Dividend calculator) */
 .model-selector,
 .model-controls {
   display: flex;
@@ -284,7 +274,6 @@ kbd {
   border-bottom: 1px solid var(--color-gray-200);
 }
 
-/* View Controls - Container for legend + view toggle buttons */
 .view-controls {
   display: flex;
   justify-content: space-between;
@@ -296,14 +285,12 @@ kbd {
   border-bottom: none;
 }
 
-/* Legend within view controls */
 .view-controls .legend,
 .view-controls .chart-legend {
   flex: 1;
   margin-bottom: 0;
 }
 
-/* Button group - For view toggle buttons */
 .button-group {
   display: flex;
   gap: 0.5rem;
@@ -313,7 +300,7 @@ kbd {
 .model-selector-label,
 .control-label {
   font-weight: 600;
-  font-size: 0.875rem;
+  font-size: 1rem;
   color: var(--color-gray-700);
   margin-bottom: 0.5rem;
 }
@@ -321,7 +308,8 @@ kbd {
 .model-btn,
 .toggle-btn {
   padding: 0.5rem 1rem;
-  font-size: 0.875rem;
+  font-size: 0.9375rem;
+  font-family: 'Lato', sans-serif;
   border-radius: 0.375rem;
   border: 2px solid var(--color-gray-300);
   background-color: white;
@@ -351,30 +339,25 @@ kbd {
   color: white;
   font-weight: 600;
   border-color: var(--color-blue-interactive);
-  box-shadow: 0 0 0 2px #000000;  /* Black outline for active state */
+  box-shadow: 0 0 0 2px #000000;
 }
 
-/* Responsive: Stack view controls on mobile */
 @media (max-width: 640px) {
   .view-controls {
     flex-direction: column;
     align-items: stretch;
   }
-  
-  /* Keep button group right-aligned even when wrapped */
   .button-group {
     align-self: flex-end;
     justify-content: flex-end;
   }
-  
-  /* Buttons stay their natural size - don't expand */
   .button-group .toggle-btn {
     flex: 0 0 auto;
   }
 }
 
 /* ==========================================================================
-   7. FORMULA BOXES (Common Structure)
+   7. FORMULA BOXES
    ========================================================================== */
 .formula-box {
   background: white;
@@ -389,7 +372,7 @@ kbd {
 }
 
 .formula-box-title {
-  font-size: 0.875rem;
+  font-size: 1rem;
   font-weight: 600;
   color: var(--color-gray-700);
   margin-bottom: 0.5rem;
@@ -398,14 +381,14 @@ kbd {
 }
 
 .equation-intro {
-  font-size: 0.875rem;
+  font-size: 1rem;
   color: var(--color-gray-600);
   margin-bottom: 1rem;
   text-align: left;
 }
 
 .calculator-instructions {
-  font-size: 0.875rem;
+  font-size: 1rem;
   color: var(--color-gray-600);
   margin-top: 1rem;
   margin-bottom: 1.25rem;
@@ -414,7 +397,7 @@ kbd {
 }
 
 /* ==========================================================================
-   8. RESULT BOXES (Common Structure)
+   8. RESULT BOXES
    ========================================================================== */
 .result-box {
   padding: 1rem;
@@ -453,14 +436,13 @@ kbd {
   border: 1px solid var(--color-gray-200);
 }
 
-/* Legend */
 .legend,
 .chart-legend {
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
   margin-bottom: 1rem;
-  font-size: 0.875rem;
+  font-size: 1rem;
   color: var(--color-gray-700);
 }
 
@@ -479,26 +461,26 @@ kbd {
 }
 
 /* ==========================================================================
-   10. DATA TABLES (Standard & Responsive)
+   10. DATA TABLES
    ========================================================================== */
 .data-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 0.875rem;
+  font-size: 0.9375rem;
   background: white;
 }
 
 .data-table thead th {
   background-color: var(--color-gray-100);
   color: var(--color-gray-800);
-  font-weight: 600;
+  font-weight: 700;
   text-align: left;
   padding: 0.5rem 0.75rem;
   border-bottom: 2px solid var(--color-gray-300);
   position: sticky;
   top: 0;
   z-index: 10;
-  font-size: 0.875rem;
+  font-size: 0.9375rem;
 }
 
 .data-table tbody td,
@@ -508,13 +490,17 @@ kbd {
   color: var(--color-gray-800);
 }
 
+/* Alternating row colour - #f7f8fc verified 4.5:1+ against all three model colours */
 .data-table tbody tr:nth-child(even) {
-  background-color: var(--color-gray-50);
+  background-color: #f7f8fc;
+}
+
+.data-table tbody tr:nth-child(odd) {
+  background-color: white;
 }
 
 .data-table tbody tr:hover {
-  background-color: var(--color-blue-interactive);
-  background-color: rgba(60, 106, 229, 0.05);
+  background-color: rgba(60, 106, 229, 0.07);
 }
 
 .data-table tbody tr:last-child td,
@@ -530,7 +516,6 @@ kbd {
   background-color: var(--color-gray-50);
 }
 
-/* Text alignment in tables */
 .data-table th:first-child,
 .data-table td:first-child {
   text-align: left;
@@ -542,14 +527,14 @@ kbd {
 }
 
 .table-note {
-  font-size: 0.75rem;
+  font-size: 0.875rem;
   color: var(--color-gray-600);
   margin-top: 0.5rem;
   padding: 0.5rem 1rem;
   font-style: italic;
 }
 
-/* Responsive card-style table layout for narrow screens */
+/* Responsive card-style table for narrow screens */
 @media (max-width: 768px) {
   .table-card-layout .data-table,
   .table-card-layout .data-table thead,
@@ -568,6 +553,12 @@ kbd {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
+  }
+
+  /* No striping in card mode - each card is its own visual unit */
+  .table-card-layout .data-table tbody tr:nth-child(even),
+  .table-card-layout .data-table tbody tr:nth-child(odd) {
+    background: white;
   }
 
   .table-card-layout .data-table tr {
@@ -636,14 +627,13 @@ kbd {
     min-width: 0;
   }
   
-  /* Footer cards (Total Received, Stock Price) - make them prominent */
   .table-card-layout .data-table tfoot {
     display: block;
     margin-top: 0.75rem;
   }
   
   .table-card-layout .data-table tfoot tr {
-    background: var(--color-gray-50);
+    background: var(--color-gray-50) !important;
     border: 2px solid var(--color-gray-300);
     padding: 0.75rem;
     margin-bottom: 0.75rem;
@@ -722,7 +712,7 @@ kbd {
 
 .validation-summary li {
   color: var(--color-red-800);
-  font-size: 0.875rem;
+  font-size: 0.9375rem;
   padding-left: 1.5rem;
   position: relative;
   margin-bottom: 0.5rem;
@@ -791,7 +781,6 @@ kbd {
 .ml-1 { margin-left: 0.25rem; }
 .ml-2 { margin-left: 0.5rem; }
 
-/* Text colors */
 .text-blue { color: var(--color-blue-interactive); }
 .text-purple { color: var(--color-purple-bold); }
 .text-orange { color: var(--color-orange-deep); }
@@ -799,20 +788,17 @@ kbd {
 .text-teal { color: var(--color-teal-data); }
 .text-dark-blue { color: var(--color-primary-dark-blue); }
 
-/* Background colors */
 .bg-blue { background-color: var(--color-bg-blue); }
 .bg-purple { background-color: var(--color-bg-purple); }
 .bg-orange { background-color: var(--color-bg-orange); }
 .bg-green { background-color: var(--color-bg-green); }
 .bg-teal { background-color: var(--color-bg-teal); }
 
-/* Border colors */
 .border-blue { border-color: var(--color-blue-interactive); }
 .border-purple { border-color: var(--color-purple-bold); }
 .border-orange { border-color: var(--color-orange-deep); }
 .border-green { border-color: var(--color-green-data); }
 .border-teal { border-color: var(--color-teal-data); }
-
 
 /* ==========================================================================
    CUSTOM TOOLTIP STYLING
@@ -865,7 +851,7 @@ button[title]:hover::before {
 @media (max-width: 860px) {
   .legend,
   .chart-legend {
-    font-size: 0.75rem;
+    font-size: 0.875rem;
   }
 }
 
@@ -873,13 +859,11 @@ button[title]:hover::before {
   body {
     padding: 1rem;
   }
-  
   .card {
     padding: 1rem;
   }
-  
   .card-title {
-    font-size: 1.125rem;
+    font-size: 1.25rem;
   }
 }
 
@@ -887,13 +871,10 @@ button[title]:hover::before {
   .card {
     padding: 0.875rem;
   }
-  
   .card-title {
-    font-size: 1rem;
+    font-size: 1.125rem;
   }
 }
-
-/* Force table view on narrow screens (600px) */
 
 /* Disabled button state */
 .toggle-btn:disabled,
@@ -907,7 +888,6 @@ button[title]:hover::before {
   box-shadow: none !important;
 }
 
-/* Additional specificity for disabled chart button */
 #view-chart-btn[disabled],
 #view-chart-btn[disabled]:hover,
 #view-chart-btn[disabled]:focus,
@@ -921,8 +901,6 @@ button[title]:hover::before {
   border-color: var(--color-gray-300) !important;
 }
 
-
-/* Force-table behavior - applies whenever class is present */
 .force-table #view-chart-btn,
 .force-table #view-chart-btn:hover,
 .force-table #view-chart-btn:focus,
@@ -940,7 +918,6 @@ button[title]:hover::before {
   .force-table #chart-container {
     display: none !important;
   }
-  
   .force-table #table-container {
     display: block !important;
   }
@@ -956,26 +933,31 @@ button[title]:hover::before {
   .view-controls {
     display: none;
   }
-  
   .card {
     break-inside: avoid;
     page-break-inside: avoid;
   }
-  
   #chart-container {
     display: none;
   }
-  
   #table-container {
     display: block !important;
   }
 }
 
+/* Disable ALL transitions and animations for users who prefer reduced motion */
 @media (prefers-reduced-motion: reduce) {
-  * {
+  *,
+  *::before,
+  *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+    transition-delay: 0ms !important;
     scroll-behavior: auto !important;
+  }
+
+  .skip-link {
+    transition: none !important;
   }
 }
