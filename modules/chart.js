@@ -98,7 +98,7 @@ export function renderChart(calculations, selectedModel) {
     },
     options: {
       // Respect prefers-reduced-motion: disable animation entirely
-      animation: prefersReducedMotion ? false : { duration: 400 },
+      animation: prefersReducedMotion ? { duration: 0 } : { duration: 400 },
       responsive: true,
       maintainAspectRatio: false,
       interaction: {
@@ -136,12 +136,12 @@ export function renderChart(calculations, selectedModel) {
           title: {
             display: true,
             text: 'Time Period',
-            font: { weight: 'bold', size: 12 },
+            font: { size: 13, weight: '600', family: "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif" },
             color: '#1f2937'
           },
           ticks: {
             color: '#1f2937',
-            font: { weight: 'bold', size: 11 }
+            font: { size: 13, weight: '600', family: "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif" }
           },
           grid: { display: false }
         },
@@ -149,12 +149,12 @@ export function renderChart(calculations, selectedModel) {
           title: {
             display: true,
             text: 'Cash Flows (USD)',
-            font: { weight: 'bold', size: 12 },
+            font: { size: 13, weight: '600', family: "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif" },
             color: '#1f2937'
           },
           ticks: {
             color: '#1f2937',
-            font: { weight: 'bold', size: 11 },
+            font: { size: 13, weight: '600', family: "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif" },
             callback: function(value) {
               const formatted = new Intl.NumberFormat('en-US', {
                 minimumFractionDigits: 0,
@@ -206,7 +206,7 @@ export function renderChart(calculations, selectedModel) {
               
               ctx.save();
               ctx.fillStyle = '#1f2937';
-              ctx.font = 'bold 11px sans-serif';
+              ctx.font = "700 13px -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif";
               ctx.textAlign = 'center';
               ctx.textBaseline = 'bottom';
               ctx.fillText(displayLabel, bar.x, labelY);
