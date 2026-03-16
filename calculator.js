@@ -125,6 +125,19 @@ function setupInputs() {
 }
 
 /* ---------- CALCULATIONS ---------- */
+
+// Announce results to SR users after a 1s pause — prevents
+// repeated announcements when the user is cycling a spinner.
+const announceResults = debounce(() => {
+  const region = $('#calculation-announcement');
+  if (!region) return;
+  region.textContent = '';
+  // Brief timeout so the clear registers before the new text
+  setTimeout(() => {
+    region.textContent = 'Results updated.';
+  }, 50);
+}, 1000);
+
 function updateCalculations() {
   const { inputs, errors } = state;
   if (hasErrors(errors)) {
@@ -142,6 +155,7 @@ function updateCalculations() {
       shortYears: inputs.shortYears,
     });
     setState({ calculations });
+    announceResults();
   } catch (e) {
     console.error(e);
     setState({ calculations: null });
@@ -181,6 +195,15 @@ function selectModel(model) {
     const modelList = models.split(' ');
     const shouldShow = model === 'all' ? modelList.length > 0 : modelList.includes(model);
     row.style.display = shouldShow ? '' : 'none';
+  });
+
+  // Show only the relevant formula box (all three visible when 'all' is selected)
+  document.querySelectorAll('.formula-box').forEach(box => {
+    if (model === 'all') {
+      box.style.display = '';
+    } else {
+      box.style.display = box.classList.contains(model) ? '' : 'none';
+    }
   });
   
   setState({ selectedModel: model });
