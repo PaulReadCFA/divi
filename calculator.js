@@ -198,6 +198,7 @@ function selectModel(model) {
   });
 
   // Show only the relevant formula box (all three visible when 'all' is selected)
+  const equationsGrid = document.querySelector('.model-equations-grid');
   document.querySelectorAll('.formula-box').forEach(box => {
     if (model === 'all') {
       box.style.display = '';
@@ -205,6 +206,9 @@ function selectModel(model) {
       box.style.display = box.classList.contains(model) ? '' : 'none';
     }
   });
+  if (equationsGrid) {
+    equationsGrid.classList.toggle('single-model', model !== 'all');
+  }
   
   setState({ selectedModel: model });
   
