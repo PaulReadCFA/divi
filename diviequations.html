@@ -1,36 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dividend Discount Model — Reference Equations</title>
-
-  <!-- MathJax 2.7.7 -->
-  <script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-      MathML: { extensions: ["content-mathml.js"] },
-      "HTML-CSS": { scale: 95, linebreaks: { automatic: true } },
-      menuSettings: { explorer: false },
-      MathEvents: { removeElement: null },
-      skipStartupTypeset: false
-    });
-    MathJax.Hub.Register.StartupHook("End", function () {
-      MathJax.Hub.Queue(function () {
-        document.querySelectorAll('.MathJax[tabindex]').forEach(function(el) {
-          el.removeAttribute('tabindex');
-        });
-      });
-    });
-  </script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=MML_HTMLorMML"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dividend Discount Model Reference Equations | CFA Institute</title>
 
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;600;700&display=swap');
-
-    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
     body {
-      font-family: 'Lato', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       font-size: 1rem;
       color: #1f2937;
       background: #ffffff;
@@ -57,6 +40,11 @@
       color: #374151;
     }
 
+    .equation-label math {
+      font-family: "STIX Two Math", "Cambria Math", "Latin Modern Math", serif;
+      font-size: 1em;
+    }
+
     .equation-display {
       overflow-x: auto;
       overflow-y: hidden;
@@ -64,21 +52,30 @@
       max-width: 100%;
     }
 
-    .equation-display::-webkit-scrollbar { height: 6px; }
-    .equation-display::-webkit-scrollbar-track { background: transparent; }
+    .equation-display::-webkit-scrollbar {
+      height: 6px;
+    }
+
+    .equation-display::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
     .equation-display::-webkit-scrollbar-thumb {
-      background: rgba(0,0,0,0.2);
+      background: rgba(0, 0, 0, 0.2);
       border-radius: 3px;
     }
-    .equation-display::-webkit-scrollbar-thumb:hover { background: rgba(0,0,0,0.3); }
+
+    .equation-display::-webkit-scrollbar-thumb:hover {
+      background: rgba(0, 0, 0, 0.3);
+    }
 
     .equation-display math {
+      font-family: "STIX Two Math", "Cambria Math", "Latin Modern Math", serif;
       font-size: 1.1rem;
       display: inline-block;
       min-width: max-content;
     }
 
-    /* Stack vertically at narrow widths / high zoom */
     @media (max-width: 700px) {
       .equation-row {
         grid-template-columns: 1fr;
@@ -87,11 +84,15 @@
     }
 
     @media (max-width: 640px) {
-      .equation-display math { font-size: 0.95rem; }
+      .equation-display math {
+        font-size: 0.95rem;
+      }
     }
 
     @media (max-width: 480px) {
-      .equation-display math { font-size: 0.85rem; }
+      .equation-display math {
+        font-size: 0.85rem;
+      }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -101,13 +102,41 @@
       }
     }
   </style>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      MathML: {
+        extensions: ["content-mathml.js"]
+      },
+      "HTML-CSS": {
+        scale: 95,
+        linebreaks: { automatic: true }
+      },
+      showProcessingMessages: false,
+      messageStyle: "none",
+      skipStartupTypeset: false
+    });
+
+    function removeMathJaxTabindex() {
+      document.querySelectorAll(".MathJax, .MathJax_Display, [id^='MathJax-']").forEach(function (el) {
+        el.removeAttribute("tabindex");
+      });
+    }
+
+    MathJax.Hub.Register.StartupHook("End", function () {
+      removeMathJaxTabindex();
+      setTimeout(removeMathJaxTabindex, 100);
+      setTimeout(removeMathJaxTabindex, 500);
+      setTimeout(removeMathJaxTabindex, 1000);
+    });
+  </script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=MML_HTMLorMML"></script>
 </head>
 <body>
+  <div class="equation-grid" aria-label="Reference equations for dividend discount models">
 
-  <div class="equation-grid" role="list" aria-label="Reference equations for Dividend Discount Models">
-
-    <!-- Constant Dividend (Equation 10) -->
-    <div class="equation-row" role="listitem">
+    <div class="equation-row">
       <div class="equation-label">Constant Dividend (Equation 10):</div>
       <div class="equation-display">
         <math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
@@ -120,7 +149,11 @@
             <mfrac>
               <msub>
                 <mi mathcolor="#b95b1d">Div</mi>
-                <mrow><mi>t</mi><mo>+</mo><mn>1</mn></mrow>
+                <mrow>
+                  <mi>t</mi>
+                  <mo>+</mo>
+                  <mn>1</mn>
+                </mrow>
               </msub>
               <mi mathcolor="#733599">r</mi>
             </mfrac>
@@ -129,8 +162,7 @@
       </div>
     </div>
 
-    <!-- Constant Dividend Growth (Equation 14) -->
-    <div class="equation-row" role="listitem">
+    <div class="equation-row">
       <div class="equation-label">Constant Dividend Growth (Equation 14):</div>
       <div class="equation-display">
         <math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
@@ -146,7 +178,11 @@
                   <mi mathcolor="#b95b1d">Div</mi>
                   <mi>t</mi>
                 </msub>
-                <mo>(</mo><mn>1</mn><mo>+</mo><mi mathcolor="#15803d">g</mi><mo>)</mo>
+                <mo>(</mo>
+                <mn>1</mn>
+                <mo>+</mo>
+                <mi mathcolor="#15803d">g</mi>
+                <mo>)</mo>
               </mrow>
               <mrow>
                 <mi mathcolor="#733599">r</mi>
@@ -158,7 +194,11 @@
             <mfrac>
               <msub>
                 <mi mathcolor="#b95b1d">Div</mi>
-                <mrow><mi>t</mi><mo>+</mo><mn>1</mn></mrow>
+                <mrow>
+                  <mi>t</mi>
+                  <mo>+</mo>
+                  <mn>1</mn>
+                </mrow>
               </msub>
               <mrow>
                 <mi mathcolor="#733599">r</mi>
@@ -171,8 +211,7 @@
       </div>
     </div>
 
-    <!-- Changing Dividend Growth (Equation 15) -->
-    <div class="equation-row" role="listitem">
+    <div class="equation-row">
       <div class="equation-label">Changing Dividend Growth (Equation 15):</div>
       <div class="equation-display">
         <math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
@@ -184,7 +223,11 @@
             <mo>=</mo>
             <munderover>
               <mo>&#x2211;</mo>
-              <mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow>
+              <mrow>
+                <mi>i</mi>
+                <mo>=</mo>
+                <mn>1</mn>
+              </mrow>
               <mi mathcolor="#3c6ae5">n</mi>
             </munderover>
             <mfrac>
@@ -194,34 +237,76 @@
                   <mi>t</mi>
                 </msub>
                 <msup>
-                  <mrow><mo>(</mo><mn>1</mn><mo>+</mo><msub><mi mathcolor="#15803d">g</mi><mi>s</mi></msub><mo>)</mo></mrow>
+                  <mrow>
+                    <mo>(</mo>
+                    <mn>1</mn>
+                    <mo>+</mo>
+                    <msub>
+                      <mi mathcolor="#15803d">g</mi>
+                      <mi>s</mi>
+                    </msub>
+                    <mo>)</mo>
+                  </mrow>
                   <mi>i</mi>
                 </msup>
               </mrow>
               <msup>
-                <mrow><mo>(</mo><mn>1</mn><mo>+</mo><mi mathcolor="#733599">r</mi><mo>)</mo></mrow>
+                <mrow>
+                  <mo>(</mo>
+                  <mn>1</mn>
+                  <mo>+</mo>
+                  <mi mathcolor="#733599">r</mi>
+                  <mo>)</mo>
+                </mrow>
                 <mi>i</mi>
               </msup>
             </mfrac>
             <mo>+</mo>
             <munderover>
               <mo>&#x2211;</mo>
-              <mrow><mi>j</mi><mo>=</mo><mrow><mi mathcolor="#3c6ae5">n</mi><mo>+</mo><mn>1</mn></mrow></mrow>
+              <mrow>
+                <mi>j</mi>
+                <mo>=</mo>
+                <mrow>
+                  <mi mathcolor="#3c6ae5">n</mi>
+                  <mo>+</mo>
+                  <mn>1</mn>
+                </mrow>
+              </mrow>
               <mo>&#x221E;</mo>
             </munderover>
             <mfrac>
               <mrow>
                 <msub>
                   <mi mathcolor="#b95b1d">Div</mi>
-                  <mrow><mi>t</mi><mo>+</mo><mi>n</mi></mrow>
+                  <mrow>
+                    <mi>t</mi>
+                    <mo>+</mo>
+                    <mi>n</mi>
+                  </mrow>
                 </msub>
                 <msup>
-                  <mrow><mo>(</mo><mn>1</mn><mo>+</mo><msub><mi mathcolor="#15803d">g</mi><mi>l</mi></msub><mo>)</mo></mrow>
+                  <mrow>
+                    <mo>(</mo>
+                    <mn>1</mn>
+                    <mo>+</mo>
+                    <msub>
+                      <mi mathcolor="#15803d">g</mi>
+                      <mi>l</mi>
+                    </msub>
+                    <mo>)</mo>
+                  </mrow>
                   <mi>j</mi>
                 </msup>
               </mrow>
               <msup>
-                <mrow><mo>(</mo><mn>1</mn><mo>+</mo><mi mathcolor="#733599">r</mi><mo>)</mo></mrow>
+                <mrow>
+                  <mo>(</mo>
+                  <mn>1</mn>
+                  <mo>+</mo>
+                  <mi mathcolor="#733599">r</mi>
+                  <mo>)</mo>
+                </mrow>
                 <mi>j</mi>
               </msup>
             </mfrac>
@@ -231,6 +316,5 @@
     </div>
 
   </div>
-
 </body>
 </html>

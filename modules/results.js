@@ -75,11 +75,6 @@ export function renderResults(calculations, selectedModel) {
       description.className = 'result-description';
       description.textContent = metadata.description;
       box.appendChild(description);
-      
-      const formula = document.createElement('div');
-      formula.className = 'result-formula';
-      formula.textContent = metadata.formula;
-      box.appendChild(formula);
     }
     
     container.appendChild(box);
