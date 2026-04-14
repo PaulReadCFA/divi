@@ -7,7 +7,7 @@ import { renderResults } from './modules/results.js';
 import { renderChart, destroyChart } from './modules/chart.js';
 import { renderTable } from './modules/table.js';
 import { renderEquations } from './modules/equations.js';
-import { $, listen, debounce } from './modules/utils.js';
+import { $, listen, debounce, clampNumericInputLength, NUMERIC_INPUT_MAX_CHARS } from './modules/utils.js';
 import {
   validateAll,
   validateField,
@@ -118,8 +118,12 @@ function setupInputs() {
       }
     }, 300);
 
-    listen(el, 'input', handler);
-    listen(el, 'change', handler);
+    const onInput = () => {
+      clampNumericInputLength(el, NUMERIC_INPUT_MAX_CHARS);
+      handler();
+    };
+    listen(el, 'input', onInput);
+    listen(el, 'change', onInput);
     listen(el, 'blur', handler);
   });
 }

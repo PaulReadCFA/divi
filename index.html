@@ -143,18 +143,23 @@
           <button id="model-changing-btn" class="model-btn" data-model="changing" aria-pressed="false">Changing Dividend Growth</button>
         </fieldset>
 
-        <p class="calculator-instructions">
-          Select a dividend discount model above, then enter your stock valuation inputs below. The equations, calculations, and visualizations will update automatically as you change the values.
+        <p class="equation-intro">
+          Select a dividend discount model above, then enter your stock valuation inputs below. The calculations and visualizations will update automatically as you change the values.
         </p>
+
+        <div id="validation-summary" class="validation-summary" role="alert" aria-live="polite" style="display:none;">
+          <div class="validation-title">Please correct the following:</div>
+          <ul id="validation-list"></ul>
+        </div>
 
         <!-- Input Grid -->
         <div class="input-grid">
 
           <div class="input-row" data-models="constant growth changing">
-            <label for="D0">Current Dividend (<span style="color: #b95b1d; font-style: italic;">Div<sub style="color: #000;">t</sub></span>):</label>
-            <div class="input-wrapper">
-              <span class="input-prefix">USD</span>
-              <input type="number" id="D0" class="input-field-inline"
+            <label for="D0">Current dividend (<span style="color: #b95b1d; font-style: italic;">Div<sub style="color: #000;">t</sub></span>):</label>
+            <div class="input-with-suffix-inline">
+              <span class="input-prefix-inline">USD</span>
+              <input type="number" id="D0" class="input-field-inline input-with-prefix"
                      min="0.1" max="1000" step="0.1" value="5.0"
                      inputmode="decimal"
                      aria-required="true" aria-describedby="D0-help">
@@ -163,70 +168,65 @@
           </div>
 
           <div class="input-row" data-models="constant growth changing">
-            <label for="required">Required Return (<span style="color: #733599; font-style: italic;">r</span>):</label>
-            <div class="input-wrapper">
+            <label for="required">Required return (<span style="color: #733599; font-style: italic;">r</span>):</label>
+            <div class="input-with-suffix-inline">
               <input type="number" id="required" class="input-field-inline"
                      min="0.1" max="50" step="0.1" value="10.0"
                      inputmode="decimal"
                      aria-required="true" aria-describedby="required-help">
-              <span class="input-suffix">%</span>
+              <span class="input-suffix-inline">%</span>
               <span id="required-help" class="sr-only">The minimum annual return investors expect from this stock</span>
             </div>
           </div>
 
           <div class="input-row" data-models="growth">
-            <label for="gConst">Constant Dividend Growth (<span style="color: #15803d; font-style: italic;">g</span>):</label>
-            <div class="input-wrapper">
+            <label for="gConst">Constant dividend growth (<span style="color: #15803d; font-style: italic;">g</span>):</label>
+            <div class="input-with-suffix-inline">
               <input type="number" id="gConst" class="input-field-inline"
                      min="-10" max="30" step="0.1" value="5.0"
                      inputmode="decimal"
                      aria-required="true" aria-describedby="gConst-help">
-              <span class="input-suffix">%</span>
+              <span class="input-suffix-inline">%</span>
               <span id="gConst-help" class="sr-only">Expected annual dividend growth rate for the Gordon Growth Model</span>
             </div>
           </div>
 
           <div class="input-row" data-models="changing">
-            <label for="gShort">Short-Term Growth (<span style="color: #15803d; font-style: italic;">g<sub>s</sub></span>):</label>
-            <div class="input-wrapper">
+            <label for="gShort">Short-term growth (<span style="color: #15803d; font-style: italic;">g<sub>s</sub></span>):</label>
+            <div class="input-with-suffix-inline">
               <input type="number" id="gShort" class="input-field-inline"
                      min="-10" max="50" step="0.1" value="8.0"
                      inputmode="decimal"
                      aria-required="true" aria-describedby="gShort-help">
-              <span class="input-suffix">%</span>
+              <span class="input-suffix-inline">%</span>
               <span id="gShort-help" class="sr-only">High growth rate during the initial growth phase</span>
             </div>
           </div>
 
           <div class="input-row" data-models="changing">
-            <label for="gLong">Long-Term Growth (<span style="color: #15803d; font-style: italic;">g<sub>l</sub></span>):</label>
-            <div class="input-wrapper">
+            <label for="gLong">Long-term growth (<span style="color: #15803d; font-style: italic;">g<sub>l</sub></span>):</label>
+            <div class="input-with-suffix-inline">
               <input type="number" id="gLong" class="input-field-inline"
                      min="-10" max="30" step="0.1" value="3.0"
                      inputmode="decimal"
                      aria-required="true" aria-describedby="gLong-help">
-              <span class="input-suffix">%</span>
+              <span class="input-suffix-inline">%</span>
               <span id="gLong-help" class="sr-only">Sustainable growth rate after the high growth phase ends</span>
             </div>
           </div>
 
           <div class="input-row" data-models="changing">
-            <label for="shortYears">Short-term Period (<span style="color: #0079a6; font-style: italic;">n</span>):</label>
-            <div class="input-wrapper">
+            <label for="shortYears">Short-term period (<span style="color: #0079a6; font-style: italic;">n</span>):</label>
+            <div class="input-with-suffix-inline input-with-suffix-wide">
               <input type="number" id="shortYears" class="input-field-inline"
                      min="1" max="10" step="1" value="5"
                      inputmode="numeric"
                      aria-required="true" aria-describedby="shortYears-help">
-              <span class="input-suffix">years</span>
+              <span class="input-suffix-inline">years</span>
               <span id="shortYears-help" class="sr-only">Number of years the company will grow at the high rate</span>
             </div>
           </div>
 
-        </div>
-
-        <div id="validation-summary" class="validation-summary" role="alert" aria-live="polite" style="display:none;">
-          <div class="validation-title">Please correct the following:</div>
-          <ul id="validation-list"></ul>
         </div>
       </section>
 
