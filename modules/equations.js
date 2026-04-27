@@ -210,7 +210,8 @@ function renderChangingEquation(inputs, result) {
     pvHighGrowth += div / Math.pow(1 + r / 100, t);
   }
 
-  const terminalDiv = D0 * Math.pow(1 + gShort / 100, n) * (1 + gLong / 100);
+  const divAtN = D0 * Math.pow(1 + gShort / 100, n);
+  const terminalDiv = divAtN * (1 + gLong / 100);
   const terminal = terminalDiv / (r / 100 - gLong / 100);
   const pvTerminal = terminal / Math.pow(1 + r / 100, n);
 
@@ -241,10 +242,7 @@ function renderChangingEquation(inputs, result) {
             </munderover>
             <mfrac linethickness="1px">
               <mrow>
-                <msub>
-                  <mi mathcolor="${COLORS.D0}">Div</mi>
-                  <mi>t</mi>
-                </msub>
+                <mtext mathvariant="bold" mathcolor="${COLORS.D0}">USD ${divAtN.toFixed(2)}</mtext>
                 <msup>
                   <mrow><mo>(</mo><mn>1</mn><mo>+</mo><mtext mathcolor="${COLORS.g}" mathsize="0.7em">${gShort.toFixed(1)}%</mtext><mo>)</mo></mrow>
                   <mi>i</mi>
@@ -267,10 +265,7 @@ function renderChangingEquation(inputs, result) {
             </munderover>
             <mfrac linethickness="1px">
               <mrow>
-                <msub>
-                  <mi mathcolor="${COLORS.D0}">Div</mi>
-                  <mrow><mi>t</mi><mo>+</mo><mn mathcolor="${COLORS.n}">${n}</mn></mrow>
-                </msub>
+                <mtext mathvariant="bold" mathcolor="${COLORS.D0}">USD ${terminalDiv.toFixed(2)}</mtext>
                 <msup>
                   <mrow><mo>(</mo><mn>1</mn><mo>+</mo><mtext mathcolor="${COLORS.g}" mathsize="0.7em">${gLong.toFixed(1)}%</mtext><mo>)</mo></mrow>
                   <mi>j</mi>
