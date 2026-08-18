@@ -418,3 +418,117 @@
 .changing-equation-scroll::-webkit-scrollbar {
   height: 0;
 }
+
+/* ==========================================================================
+   Moved from local cfa-base (Phase 2 unify) — explorer-only overrides
+   ========================================================================== */
+
+.view-controls .legend,
+.view-controls .chart-legend{
+  flex: 1;
+  margin-bottom: 0;
+}
+
+.calculator-instructions{
+  font-size: 1rem;
+  color: var(--color-gray-600);
+  margin-top: 1rem;
+  margin-bottom: 1.25rem;
+  line-height: 1.5;
+  text-align: left;
+}
+
+.data-table tbody tr:nth-child(odd){
+  background-color: white;
+}
+
+@media (max-width: 768px) {
+.table-card-layout .data-table tbody tr:nth-child(even),
+  .table-card-layout .data-table tbody tr:nth-child(odd){
+    background: white;
+  }
+}
+
+.validation-summary a{
+  color: var(--color-red-800);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.validation-summary a:hover{
+  text-decoration: underline;
+}
+
+.validation-summary a:focus{
+  outline: 2px solid var(--color-red-700);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+button[title]{
+  position: relative;
+}
+
+button[title]:hover::after{
+  content: attr(title);
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--color-gray-900);
+  color: white;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.375rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  white-space: nowrap;
+  z-index: 1000;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  pointer-events: none;
+}
+
+button[title]:hover::before{
+  content: '';
+  position: absolute;
+  bottom: calc(100% + 2px);
+  left: 50%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-top-color: var(--color-gray-900);
+  z-index: 1001;
+  pointer-events: none;
+}
+
+@media (max-width: 640px) {
+button[title]:hover::after{
+    white-space: normal;
+    max-width: 240px;
+    text-align: center;
+  }
+}
+
+#view-chart-btn[disabled],
+#view-chart-btn[disabled]:hover,
+#view-chart-btn[disabled]:focus,
+#view-chart-btn[disabled]:active{
+  opacity: 0.4 !important;
+  pointer-events: none !important;
+  cursor: not-allowed !important;
+  box-shadow: none !important;
+  background-color: var(--color-gray-300) !important;
+  color: var(--color-gray-500) !important;
+  border-color: var(--color-gray-300) !important;
+}
+
+.force-table #view-chart-btn,
+.force-table #view-chart-btn:hover,
+.force-table #view-chart-btn:focus,
+.force-table #view-chart-btn:active{
+  opacity: 0.4 !important;
+  pointer-events: none !important;
+  cursor: not-allowed !important;
+  box-shadow: none !important;
+  background-color: var(--color-gray-300) !important;
+  color: var(--color-gray-500) !important;
+  border-color: var(--color-gray-300) !important;
+}
