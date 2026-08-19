@@ -3,6 +3,17 @@
  */
 import { $ } from './utils.js';
 
+
+/** Curriculum chart label convention: 13px / 600 / Lato */
+const CHART_FONT = {
+  family: "'Lato', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+  size: 13,
+  weight: '600'
+};
+const CHART_FONT_CSS = `${CHART_FONT.weight} ${CHART_FONT.size}px ${CHART_FONT.family}`;
+const CHART_FONT_ITALIC_CSS = `italic ${CHART_FONT.weight} ${CHART_FONT.size}px ${CHART_FONT.family}`;
+
+
 const MODEL_COLORS = {
   constant: '#3c6ae5',
   growth: '#15803d',
@@ -136,12 +147,12 @@ export function renderChart(calculations, selectedModel) {
           title: {
             display: true,
             text: 'Time Period',
-            font: { size: 13, weight: '600', family: "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif" },
+            font: { size: 13, weight: '600', family: CHART_FONT.family },
             color: '#1f2937'
           },
           ticks: {
             color: '#1f2937',
-            font: { size: 13, weight: '600', family: "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif" }
+            font: { size: 13, weight: '600', family: CHART_FONT.family }
           },
           grid: { display: false }
         },
@@ -149,12 +160,12 @@ export function renderChart(calculations, selectedModel) {
           title: {
             display: true,
             text: 'Cash Flows (USD)',
-            font: { size: 13, weight: '600', family: "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif" },
+            font: { size: 13, weight: '600', family: CHART_FONT.family },
             color: '#1f2937'
           },
           ticks: {
             color: '#1f2937',
-            font: { size: 13, weight: '600', family: "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif" },
+            font: { size: 13, weight: '600', family: CHART_FONT.family },
             callback: function(value) {
               const formatted = new Intl.NumberFormat('en-US', {
                 minimumFractionDigits: 0,
@@ -206,7 +217,7 @@ export function renderChart(calculations, selectedModel) {
               
               ctx.save();
               ctx.fillStyle = '#1f2937';
-              ctx.font = "700 13px -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif";
+              ctx.font = CHART_FONT_CSS;
               ctx.textAlign = 'center';
               ctx.textBaseline = 'bottom';
               ctx.fillText(displayLabel, bar.x, labelY);
