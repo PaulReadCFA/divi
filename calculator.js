@@ -189,7 +189,7 @@ function selectModel(model) {
   });
   
   // Show/hide inputs based on selected model
-  document.querySelectorAll('.input-row').forEach(row => {
+  document.querySelectorAll('.input-inline[data-models]').forEach(row => {
     const models = row.getAttribute('data-models');
     if (!models) {
       row.style.display = '';

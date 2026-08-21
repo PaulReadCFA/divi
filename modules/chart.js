@@ -2,15 +2,19 @@
  * chart.js - Dividend Cash Flow Chart with Keyboard Accessibility
  */
 import { $ } from './utils.js';
+import { getChartTypography } from '../chart-typography.js';
 
+/** Curriculum chart label convention: 13px / 600 / Lato at the 18px design root. */
+const CHART_FONT = { family: '', size: 13, weight: '600' };
+let CHART_FONT_CSS = '';
 
-/** Curriculum chart label convention: 13px / 600 / Lato */
-const CHART_FONT = {
-  family: "'Lato', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
-  size: 13,
-  weight: '600'
-};
-const CHART_FONT_CSS = `${CHART_FONT.weight} ${CHART_FONT.size}px ${CHART_FONT.family}`;
+function syncChartTypography() {
+  const t = getChartTypography('curriculum');
+  CHART_FONT.family = t.font.family;
+  CHART_FONT.size = t.font.size;
+  CHART_FONT.weight = t.font.weight;
+  CHART_FONT_CSS = t.fontCss;
+}
 
 
 const MODEL_COLORS = {
@@ -25,6 +29,7 @@ let currentFocusIndex = 0;
 let isKeyboardMode = false;
 
 export function renderChart(calculations, selectedModel) {
+  syncChartTypography();
   const canvas = $('#chart');
   if (!canvas) return;
 
@@ -146,12 +151,12 @@ export function renderChart(calculations, selectedModel) {
           title: {
             display: true,
             text: 'Time Period',
-            font: { size: 13, weight: '600', family: CHART_FONT.family },
+            font: { size: CHART_FONT.size, weight: '600', family: CHART_FONT.family },
             color: '#1f2937'
           },
           ticks: {
             color: '#1f2937',
-            font: { size: 13, weight: '600', family: CHART_FONT.family }
+            font: { size: CHART_FONT.size, weight: '600', family: CHART_FONT.family }
           },
           grid: { display: false }
         },
@@ -159,12 +164,12 @@ export function renderChart(calculations, selectedModel) {
           title: {
             display: true,
             text: 'Cash Flows (USD)',
-            font: { size: 13, weight: '600', family: CHART_FONT.family },
+            font: { size: CHART_FONT.size, weight: '600', family: CHART_FONT.family },
             color: '#1f2937'
           },
           ticks: {
             color: '#1f2937',
-            font: { size: 13, weight: '600', family: CHART_FONT.family },
+            font: { size: CHART_FONT.size, weight: '600', family: CHART_FONT.family },
             callback: function(value) {
               const formatted = new Intl.NumberFormat('en-US', {
                 minimumFractionDigits: 0,

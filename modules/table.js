@@ -1,7 +1,7 @@
 /**
  * table.js – Add data-label for mobile stacking
  */
-import { $ } from './utils.js';
+import { $, applyTableRoles } from './utils.js';
 
 export function renderTable(calculations, selectedModel) {
   const table = $('#data-table');
@@ -21,11 +21,10 @@ export function renderTable(calculations, selectedModel) {
     growth: 'Constant Dividend Growth',
     changing: 'Changing Dividend Growth',
   };
-
-  const modelColors = {
-    constant: '#3c6ae5',
-    growth: '#15803d',
-    changing: '#7a46ff',
+  const modelTableClasses = {
+    constant: 'table-var-2',
+    growth: 'table-var-5',
+    changing: 'table-var-3',
   };
 
   let html = `
@@ -37,7 +36,7 @@ export function renderTable(calculations, selectedModel) {
 
   // Add (USD) to column headers
   modelsToShow.forEach(m => {
-    html += `<th scope="col" class="text-right">${modelNames[m]} (USD)</th>`;
+    html += `<th scope="col" class="text-right ${modelTableClasses[m]}">${modelNames[m]} (USD)</th>`;
   });
 
   html += `</tr></thead><tbody>`;
@@ -51,9 +50,7 @@ export function renderTable(calculations, selectedModel) {
       const flow = calculations[m].cashFlows.find(c => c.year === cf.year);
       const val = flow ? flow.dividend : 0;
       const formatted = formatCurrency(val, true);
-      // Colour the numeric cell text using the model's color
-      const color = modelColors[m] || '#000';
-      html += `<td class="text-right" data-label="${modelNames[m]} (USD)"><span style="color: ${color};">${formatted}</span></td>`;
+      html += `<td class="text-right" data-label="${modelNames[m]} (USD)"><span class="cell-value ${modelTableClasses[m]}">${formatted}</span></td>`;
     });
 
     html += `</tr>`;
@@ -62,20 +59,20 @@ export function renderTable(calculations, selectedModel) {
   // Footer – Stock Price only
   html += `<tfoot><tr>`;
   
-  // Label changes based on which models are shown - curriculum accurate with color coding
+  // Label changes based on which models are shown.
   const priceLabel = 'Stock Price (USD)';
   
   html += `
-      <th scope="row" class="text-left" style="border-top: 2px solid var(--color-gray-400); padding-top: 0.75rem;">${priceLabel}</th>`;
+      <th scope="row" class="text-left">${priceLabel}</th>`;
   modelsToShow.forEach(m => {
     const price = calculations[m].price;
     const txt = isFinite(price) ? formatCurrency(price) : 'Invalid';
-    const color = modelColors[m];
-    html += `<td class="text-right" data-label="${modelNames[m]} (USD)" style="border-top: 2px solid var(--color-gray-400); padding-top: 0.75rem;"><strong style="color: ${color};">${txt}</strong></td>`;
+    html += `<td class="text-right" data-label="${modelNames[m]} (USD)"><span class="cell-value ${modelTableClasses[m]}"><strong>${txt}</strong></span></td>`;
   });
   html += `</tr></tfoot>`;
 
   table.innerHTML = html;
+  applyTableRoles(table);
 }
 
 function formatCurrency(amount, showNegativeAsParens = false) {
