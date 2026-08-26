@@ -12,9 +12,9 @@
   --color-dividend-growth: var(--color-green-data);
   --color-dividend-changing: var(--color-purple-bold);
   --color-dividend-d: var(--color-orange-deep);
-  --color-dividend-r: #733599;                 /* matches the MathML equations for r */
+  --color-dividend-r: var(--color-purple-bold);                 /* matches the MathML equations for r */
   --color-dividend-g: var(--color-green-data);
-  --color-dividend-g-text: #15803d;            /* matches the chart + MathML equations for g */
+  --color-dividend-g-text: var(--color-dividend-g);            /* matches the chart + MathML equations for g */
   
   --color-model-constant: var(--color-dividend-constant);
   --color-model-growth: var(--color-dividend-growth);
@@ -250,6 +250,10 @@
 .label-var-growth   { color: var(--color-dividend-g-text); }
 .label-var-periods  { color: var(--color-teal-data); }
 
+.legend-swatch-constant { background-color: var(--color-dividend-constant); }
+.legend-swatch-growth { background-color: var(--color-dividend-growth); }
+.legend-swatch-changing { background-color: var(--color-dividend-changing); }
+
 #data-entry #validation-summary {
   margin-top: 0;
   margin-bottom: 0.75rem;
@@ -295,12 +299,6 @@
    Moved from local cfa-base (Phase 2 unify) — explorer-only overrides
    ========================================================================== */
 
-.view-controls .legend,
-.view-controls .chart-legend{
-  flex: 1;
-  margin-bottom: 0;
-}
-
 .calculator-instructions{
   font-size: 1rem;
   color: var(--color-gray-600);
@@ -324,30 +322,4 @@
   outline: 2px solid var(--color-red-700);
   outline-offset: 2px;
   border-radius: 2px;
-}
-
-#view-chart-btn[disabled],
-#view-chart-btn[disabled]:hover,
-#view-chart-btn[disabled]:focus,
-#view-chart-btn[disabled]:active{
-  opacity: 0.4 !important;
-  pointer-events: none !important;
-  cursor: not-allowed !important;
-  box-shadow: none !important;
-  background-color: var(--color-gray-300) !important;
-  color: var(--color-gray-500) !important;
-  border-color: var(--color-gray-300) !important;
-}
-
-.force-table #view-chart-btn,
-.force-table #view-chart-btn:hover,
-.force-table #view-chart-btn:focus,
-.force-table #view-chart-btn:active{
-  opacity: 0.4 !important;
-  pointer-events: none !important;
-  cursor: not-allowed !important;
-  box-shadow: none !important;
-  background-color: var(--color-gray-300) !important;
-  color: var(--color-gray-500) !important;
-  border-color: var(--color-gray-300) !important;
 }

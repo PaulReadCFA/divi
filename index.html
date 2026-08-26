@@ -7,7 +7,7 @@
   <!-- Google Fonts: Lato (was @import in local cfa-base; load via link for shared master) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="cfa-base.css">
   <link rel="stylesheet" href="dividend-specific.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
@@ -238,8 +238,8 @@
       <div id="calculation-announcement" class="sr-only" aria-live="polite" aria-atomic="true"></div>
 
       <!-- CARD 2 - Dynamic Equations -->
-      <section class="card" id="equation-card">
-        <h4 class="card-title">Equity Cash Flow Equations</h4>
+      <section class="card" id="equation-card" aria-labelledby="equation-title">
+        <h4 class="card-title" id="equation-title">Equity Cash Flow Equations</h4>
         <p class="equation-intro">These dynamic equations display the present value of a stock and expected future dividend payments based on your inputs. The equation shown updates to match the selected model.</p>
 
         <div class="model-equations-grid">
@@ -260,7 +260,7 @@
                         <mi mathcolor="#b95b1d">Div</mi>
                         <mrow><mi>t</mi><mo>+</mo><mn>1</mn></mrow>
                       </msub>
-                      <mi mathcolor="#733599">r</mi>
+                      <mi mathcolor="#7A46FF">r</mi>
                     </mfrac>
                   </mrow>
                 </math>
@@ -268,7 +268,7 @@
               <div class="html-equation" hidden>
                 <strong style="color:#3c6ae5;">PV<sub>t</sub></strong> =
                 <span style="color:#b95b1d;">Div<sub>t+1</sub></span> &#x00F7;
-                <span style="color:#733599;">r</span>
+                <span style="color:#7A46FF;">r</span>
               </div>
             </div>
           </div>
@@ -280,39 +280,39 @@
                 <math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
                   <mrow>
                     <msub>
-                      <mi mathcolor="#15803d" mathvariant="bold">PV</mi>
+                      <mi mathcolor="#07514F" mathvariant="bold">PV</mi>
                       <mi>t</mi>
                     </msub>
                     <mo>=</mo>
                     <mfrac>
                       <mrow>
                         <msub><mi mathcolor="#b95b1d">Div</mi><mi>t</mi></msub>
-                        <mo>(</mo><mn>1</mn><mo>+</mo><mi mathcolor="#15803d">g</mi><mo>)</mo>
+                        <mo>(</mo><mn>1</mn><mo>+</mo><mi mathcolor="#07514F">g</mi><mo>)</mo>
                       </mrow>
                       <mrow>
-                        <mi mathcolor="#733599">r</mi>
+                        <mi mathcolor="#7A46FF">r</mi>
                         <mo>&#x2212;</mo>
-                        <mi mathcolor="#15803d">g</mi>
+                        <mi mathcolor="#07514F">g</mi>
                       </mrow>
                     </mfrac>
                     <mo>=</mo>
                     <mfrac>
                       <msub><mi mathcolor="#b95b1d">Div</mi><mrow><mi>t</mi><mo>+</mo><mn>1</mn></mrow></msub>
                       <mrow>
-                        <mi mathcolor="#733599">r</mi>
+                        <mi mathcolor="#7A46FF">r</mi>
                         <mo>&#x2212;</mo>
-                        <mi mathcolor="#15803d">g</mi>
+                        <mi mathcolor="#07514F">g</mi>
                       </mrow>
                     </mfrac>
                   </mrow>
                 </math>
               </div>
               <div class="html-equation" hidden>
-                <strong style="color:#15803d;">PV<sub>t</sub></strong> =
+                <strong style="color:#07514F;">PV<sub>t</sub></strong> =
                 <span style="color:#b95b1d;">Div<sub>t</sub>(1+g)</span> &#x00F7;
-                (<span style="color:#733599;">r</span> &#x2212; <span style="color:#15803d;">g</span>) =
+                (<span style="color:#7A46FF;">r</span> &#x2212; <span style="color:#07514F;">g</span>) =
                 <span style="color:#b95b1d;">Div<sub>t+1</sub></span> &#x00F7;
-                (<span style="color:#733599;">r</span> &#x2212; <span style="color:#15803d;">g</span>)
+                (<span style="color:#7A46FF;">r</span> &#x2212; <span style="color:#07514F;">g</span>)
               </div>
             </div>
           </div>
@@ -340,12 +340,12 @@
                           <mrow>
                             <msub><mi mathcolor="#b95b1d">Div</mi><mi>t</mi></msub>
                             <msup>
-                              <mrow><mo>(</mo><mn>1</mn><mo>+</mo><msub><mi mathcolor="#15803d">g</mi><mi mathcolor="#15803d">s</mi></msub><mo>)</mo></mrow>
+                              <mrow><mo>(</mo><mn>1</mn><mo>+</mo><msub><mi mathcolor="#07514F">g</mi><mi mathcolor="#07514F">s</mi></msub><mo>)</mo></mrow>
                               <mi>i</mi>
                             </msup>
                           </mrow>
                           <msup>
-                            <mrow><mo>(</mo><mn>1</mn><mo>+</mo><mi mathcolor="#733599">r</mi><mo>)</mo></mrow>
+                            <mrow><mo>(</mo><mn>1</mn><mo>+</mo><mi mathcolor="#7A46FF">r</mi><mo>)</mo></mrow>
                             <mi>i</mi>
                           </msup>
                         </mfrac>
@@ -359,12 +359,12 @@
                           <mrow>
                             <msub><mi mathcolor="#b95b1d">Div</mi><mrow><mi>t</mi><mo>+</mo><mi>n</mi></mrow></msub>
                             <msup>
-                              <mrow><mo>(</mo><mn>1</mn><mo>+</mo><msub><mi mathcolor="#15803d">g</mi><mi mathcolor="#15803d">l</mi></msub><mo>)</mo></mrow>
+                              <mrow><mo>(</mo><mn>1</mn><mo>+</mo><msub><mi mathcolor="#07514F">g</mi><mi mathcolor="#07514F">l</mi></msub><mo>)</mo></mrow>
                               <mi>j</mi>
                             </msup>
                           </mrow>
                           <msup>
-                            <mrow><mo>(</mo><mn>1</mn><mo>+</mo><mi mathcolor="#733599">r</mi><mo>)</mo></mrow>
+                            <mrow><mo>(</mo><mn>1</mn><mo>+</mo><mi mathcolor="#7A46FF">r</mi><mo>)</mo></mrow>
                             <mi>j</mi>
                           </msup>
                         </mfrac>

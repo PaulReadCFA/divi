@@ -14,7 +14,7 @@ const MODEL_META = {
   },
   growth: {
     name: 'Constant Dividend Growth',
-    color: '#15803d',
+    color: '#07514F',
     description: 'Constant growth rate',
     formula: 'P = D\u2081 \u00F7 (r \u2212 g)'
   },

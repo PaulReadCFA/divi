@@ -19,7 +19,7 @@ function syncChartTypography() {
 
 const MODEL_COLORS = {
   constant: '#3c6ae5',
-  growth: '#15803d',
+  growth: '#07514F',
   changing: '#7a46ff',
   darkText: '#06005a'
 };
@@ -65,7 +65,7 @@ export function renderChart(calculations, selectedModel) {
       modelsToShow.forEach(modelKey => {
         legendHTML += `
           <div class="legend-item">
-            <span class="legend-color" style="background-color: ${MODEL_COLORS[modelKey]};"></span>
+            <span class="legend-color legend-swatch-${modelKey}"></span>
             <span>${modelNames[modelKey]}</span>
           </div>
         `;

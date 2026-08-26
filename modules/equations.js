@@ -6,11 +6,11 @@ import { $ } from './utils.js';
 
 const COLORS = {
   P_constant: '#3c6ae5',
-  P_growth: '#15803d',
+  P_growth: '#07514F',
   P_changing: '#7a46ff',
   D0: '#b95b1d',
-  r: '#733599',
-  g: '#15803d',
+  r: '#7A46FF',
+  g: '#07514F',
   n: '#0079a6'
 };
 
