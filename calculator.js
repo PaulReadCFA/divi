@@ -48,6 +48,7 @@ function init() {
 
   // Setup skip links
   setupSkipLinks();
+  runSelfTests();
 }
 
 function switchView(view) {
@@ -410,6 +411,45 @@ function clearCalculatedViews() {
 }
 
 /* ---------- START ---------- */
+function logSelfTest(name, passed, detail) {
+  if (passed) console.log(`✓ ${name}`);
+  else console.warn(`✗ ${name}${detail ? ': ' + detail : ''}`);
+}
+
+function runSelfTests() {
+  console.log('Running self-tests...');
+  const models = calculateAllModels({
+    D0: 5,
+    required: 0.10,
+    gConst: 0.05,
+    gShort: 0.08,
+    gLong: 0.03,
+    shortYears: 5,
+  });
+  logSelfTest('Defaults (constant) → P = 50', Math.abs(models.constant.price - 50) < 1e-9, `got ${models.constant.price}`);
+  logSelfTest('Growth model P = 105', Math.abs(models.growth.price - 105) < 1e-9, `got ${models.growth.price}`);
+  logSelfTest('Valid outputs are finite', Number.isFinite(models.constant.price) && Number.isFinite(models.growth.price));
+
+  const empty = validateAll({ D0: NaN, required: 10 }, getRelevantFields('constant'));
+  logSelfTest('Empty dividend is required', Boolean(empty.D0));
+
+  const range = validateAll({ D0: 1001, required: 10 }, getRelevantFields('constant'));
+  logSelfTest('Dividend above max is rejected', Boolean(range.D0));
+
+  const singularity = validateAll(
+    { D0: 5, required: 10, gConst: 10 },
+    getRelevantFields('growth')
+  );
+  logSelfTest('g ≥ r is rejected on the growth model', Boolean(singularity.gConst));
+
+  const invalidGrowth = calculateAllModels({
+    D0: 5, required: 0.10, gConst: 0.10, gShort: 0.08, gLong: 0.03, shortYears: 5
+  });
+  logSelfTest('g ≥ r produces a non-finite growth price', !Number.isFinite(invalidGrowth.growth.price));
+
+  console.log('Self-tests complete');
+}
+
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', init);
 } else {
