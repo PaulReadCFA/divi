@@ -113,9 +113,7 @@ function setupInputs() {
 
       setState({ inputs: candidate, errors });
 
-      if (!hasErrors(errors)) {
-        updateCalculations();
-      }
+      updateCalculations();
     }, 300);
 
     const onInput = () => {
@@ -234,9 +232,7 @@ function selectModel(model) {
   
   updateValidationSummary(newErrors);
   
-  if (!hasErrors(newErrors)) {
-    updateCalculations();
-  }
+  updateCalculations();
 }
 
 /* ---------- VIEW TOGGLE ---------- */
@@ -338,7 +334,10 @@ function detectNarrowScreen() {
 
 /* ---------- UPDATE ALL ---------- */
 function updateAll(s) {
-  if (!s.calculations) return;
+  if (!s.calculations) {
+    clearCalculatedViews();
+    return;
+  }
 
   renderEquations(s.inputs, s.calculations);
   renderResults(s.calculations, s.selectedModel);
@@ -364,6 +363,23 @@ function updateAll(s) {
   }
   
   updateButtonStates();
+}
+
+function clearCalculatedViews() {
+  destroyChart();
+
+  const results = $('#results-content');
+  if (results) results.innerHTML = '';
+
+  document.querySelectorAll('.formula-box .equation-container').forEach(container => {
+    container.innerHTML = '';
+  });
+
+  const table = $('#data-table');
+  if (table) table.innerHTML = '';
+
+  const legend = $('#chart-legend');
+  if (legend) legend.innerHTML = '';
 }
 
 /* ---------- START ---------- */
