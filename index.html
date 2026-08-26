@@ -401,12 +401,16 @@
         <p id="view-toggle-help" class="sr-only">
           Chart and Table act as a single toolbar: only one button is in the tab order at a time. Use left and right arrow keys to move between them. Table lists every value in one place.
         </p>
+        <p id="chart-keyboard-help" class="sr-only">
+          Use Left and Right arrow keys to move between time periods. Home moves to the first period and End moves to the last period.
+        </p>
         <div class="sr-only" aria-live="polite" aria-atomic="true" id="view-announcement"></div>
 
         <div id="chart-container" class="chart-wrapper">
-          <canvas id="chart" tabindex="0" role="application"
-                  aria-label="Bar chart showing dividend cash flows"></canvas>
-          <div id="chart-announcement" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+          <canvas id="chart" tabindex="0" role="img"
+                  aria-label="Bar chart showing dividend cash flows"
+                  aria-describedby="chart-keyboard-help"></canvas>
+          <div id="chart-point-announcement" class="sr-only" aria-live="polite" aria-atomic="true"></div>
         </div>
 
         <div id="table-container" class="table-scroll-wrapper table-card-layout" style="display:none;"

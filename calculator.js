@@ -372,6 +372,16 @@ function updateAll(s) {
     canvas: $('#chart'),
     showChart: actualView === 'chart' && !isForced,
   });
+  const chartPointAnnouncement = $('#chart-point-announcement');
+  if (chartPointAnnouncement) {
+    if (actualView === 'chart' && !isForced) {
+      chartPointAnnouncement.textContent = '';
+      chartPointAnnouncement.removeAttribute('aria-hidden');
+    } else {
+      chartPointAnnouncement.setAttribute('aria-hidden', 'true');
+      chartPointAnnouncement.textContent = '';
+    }
+  }
 
   if (actualView === 'chart' && !isForced) {
     renderChart(s.calculations, s.selectedModel);

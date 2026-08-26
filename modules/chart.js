@@ -37,7 +37,7 @@ export function renderChart(calculations, selectedModel) {
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   canvas.setAttribute('tabindex', '0');
-  canvas.setAttribute('role', 'application');
+  canvas.setAttribute('role', 'img');
   canvas.setAttribute('aria-roledescription', 'interactive chart');
   // Fixed: removed "Press Tab to focus" - element is already focused when this applies
   canvas.setAttribute(
@@ -119,14 +119,6 @@ export function renderChart(calculations, selectedModel) {
       interaction: {
         mode: 'index',
         intersect: false
-      },
-      onHover: (event, activeElements) => {
-        if (isKeyboardMode && document.activeElement === canvas) return;
-
-        if (activeElements.length > 0) {
-          const index = activeElements[0].index;
-          announceDataPoint(cashFlows[index], calculations, selectedModel, modelsToShow);
-        }
       },
       plugins: {
         legend: {
@@ -364,15 +356,8 @@ function showTooltipAtIndex(index) {
 }
 
 function announceDataPoint(cashFlow, calculations, selectedModel, modelsToShow) {
-  let liveRegion = document.getElementById('chart-live-region');
-  if (!liveRegion) {
-    liveRegion = document.createElement('div');
-    liveRegion.id = 'chart-live-region';
-    liveRegion.setAttribute('aria-live', 'polite');
-    liveRegion.setAttribute('aria-atomic', 'true');
-    liveRegion.className = 'sr-only';
-    document.body.appendChild(liveRegion);
-  }
+  const liveRegion = document.getElementById('chart-point-announcement');
+  if (!liveRegion || liveRegion.getAttribute('aria-hidden') === 'true') return;
   
   const yearLabel = cashFlow.year === 0 ? 'Initial investment' : `Year ${cashFlow.year}`;
   
