@@ -102,8 +102,8 @@ function setupInputs() {
       const val = raw === '' ? NaN : Number(raw);
 
       const candidate = { ...state.inputs, [id]: val };
-
-      const errors = validateAll(candidate);
+      const relevantFields = getRelevantFields(state.selectedModel);
+      const errors = validateAll(candidate, relevantFields);
 
       fields.forEach(f => {
         updateFieldError(f, errors[f]);

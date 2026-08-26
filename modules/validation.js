@@ -88,12 +88,12 @@ export function validateField(field, value, allInputs = {}) {
 }
 
 /* ---------- 3. ALL FIELDS ---------- */
-export function validateAll(inputs) {
+export function validateAll(inputs, fields = Object.keys(RULES)) {
   const errors = {};
-  for (const f in RULES) {
+  fields.forEach(f => {
     const err = validateField(f, inputs[f], inputs);
     if (err) errors[f] = err;
-  }
+  });
   return errors;
 }
 
