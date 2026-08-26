@@ -151,7 +151,7 @@
           Select a dividend discount model above, then enter your stock valuation inputs below. The calculations and visualizations will update automatically as you change the values.
         </p>
 
-        <div id="validation-summary" class="validation-summary" role="alert" aria-live="polite" style="display:none;">
+        <div id="validation-summary" class="validation-summary" style="display:none;">
           <div class="validation-title">Please correct the following:</div>
           <ul id="validation-list"></ul>
         </div>
@@ -390,14 +390,18 @@
                    aria-label="Chart legend"
                    aria-live="polite">
           </section>
-          <div class="button-group" role="group" aria-label="View options">
-            <button id="view-chart-btn" class="toggle-btn active" aria-pressed="true">Chart</button>
-            <button id="view-table-btn" class="toggle-btn" aria-pressed="false">Table</button>
+          <div class="button-group" role="toolbar" aria-label="Chart or table view" aria-describedby="view-toggle-help">
+            <button id="view-chart-btn" class="toggle-btn active" aria-pressed="true" aria-controls="chart-container">Chart</button>
+            <button id="view-table-btn" class="toggle-btn" aria-pressed="false" aria-controls="table-container">Table</button>
           </div>
         </div>
         <p id="chart-helper-text" class="text-xs text-gray-500" style="display: none; margin-bottom: 0.75rem;">
           Chart view is not available at narrow screen widths. Showing table view.
         </p>
+        <p id="view-toggle-help" class="sr-only">
+          Chart and Table act as a single toolbar: only one button is in the tab order at a time. Use left and right arrow keys to move between them. Table lists every value in one place.
+        </p>
+        <div class="sr-only" aria-live="polite" aria-atomic="true" id="view-announcement"></div>
 
         <div id="chart-container" class="chart-wrapper">
           <canvas id="chart" tabindex="0" role="application"
@@ -406,7 +410,7 @@
         </div>
 
         <div id="table-container" class="table-scroll-wrapper table-card-layout" style="display:none;"
-             role="region" aria-label="Dividend cash flow table" tabindex="0">
+             role="region" aria-label="Dividend cash flow table" tabindex="0" aria-hidden="true">
           <table id="data-table" class="data-table">
             <caption id="table-caption" class="sr-only">Dividend cash flow schedule</caption>
           </table>

@@ -16,6 +16,13 @@ import {
   hasErrors,
   getRelevantFields,
 } from './modules/validation.js';
+import { allFinite } from './validation-ui.js';
+import {
+  applyChartTableVisibility,
+  updateToggleButtonStates,
+  announceView,
+  VIEW_ANNOUNCEMENTS,
+} from './view-toggle.js';
 
 /* ---------- INITIALIZATION ---------- */
 function init() {
@@ -50,7 +57,9 @@ function switchView(view) {
     return;
   }
 
+  const changed = state.view !== view;
   setState({ view });
+  if (changed) announceView(VIEW_ANNOUNCEMENTS[view]);
 }
 
 /* ---------- SKIP LINKS ---------- */
@@ -156,6 +165,13 @@ function updateCalculations() {
       gLong: inputs.gLong / 100,
       shortYears: inputs.shortYears,
     });
+    const modelKeys = state.selectedModel === 'all'
+      ? ['constant', 'growth', 'changing']
+      : [state.selectedModel];
+    if (!allFinite(...modelKeys.map((key) => calculations[key]?.price))) {
+      setState({ calculations: null });
+      return;
+    }
     setState({ calculations });
     announceResults();
   } catch (e) {
@@ -261,32 +277,31 @@ function setupViewToggle() {
           }, 200);
         }
         
-        setState({ view: 'table' });
+        switchView('table');
         updateButtonStates();
         
         return false;
       }
       
-      setState({ view: 'chart' });
+      switchView('chart');
       updateButtonStates();
     }, true);
   }
 
   listen(tableBtn, 'click', () => {
-    setState({ view: 'table' });
+    switchView('table');
     updateButtonStates();
   });
 
   [chartBtn, tableBtn].forEach(btn => {
     if (!btn) return;
-    btn.tabIndex = 0;
     
     btn.addEventListener('keydown', e => {
       if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
         e.preventDefault();
         const next = btn === chartBtn ? tableBtn : chartBtn;
         next.focus();
-        setState({ view: next.id === 'view-chart-btn' ? 'chart' : 'table' });
+        switchView(next.id === 'view-chart-btn' ? 'chart' : 'table');
         updateButtonStates();
       }
     });
@@ -301,13 +316,12 @@ function updateButtonStates() {
 
   if (!chartBtn || !tableBtn) return;
 
-  chartBtn.classList.toggle('active', currentView === 'chart');
-  tableBtn.classList.toggle('active', currentView === 'table');
-  
-  chartBtn.setAttribute('aria-pressed', currentView === 'chart');
-  tableBtn.setAttribute('aria-pressed', currentView === 'table');
-  
-  chartBtn.disabled = isForced;
+  updateToggleButtonStates({
+    chartBtn,
+    tableBtn,
+    showingChart: currentView === 'chart',
+    forceTable: isForced,
+  });
 }
 
 /* ---------- NARROW SCREEN ---------- */
@@ -319,7 +333,7 @@ function detectNarrowScreen() {
   if (narrow) {
     document.body.classList.add('force-table');
     if (state.view !== 'table') {
-      setState({ view: 'table' });
+      switchView('table');
     }
     if (helper) helper.style.display = 'block';
     if (chartBtn) chartBtn.setAttribute('aria-describedby', 'chart-helper-text');
@@ -352,13 +366,16 @@ function updateAll(s) {
 
   renderTable(s.calculations, s.selectedModel);
   
+  applyChartTableVisibility({
+    chartEl: chartContainer,
+    tableEl: tableContainer,
+    canvas: $('#chart'),
+    showChart: actualView === 'chart' && !isForced,
+  });
+
   if (actualView === 'chart' && !isForced) {
-    chartContainer.style.display = 'block';
-    tableContainer.style.display = 'none';
     renderChart(s.calculations, s.selectedModel);
   } else {
-    chartContainer.style.display = 'none';
-    tableContainer.style.display = 'block';
     destroyChart();
   }
   
