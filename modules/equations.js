@@ -2,7 +2,8 @@
  * equations.js - Dynamic Equation Rendering
  * Displays equations with numeric values substituted
  */
-import { $ } from './utils.js';
+import { formatCurrencySpeech } from './utils.js';
+import { renderEquationGroup } from '../equation-render.js';
 
 const COLORS = {
   P_constant: '#3c6ae5',
@@ -18,54 +19,32 @@ const COLORS = {
  * Render all three equations with current input values
  */
 export function renderEquations(inputs, calculations) {
-  // Lock formula-box heights to prevent layout jumping during MathJax re-render
-  const formulaBoxes = document.querySelectorAll('.formula-box.constant, .formula-box.growth, .formula-box.changing');
-  const heights = new Map();
-  
-  formulaBoxes.forEach(box => {
-    const currentHeight = box.getBoundingClientRect().height;
-    heights.set(box, currentHeight);
-    box.style.height = `${currentHeight}px`;
-    box.style.minHeight = `${currentHeight}px`;
-    box.style.maxHeight = `${currentHeight}px`;
-    box.style.overflow = 'hidden';
-  });
-  
-  renderConstantEquation(inputs, calculations.constant);
-  renderGrowthEquation(inputs, calculations.growth);
-  renderChangingEquation(inputs, calculations.changing);
-  
-  if (typeof MathJax !== 'undefined' && MathJax.Hub) {
-    MathJax.Hub.Queue(["Typeset", MathJax.Hub], function() {
-      // Remove tabindex and empty nobr elements from MathJax output
-      function cleanMathJax() {
-        var mathJaxElements = document.querySelectorAll('.MathJax[tabindex]');
-        mathJaxElements.forEach(function(el) {
-          el.removeAttribute('tabindex');
-        });
-        var nobrElements = document.querySelectorAll('.formula-box nobr[aria-hidden="true"]');
-        nobrElements.forEach(function(el) {
-          if (!el.textContent.trim()) {
-            el.remove();
-          }
-        });
-      }
+  /* One shared pass so all three model boxes hold their height together and
+     the source MathML never flashes. */
+  renderEquationGroup(
+    [
+      renderConstantEquation(inputs, calculations.constant),
+      renderGrowthEquation(inputs, calculations.growth),
+      renderChangingEquation(inputs, calculations.changing),
+    ],
+    {
+      // Remove only empty layout wrappers; Explorer owns equation tabindex.
+      onTypeset: () => {
+        function cleanMathJax() {
+          var nobrElements = document.querySelectorAll('.formula-box nobr[aria-hidden="true"]');
+          nobrElements.forEach(function(el) {
+            if (!el.textContent.trim()) {
+              el.remove();
+            }
+          });
+        }
 
-      setTimeout(cleanMathJax, 10);
-      setTimeout(cleanMathJax, 100);
-      setTimeout(cleanMathJax, 500);
-      
-      // Release height lock after MathJax finishes
-      setTimeout(function() {
-        formulaBoxes.forEach(box => {
-          box.style.height = '';
-          box.style.minHeight = '';
-          box.style.maxHeight = '';
-          box.style.overflow = '';
-        });
-      }, 200);
-    });
-  }
+        setTimeout(cleanMathJax, 10);
+        setTimeout(cleanMathJax, 100);
+        setTimeout(cleanMathJax, 500);
+      },
+    }
+  );
 }
 
 /**
@@ -100,7 +79,7 @@ function renderConstantEquation(inputs, result) {
     </div>
   `;
 
-  container.innerHTML = mathML;
+  return { mount: container, markup: mathML };
 }
 
 /**
@@ -117,7 +96,9 @@ function renderGrowthEquation(inputs, result) {
   const P = result.price;
 
   if (!isFinite(P)) {
-    container.innerHTML = `
+    return {
+      mount: container,
+      markup: `
       <div style="display:flex;flex-direction:column;gap:0.75rem;align-items:center;">
         <math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
           <mrow>
@@ -133,8 +114,8 @@ function renderGrowthEquation(inputs, result) {
           Invalid (g must be &lt; r)
         </div>
       </div>
-    `;
-    return;
+    `,
+    };
   }
 
   const mathML = `
@@ -164,7 +145,7 @@ function renderGrowthEquation(inputs, result) {
     </div>
   `;
 
-  container.innerHTML = mathML;
+  return { mount: container, markup: mathML };
 }
 
 /**
@@ -186,7 +167,9 @@ function renderChangingEquation(inputs, result) {
       'aria-label',
       'Changing Dividend Growth Model equation: Invalid result. Please check that long-term growth rate is less than required return.'
     );
-    container.innerHTML = `
+    return {
+      mount: container,
+      markup: `
       <div style="display:flex;flex-direction:column;gap:0.75rem;align-items:center;">
         <math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
           <mrow>
@@ -199,8 +182,8 @@ function renderChangingEquation(inputs, result) {
           Invalid calculation - check inputs
         </div>
       </div>
-    `;
-    return;
+    `,
+    };
   }
 
   // Calculate components
@@ -217,7 +200,7 @@ function renderChangingEquation(inputs, result) {
 
   container.setAttribute(
     'aria-label',
-    `Changing Growth Model equation: Present value at time zero equals sum from i equals 1 to ${n} plus sum from j equals ${n} plus 1 to infinity, which equals ${pvHighGrowth.toFixed(2)} dollars from high growth period plus ${pvTerminal.toFixed(2)} dollars from terminal value, total ${P.toFixed(2)} dollars`
+    `Changing Growth Model equation: Present value at time zero equals sum from i equals 1 to ${n} plus sum from j equals ${n} plus 1 to infinity, which equals ${formatCurrencySpeech(pvHighGrowth)} from high growth period plus ${formatCurrencySpeech(pvTerminal)} from terminal value, total ${formatCurrencySpeech(P)}`
   );
 
   const mathML = `
@@ -291,5 +274,5 @@ function renderChangingEquation(inputs, result) {
     </div>
   `;
 
-  container.innerHTML = mathML;
+  return { mount: container, markup: mathML };
 }

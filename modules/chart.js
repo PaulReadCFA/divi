@@ -1,7 +1,7 @@
 /**
  * chart.js - Dividend Cash Flow Chart with Keyboard Accessibility
  */
-import { $ } from './utils.js';
+import { $, formatCurrencySpeech } from './utils.js';
 import { getChartTypography } from '../chart-typography.js';
 
 /** Curriculum chart label convention: 13px / 600 / Lato at the 18px design root. */
@@ -372,10 +372,10 @@ function announceDataPoint(cashFlow, calculations, selectedModel, modelsToShow) 
         growth: 'Constant Dividend Growth',
         changing: 'Changing Dividend Growth'
       }[modelKey];
-      announcement += `${modelName}: ${formatCurrency(Math.abs(dividend))}. `;
+      announcement += `${modelName}: ${formatCurrencySpeech(Math.abs(dividend))}. `;
     });
   } else {
-    announcement += formatCurrency(Math.abs(cashFlow.dividend));
+    announcement += formatCurrencySpeech(Math.abs(cashFlow.dividend));
   }
   
   liveRegion.textContent = announcement;

@@ -21,99 +21,14 @@
         scale: 95,
         linebreaks: { automatic: true }
       },
-      menuSettings: {
-        explorer: false
-      },
+      menuSettings: { explorer: true },
       MathEvents: {
         removeElement: null
       },
       skipStartupTypeset: false
     });
-    
-    MathJax.Hub.Register.StartupHook("End", function () {
-      MathJax.Hub.Queue(function () {
-        var mathJaxElements = document.querySelectorAll('.MathJax[tabindex]');
-        mathJaxElements.forEach(function(el) {
-          el.removeAttribute('tabindex');
-        });
-        var nobrElements = document.querySelectorAll('.formula-box nobr[aria-hidden="true"]');
-        nobrElements.forEach(function(el) {
-          if (!el.textContent.trim()) {
-            el.remove();
-          }
-        });
-      });
-    });
   </script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=MML_HTMLorMML"></script>
-  
-  <script>
-    (function() {
-      function removeMathJaxTabindex() {
-        var mathJaxElements = document.querySelectorAll('.MathJax[tabindex]');
-        mathJaxElements.forEach(function(el) {
-          el.removeAttribute('tabindex');
-        });
-        var nobrElements = document.querySelectorAll('.formula-box nobr[aria-hidden="true"]');
-        nobrElements.forEach(function(el) {
-          if (!el.textContent.trim()) {
-            el.remove();
-          }
-        });
-      }
-      
-      window.addEventListener('load', function() {
-        removeMathJaxTabindex();
-        setTimeout(removeMathJaxTabindex, 100);
-        setTimeout(removeMathJaxTabindex, 500);
-        setTimeout(removeMathJaxTabindex, 1000);
-        setTimeout(removeMathJaxTabindex, 2000);
-      });
-      
-      var observer = new MutationObserver(function(mutations) {
-        var needsRemoval = false;
-        mutations.forEach(function(mutation) {
-          if (mutation.type === 'childList') {
-            mutation.addedNodes.forEach(function(node) {
-              if (node.nodeType === 1 && node.classList && node.classList.contains('MathJax')) {
-                if (node.hasAttribute('tabindex')) {
-                  node.removeAttribute('tabindex');
-                  needsRemoval = true;
-                }
-              }
-            });
-          }
-          if (mutation.type === 'attributes' && mutation.attributeName === 'tabindex') {
-            var target = mutation.target;
-            if (target.classList && target.classList.contains('MathJax') && target.hasAttribute('tabindex')) {
-              target.removeAttribute('tabindex');
-            }
-          }
-        });
-        if (needsRemoval) {
-          removeMathJaxTabindex();
-        }
-      });
-      
-      if (document.body) {
-        observer.observe(document.body, {
-          childList: true,
-          subtree: true,
-          attributes: true,
-          attributeFilter: ['tabindex']
-        });
-      } else {
-        document.addEventListener('DOMContentLoaded', function() {
-          observer.observe(document.body, {
-            childList: true,
-            subtree: true,
-            attributes: true,
-            attributeFilter: ['tabindex']
-          });
-        });
-      }
-    })();
-  </script>
 </head>
 <body>
 
