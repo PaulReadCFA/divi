@@ -1,7 +1,8 @@
 /**
  * table.js – Add data-label for mobile stacking
  */
-import { $, applyTableRoles } from './utils.js';
+import { $ } from './utils.js';
+import { applyTableRoles } from '../table-roles.js';
 
 export function renderTable(calculations, selectedModel) {
   const table = $('#data-table');
