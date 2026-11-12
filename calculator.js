@@ -130,9 +130,10 @@ function setupInputs() {
       clampNumericInputLength(el, NUMERIC_INPUT_MAX_CHARS);
       handler();
     };
+    /* input and change cover a real edit. blur would refresh again when the
+       value is unchanged, hiding the equations and dropping keyboard focus. */
     listen(el, 'input', onInput);
     listen(el, 'change', onInput);
-    listen(el, 'blur', handler);
   });
 }
 
